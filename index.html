@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Puddin POP</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
+:root{
+  --green:#004C54;
+  --green2:#005f6b;
+  --black:#0a0a0a;
+  --silver:#A5ACAF;
+  --white:#f8f8f8;
+  --gold:#c4a35a;
+  --light-green:#e6f4f5;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Lora',Georgia,serif;min-height:100vh;background:var(--green);transition:background 0.5s}
+button{font-family:'Lora',Georgia,serif;cursor:pointer;border:none;transition:transform 0.1s}
+button:active{transform:scale(0.97)}
+h1,h2,h3{font-family:'Oswald',sans-serif;letter-spacing:0.03em}
+.wrap{max-width:640px;margin:0 auto;padding:20px 14px}
+.card{background:#fff;border-radius:16px;padding:20px 17px;box-shadow:0 6px 28px rgba(0,0,0,0.18);margin-bottom:12px}
+.home-card{background:rgba(255,255,255,0.97);border:none;border-radius:15px;padding:15px 16px;width:100%;display:flex;align-items:center;gap:12px;box-shadow:0 4px 18px rgba(0,0,0,0.25);margin-bottom:10px;text-align:left;font-family:'Lora',Georgia,serif;border-left:4px solid var(--green)}
+.prog-wrap{background:rgba(255,255,255,0.2);border-radius:99px;height:9px;margin-bottom:16px;overflow:hidden}
+.prog-bar{height:100%;border-radius:99px;transition:width 0.5s ease;background:linear-gradient(90deg,var(--silver),var(--white))}
+.opt-btn{width:100%;padding:12px 14px;border-radius:11px;background:#f8f8f8;border:2px solid #ddd;color:#222;font-size:15px;text-align:left;margin-bottom:8px;cursor:pointer;font-family:'Lora',Georgia,serif;transition:all 0.2s;display:block}
+.opt-btn:hover{border-color:var(--green);background:var(--light-green)}
+.opt-correct{background:#e6f4f0!important;border-color:#004C54!important;color:#003038!important}
+.opt-wrong{background:#FFEBEE!important;border-color:#C62828!important;color:#B71C1C!important}
+.top-bar{display:flex;align-items:center;gap:11px;margin-bottom:16px}
+.home-btn{color:#fff;border:none;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:bold;white-space:nowrap;font-family:'Oswald',sans-serif;letter-spacing:0.05em;background:rgba(0,0,0,0.3)}
+.big-btn{width:100%;padding:14px;border-radius:14px;font-size:15px;font-weight:bold;color:#fff;border:none;margin-bottom:9px;font-family:'Oswald',sans-serif;letter-spacing:0.06em;cursor:pointer;text-transform:uppercase}
+.sec-label{color:rgba(255,255,255,0.7);font-size:11px;font-weight:bold;text-transform:uppercase;letter-spacing:1.5px;margin:0 0 8px 3px;font-family:'Oswald',sans-serif}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;z-index:200}
+.overlay-box{background:#fff;border-radius:22px;padding:34px 38px;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,0.4);animation:popIn 0.3s ease;max-width:320px;border-top:5px solid var(--green)}
+@keyframes popIn{from{transform:scale(0.6);opacity:0}to{transform:scale(1);opacity:1}}
+.link-card{background:#fff;border-radius:13px;padding:14px 16px;margin-bottom:9px;box-shadow:0 3px 12px rgba(0,0,0,0.12);border-left:4px solid var(--green)}
+.link-card a{color:var(--green);font-weight:bold;font-size:15px;text-decoration:none;font-family:'Oswald',sans-serif}
+.link-card p{color:#555;font-size:13px;margin-top:4px;line-height:1.5}
+.result-row{padding:7px 0;border-bottom:1px solid #f0f0f0;font-size:13px;display:flex;gap:7px;text-align:left;align-items:flex-start}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:13px}
+.stat-box{background:rgba(255,255,255,0.13);border-radius:13px;padding:13px;text-align:center;border:1px solid rgba(255,255,255,0.15)}
+.stat-num{font-size:28px;font-weight:bold;color:#fff;font-family:'Oswald',sans-serif}
+.stat-lbl{font-size:11px;color:rgba(255,255,255,0.7);margin-top:3px;font-family:'Oswald',sans-serif;letter-spacing:0.05em}
+.ver-btn{background:#fff;border:2px solid #ddd;border-radius:14px;padding:14px 15px;width:100%;text-align:left;margin-bottom:9px;cursor:pointer;font-family:'Lora',Georgia,serif;display:flex;align-items:center;gap:12px;border-left:4px solid var(--silver)}
+.ver-btn.done{border-color:#004C54;border-left-color:#004C54;background:#f0faf8}
+.rbar-wrap{background:#e0e0e0;border-radius:99px;height:8px;overflow:hidden;margin-top:4px}
+.rbar{height:100%;border-radius:99px;transition:width 0.6s ease}
+.eagles-header{background:linear-gradient(135deg,var(--black) 0%,var(--green) 60%);border-radius:20px;padding:22px 18px;text-align:center;margin-bottom:18px;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+.eagles-header::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.ai-bubble{background:linear-gradient(135deg,var(--green),var(--green2));border-radius:14px 14px 14px 2px;padding:12px 15px;color:#fff;font-size:14px;line-height:1.7;margin-bottom:10px;font-family:'Lora',Georgia,serif}
+.ai-thinking{display:inline-flex;gap:5px;align-items:center;padding:10px 16px;background:rgba(255,255,255,0.15);border-radius:20px;margin-bottom:10px}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.8);animation:bounce 1.2s infinite}
+.dot:nth-child(2){animation-delay:0.2s}
+.dot:nth-child(3){animation-delay:0.4s}
+@keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-8px)}}
+textarea{width:100%;border:2px solid #ddd;border-radius:12px;padding:13px 14px;font-size:15px;font-family:'Lora',Georgia,serif;resize:none;outline:none;transition:border-color 0.2s;line-height:1.6;color:#222}
+textarea:focus{border-color:var(--green)}
+.step-card{background:#fff;border-radius:16px;padding:20px 17px;box-shadow:0 6px 28px rgba(0,0,0,0.18);margin-bottom:12px;border-top:4px solid var(--green)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const TOPICS=["Food Safety & Contamination","Time & Temperature","Personal Hygiene","Cleaning & Sanitizing","Pest Control & Facilities"];
+function q(question,opts,ans,ex){return{q:question,opts:opts,ans:ans,ex:ex};}
+const BANK={v1:[
+q("What temperature range is the Danger Zone?",["32F-100F","41F-135F","50F-165F","0F-40F"],1,"Bacteria grow fastest between 41F and 135F."),
+q("Which is cross-contamination?",["Cooking chicken to 165F","Same cutting board for raw chicken and salad","Storing raw meat on bottom shelf","Washing hands before cooking"],1,"Using the same board spreads bacteria from raw chicken to salad."),
+q("What does TCS stand for?",["Temperature Control System","Time/Temperature Control for Safety","Total Contamination Standard","Timed Cooking Schedule"],1,"TCS = Time/Temperature Control for Safety."),
+q("Which is a biological contaminant?",["A piece of bone","Bacteria on raw chicken","Cleaning solution","A rubber band"],1,"Bacteria are biological contaminants."),
+q("Raw meat stored _____ ready-to-eat foods.",["Above","Next to","Below","At same level"],2,"Raw meat goes on the BOTTOM shelf so juices cannot drip onto ready-to-eat foods."),
+q("Which food is a TCS food?",["Dry rice","Crackers","Cooked beans","Bread"],2,"Cooked beans support bacterial growth and require temperature control."),
+q("Main cause of foodborne illness?",["Improper handwashing","Eating too fast","Over-seasoning","Using metal utensils"],0,"Improper handwashing is the leading cause of foodborne illness."),
+q("Pathogen associated with undercooked poultry?",["E. coli","Salmonella","Listeria","Hepatitis A"],1,"Salmonella is most commonly linked to undercooked poultry and eggs."),
+q("Which is a physical contaminant?",["Bacteria","Pesticide residue","A piece of glass","Mold"],2,"A piece of glass is a physical contaminant."),
+q("Best way to prevent cross-contamination?",["Cook all food at high heat","Separate cutting boards for meat and produce","Refrigerate all food","Wash food before cutting"],1,"Separate cutting boards prevent bacteria from spreading between food types."),
+q("Which food does NOT require temperature control?",["Sliced tomatoes","Cooked pasta","Saltine crackers","Cut melons"],2,"Crackers are shelf-stable and need no temperature control."),
+q("Foodborne illness is often caused by food that:",["Looks bad","Smells unusual","Contains pathogens","Has expired"],2,"Many dangerous pathogens show no visible or odor signs in food."),
+q("Which is a chemical contaminant?",["A hair in soup","Salmonella","Pesticide on vegetables","A fish bone"],2,"Pesticide residue is a chemical contaminant."),
+q("How should raw fish be stored relative to raw beef?",["Above beef","Below beef","Next to beef","Never stored together"],1,"Raw fish stored below raw beef based on required cooking temperatures."),
+q("What does FAT TOM stand for?",["Food, Air, Time, Temperature, Oxygen, Moisture","Flavor, Acid, Temperature, Toxins, Oil, Moisture","Food, Acidity, Time, Temperature, Oxygen, Moisture","Fat, Acid, Taste, Time, Oxygen, Moisture"],2,"FAT TOM: Food, Acidity, Time, Temperature, Oxygen, Moisture."),
+q("Most likely cause of a foodborne illness outbreak?",["Overcooking vegetables","Improper cooling of cooked chicken","Using too much salt","Serving food too hot"],1,"Improper cooling is one of the most common causes of outbreaks."),
+q("Intoxication occurs when a person eats food containing:",["Too much fat","Toxins produced by bacteria","Undercooked grains","Expired dairy"],1,"Foodborne intoxication is caused by toxins already present in food."),
+q("Which is a ready-to-eat food?",["Raw chicken breast","Raw ground beef","Sliced deli meat","Whole raw eggs"],2,"Sliced deli meat requires no further cooking."),
+q("Minimum internal temperature for poultry?",["145F","150F","155F","165F"],3,"Poultry must reach 165F to kill Salmonella and other bacteria."),
+q("Hot food held for service must stay at or above:",["115F","125F","135F","145F"],2,"Hot holding must be 135F or above."),
+q("Which method is NOT safe for thawing food?",["In the refrigerator","Under cold running water","On the kitchen counter","In the microwave before cooking"],2,"Thawing on the counter puts food in the danger zone."),
+q("How long to cool food from 135F to 41F?",["2 hours","4 hours","6 hours","8 hours"],2,"Total cooling: 135F to 70F in 2 hours, then 70F to 41F in 4 more hours."),
+q("Minimum internal temperature for ground beef?",["145F","150F","155F","165F"],2,"Ground beef must reach 155F because grinding spreads surface bacteria throughout."),
+q("What temperature must cold food be held at?",["32F or below","38F or below","41F or below","45F or below"],2,"Cold food must be held at 41F or below."),
+q("Best thermometer for thin foods like burger patties?",["Bimetallic stemmed","Thermocouple","Thermistor","Infrared"],1,"Thermocouples read quickly and work well with thin foods."),
+q("Minimum internal temperature for whole roasts of pork?",["135F","145F","155F","165F"],1,"Whole pork roasts must reach 145F with a 3-minute rest time."),
+q("First step in the cooling process?",["Place in walk-in cooler","Reduce food to smaller portions","Cover food tightly","Add ice directly"],1,"Reducing portions allows food to cool faster."),
+q("Food must be cooled from 135F to 70F within:",["1 hour","2 hours","3 hours","4 hours"],1,"The first cooling stage must happen within 2 hours."),
+q("Minimum temperature for eggs served immediately?",["135F","145F","155F","165F"],1,"Eggs served immediately must reach 145F."),
+q("Tool to check temperature of a large roast?",["Surface thermometer","Bimetallic stemmed thermometer","Infrared thermometer","Timer"],1,"A bimetallic stemmed thermometer reads the internal temperature of thick foods."),
+q("How often check temperatures during hot holding?",["Every 30 minutes","Every hour","Every 2 hours","Every 4 hours"],2,"Temperatures should be checked at least every 2 hours."),
+q("Which food must be cooked to 165F?",["Whole pork roast","Fish fillets","Stuffed pasta","Ground lamb"],2,"Stuffed pasta must reach 165F because the stuffing can harbor bacteria."),
+q("Safe internal temperature for cooking fish?",["135F","145F","155F","165F"],1,"Fish must reach 145F internal temperature."),
+q("Leftover food should be reheated to at least:",["135F","145F","155F","165F"],3,"Leftovers must be reheated to 165F within 2 hours."),
+q("Danger of the temperature danger zone?",["Food loses flavor","Bacteria multiply rapidly","Food becomes toxic permanently","Food changes color"],1,"Bacteria multiply rapidly in the danger zone, doubling every 20 minutes."),
+q("Cold food being transported must be kept at:",["32F","38F","41F or below","45F or below"],2,"Cold food must remain at 41F or below during transport."),
+q("How long should you scrub hands when washing?",["5 seconds","10 seconds","20 seconds","60 seconds"],2,"Scrub for at least 20 seconds, like singing Happy Birthday twice."),
+q("When must a food handler wash hands?",["Only before starting work","Only after restroom","After raw meat, restroom, touching face, before handling food","Once per hour"],2,"Hands must be washed in many situations throughout a shift."),
+q("Food handler is vomiting at home. What should they do?",["Come in but avoid touching food","Take medicine and come to work","Call manager and stay home","Wear gloves all day"],2,"Vomiting is a reason to stay home and report to your manager."),
+q("Gloves should be changed:",["Only when dirty","At least every 4 hours and when switching tasks","Once per shift","Only with raw meat"],1,"Gloves must be changed at least every 4 hours and when switching tasks."),
+q("What must you do BEFORE putting on gloves?",["Dry hands on apron","Wash hands","Apply sanitizer only","Nothing"],1,"Always wash hands before putting on gloves."),
+q("Which illness requires exclusion from the operation?",["Common cold","Hepatitis A","Seasonal allergies","Headache"],1,"Hepatitis A requires exclusion from the food operation."),
+q("Food handler with sore throat and fever should:",["Work but wear a mask","Be excluded from working with food","Only handle packaged foods","Wash hands more often"],1,"A sore throat with fever is a reason to be excluded from food handling."),
+q("Proper order for handwashing?",["Rinse, soap, scrub, dry","Soap, scrub, rinse, dry","Wet, soap, scrub 20 sec, rinse, dry","Scrub, soap, rinse, dry"],2,"Wet hands, then apply soap, scrub 20 seconds, rinse, dry with paper towel."),
+q("Which is NOT acceptable jewelry when working with food?",["Plain wedding band","Medic alert bracelet","Diamond ring","No jewelry at all"],2,"Rings with stones trap bacteria and should not be worn."),
+q("Food handlers should keep fingernails:",["Long and polished","Short and clean, no polish","Any length if gloves are worn","Painted but trimmed"],1,"Nails should be short and clean. Polish and artificial nails can chip into food."),
+q("When is hand sanitizer alone acceptable?",["After using the restroom","Before handling food","As a supplement after proper handwashing","Instead of washing when busy"],2,"Hand sanitizer supplements handwashing but never replaces it."),
+q("Food handler diagnosed with Norovirus should:",["Wear double gloves","Avoid touching ready-to-eat food only","Be excluded from the operation","Work only in dish washing"],2,"Norovirus requires exclusion from the food operation."),
+q("Greatest contamination risk from body fluid?",["Sweat","Blood","Mucus from sneezing","All equally"],2,"Mucus from sneezing can spread norovirus and other pathogens rapidly."),
+q("Eating or drinking is allowed:",["Anywhere in the kitchen","Only in designated areas","Only if wearing gloves","Never in food service"],1,"Eating and drinking are only allowed in designated areas."),
+q("After handling raw meat, food handler should:",["Rinse gloves and continue","Remove gloves, wash hands, put on new gloves","Wipe hands on apron","Continue with same gloves if clean"],1,"Remove gloves, wash hands thoroughly, then put on a fresh pair."),
+q("How to cover a wound on a hand?",["Leave uncovered","Cover with bandage only","Cover with bandage and wear glove over it","Use waterproof tape only"],2,"A wound must be covered with a bandage and then a glove."),
+q("Which disease is spread through fecal-oral route?",["Listeria","Hepatitis A","Salmonella","E. coli"],1,"Hepatitis A is spread through the fecal-oral route."),
+q("Food handler sneezes while working. What should they do?",["Continue if they covered their mouth","Wash hands immediately and change gloves","Simply wipe nose","Apply hand sanitizer"],1,"After sneezing, wash hands immediately and change gloves."),
+q("Correct order for cleaning process?",["Sanitize then clean","Clean then sanitize","Either order works","Only one step needed"],1,"Always clean first to remove dirt, then sanitize."),
+q("Correct order of 3-compartment sink?",["Rinse, Wash, Sanitize","Sanitize, Wash, Rinse","Wash, Rinse, Sanitize","Wash, Sanitize, Rinse"],2,"Wash in soapy water, rinse in clean water, then sanitize."),
+q("After sanitizing dishes, you should:",["Towel dry","Air dry","Rinse again","Dry with paper towels"],1,"Always air dry. Towel drying can re-contaminate dishes."),
+q("How often clean food-contact surfaces during continuous use?",["30 minutes","1 hour","4 hours","Once per shift"],2,"Food-contact surfaces must be cleaned and sanitized at least every 4 hours."),
+q("High-temperature dishwasher final rinse must reach:",["145F","160F","165F","180F"],3,"High-temp dishwashers must reach 180F in the final rinse."),
+q("Typical concentration of chlorine sanitizer?",["10-25 ppm","50-100 ppm","200-300 ppm","500+ ppm"],1,"Chlorine sanitizer is typically used at 50-100 ppm."),
+q("Which is NOT a step in the 3-compartment sink process?",["Washing with detergent","Rinsing with clean water","Sanitizing","Drying with a clean towel"],3,"Air drying is required. Towel drying is not an acceptable step."),
+q("What must happen before sanitizing a surface?",["It must be warm","It must be cleaned first","It must be rinsed with hot water","It must be sprayed with chemicals"],1,"Surfaces must be cleaned before sanitizing."),
+q("Chemical dishwashers need minimum water temperature of:",["100F","110F","120F","130F"],2,"Chemical dishwashers must maintain at least 120F water temperature."),
+q("PPM stands for:",["Parts per meal","Parts per million","Percent per measurement","Pounds per minute"],1,"PPM = parts per million, used to measure sanitizer concentration."),
+q("How often should wiping cloths be sanitized?",["Once per shift","Every 2 hours","Stored in sanitizer solution","After each use"],2,"Wiping cloths should be stored in sanitizer solution between uses."),
+q("Which factor affects sanitizer effectiveness?",["Color of the surface","Concentration, temperature, contact time, and pH","Brand name","Type of soap used before"],1,"Sanitizer effectiveness depends on concentration, temperature, contact time, and pH."),
+q("Cutting board used for raw chicken must be cleaned and sanitized:",["Once per day","Every 4 hours only","After each use before using for another food","Only if visibly soiled"],2,"A cutting board must be cleaned and sanitized after each use."),
+q("Minimum contact time for most chemical sanitizers?",["10 seconds","30 seconds","1 minute","5 minutes"],1,"Most chemical sanitizers need at least 30 seconds of contact time."),
+q("Iodine sanitizers are typically what color?",["Clear","Green","Amber/brown","Blue"],2,"Iodine sanitizers have a distinctive amber or brown color."),
+q("Which item does NOT need to be sanitized?",["Cutting boards","Chef knife","Dry storage shelf","Mixing bowl"],2,"Dry storage shelves that do not contact food do not require the same sanitizing standard."),
+q("What if sanitizer solution looks cloudy?",["Add more sanitizer","Continue using","Replace with fresh solution","Dilute with water"],2,"Cloudy sanitizer must be replaced. It is no longer effective."),
+q("How should equipment be stored after cleaning?",["In a closed cabinet","On the floor","In a way that allows air drying","Covered with a damp cloth"],2,"Equipment should be stored to allow air circulation and drying."),
+q("Which is a sign of a rodent problem?",["Condensation on windows","Droppings and gnaw marks","Strong smell of cleaners","Cloudy ice"],1,"Droppings and gnaw marks are classic signs of rodent activity."),
+q("How far off the floor should food be stored?",["2 inches","4 inches","6 inches","12 inches"],2,"Food should be stored at least 6 inches off the floor."),
+q("Who should apply pesticides in a food establishment?",["Any trained staff","The manager","A licensed PCO","Anyone wearing gloves"],2,"Only a licensed Pest Control Operator should apply pesticides."),
+q("Why fix leaky pipes quickly?",["Save money","Pests are attracted to moisture","Only a slip hazard","Not pest-related"],1,"Pests are strongly attracted to moisture sources."),
+q("Best first step when you spot a pest?",["Try to catch it","Ignore it","Report immediately to manager","Put out traps yourself"],2,"Always report pest sightings immediately so a licensed PCO can be contacted."),
+q("How often should a PCO visit a food establishment?",["Only when pests are seen","As needed per contract and regulations","Once per year","Once per month minimum"],1,"PCO visit frequency should be determined by contract and local health regulations."),
+q("Which pest is most commonly associated with spreading Salmonella?",["Cockroach","Fly","Mouse","All of the above"],3,"All of the above can spread Salmonella and are serious pests in food service."),
+q("Best way to prevent pests from entering a building?",["Use pesticides daily","Seal cracks, gaps, and keep doors closed","Turn off lights","Keep floors clean only"],1,"Sealing entry points is the most effective way to prevent pest entry."),
+q("Garbage should be stored:",["Near the back door for easy removal","In sealed containers away from the building","Anywhere convenient","In the kitchen corner"],1,"Garbage must be stored in sealed containers and away from the building."),
+q("Which pest hides in walls and comes out at night?",["Flies","Cockroaches","Ants","Moths"],1,"Cockroaches are nocturnal and hide in cracks and walls."),
+q("What to do with food in damaged packaging?",["Use immediately","Return or discard it","Repackage in new container","Offer at discount"],1,"Damaged packaging can indicate pest activity. The food should be returned or discarded."),
+q("Integrated Pest Management (IPM) focuses on:",["Using maximum pesticides","Prevention, using pesticides only as last resort","Ignoring small infestations","Only physical traps"],1,"IPM is a prevention-first approach that minimizes pesticide use."),
+q("Best lighting to reduce flying insects near entrances?",["Bright white fluorescent","UV bug zappers","Yellow or sodium vapor lights","No lights at all"],2,"Yellow or sodium vapor lights attract fewer flying insects."),
+q("How should food be protected from pests during storage?",["In original boxes","In open containers","In sealed, pest-proof containers","Covered with plastic wrap"],2,"Food must be stored in sealed, pest-proof containers."),
+q("What does a PCO record of treatments help do?",["Save money on insurance","Demonstrate compliance and track infestations","Reduce staff training","Replace health inspections"],1,"Treatment records help demonstrate regulatory compliance and track pest activity."),
+q("Which area most likely attracts cockroaches?",["Walk-in freezer","Dry storage with cardboard boxes","Clean dish storage","Front of house"],1,"Cockroaches love warm, humid areas and cardboard boxes in dry storage."),
+q("What should food handler NOT do with mouse droppings?",["Report to manager","Handle without gloves","Document the location","Continue until PCO arrives"],1,"Never handle rodent droppings without proper PPE. They carry dangerous pathogens."),
+q("Which pest can contaminate food simply by walking across it?",["Cockroaches","Flies","Both cockroaches and flies","Neither"],2,"Both cockroaches and flies can contaminate food just by walking across it.")
+],v2:[
+q("Which is NOT a TCS food?",["Raw chicken","Cooked rice","Dry crackers","Cut tomatoes"],2,"Dry crackers are shelf-stable and do not require temperature control."),
+q("Primary source of Listeria contamination?",["Undercooked beef","Ready-to-eat foods and unpasteurized dairy","Raw eggs","Shellfish"],1,"Listeria is most often found in ready-to-eat foods and unpasteurized dairy."),
+q("What causes foodborne infection?",["Eating food with live pathogens","Eating food with toxins already in it","Eating spoiled-smelling food","Eating food past expiration"],0,"Foodborne infection is caused by eating food containing live pathogens."),
+q("Pathogen associated with improperly canned foods?",["Salmonella","E. coli","Clostridium botulinum","Listeria"],2,"Clostridium botulinum thrives in low-oxygen environments like improperly canned foods."),
+q("Minimum people affected to classify a foodborne illness outbreak?",["1","2","5","10"],1,"Two or more people with the same illness from the same food source constitutes an outbreak."),
+q("Which practice best prevents biological contamination?",["Cooking all food thoroughly","Proper handwashing and temperature control","Using metal utensils only","Filtering tap water"],1,"Proper handwashing and temperature control are the foundation of preventing biological contamination."),
+q("How to respond to finding a pest in food storage?",["Remove pest and continue","Report it, remove affected food, and call a PCO","Ignore if food looks fine","Move food to different location"],1,"Pests require immediate action: report, remove affected food, and contact a licensed PCO."),
+q("Food most likely to cause Staphylococcal food poisoning?",["Raw vegetables","Protein salads held at room temperature","Grilled fish","Frozen pizza"],1,"Staph grows rapidly in protein foods left at room temperature."),
+q("E. coli O157:H7 most commonly associated with:",["Unpasteurized apple juice","Undercooked ground beef","Raw shellfish","Unpasteurized milk"],1,"E. coli O157:H7 is most commonly linked to undercooked ground beef."),
+q("Role of acidity in bacterial growth?",["Bacteria grow best in highly acidic foods","Bacteria grow best in neutral or slightly acidic foods","Bacteria cannot grow in any acidic environment","Acidity has no effect"],1,"Most pathogens grow best at a neutral pH around 7.0 or slightly acidic conditions."),
+q("Greatest cross-contamination risk?",["Storing lemons next to oranges","Storing raw chicken above ready-to-eat salad","Using stainless steel pans","Refrigerating cooked beef"],1,"Raw chicken stored above ready-to-eat salad is a major cross-contamination risk."),
+q("What must be on a food label for allergen purposes?",["Country of origin","The 9 major food allergens if present","Price per unit","Calorie count"],1,"Labels must disclose the 9 major food allergens."),
+q("Norovirus most commonly spread through:",["Undercooked meat","Contaminated produce and infected food handlers","Improperly canned food","Raw eggs"],1,"Norovirus spreads easily through contaminated food and infected food handlers."),
+q("Temperature that best prevents bacterial growth in stored food?",["50F","41F or below","55F","Room temperature with cover"],1,"Storing food at 41F or below keeps it out of the danger zone."),
+q("What to do when a food shipment arrives with signs of pest damage?",["Accept and inspect each item","Reject the entire shipment","Remove damaged items and accept the rest","Discount and use quickly"],1,"Shipments showing signs of pest damage should be rejected."),
+q("Example of foodborne intoxication?",["Salmonellosis","Botulism","E. coli infection","Norovirus illness"],1,"Botulism is caused by toxins produced by C. botulinum. A classic intoxication."),
+q("Biggest risk of using same knife for raw meat and vegetables?",["Changing the flavor","Cross-contamination of pathogens","Dulling the blade","Leaving metal residue"],1,"Using the same knife without washing spreads pathogens from raw meat to vegetables."),
+q("Which organization establishes food safety regulations for restaurants?",["FDA and state/local health departments","OSHA","EPA","USDA only"],0,"The FDA, along with state and local health departments, regulates restaurant food safety."),
+q("Method to quickly cool a large pot of soup?",["Refrigerate covered immediately","Place in ice bath and stir","Leave at room temperature for 1 hour then refrigerate","Add cold water directly"],1,"An ice bath while stirring rapidly cools soup to safe temperatures."),
+q("Food requiring highest cooking temperature?",["Whole pork roast","Stuffed chicken breast","Fish fillets","Hamburgers"],1,"Stuffed chicken must reach 165F."),
+q("Minimum holding temperature for hot soup?",["115F","125F","135F","145F"],2,"Hot food must be held at 135F or above."),
+q("When must a food thermometer be calibrated?",["Once per year","Before each shift, after dropping, or when switching foods","Only after repairs","Every 6 months"],1,"Thermometers should be calibrated regularly and after being dropped or exposed to extremes."),
+q("Frozen food should be kept at:",["0F or below","10F or below","15F or below","32F or below"],0,"Frozen food should be stored at 0F or below."),
+q("Safe minimum internal temperature for pork chops?",["135F","145F","155F","165F"],1,"Pork chops must reach 145F with a 3-minute rest time."),
+q("Factor most affecting how quickly food cools?",["Color of container","Depth and volume of food","Material of pot","Whether food is covered"],1,"Shallower, smaller portions cool much faster."),
+q("Temperatures should be checked during holding:",["By sight only","Only if food looks cold","Every 2 hours or as required","Once per shift"],2,"Temperatures should be monitored every 2 hours during holding."),
+q("Food safe to eat without cooking?",["Raw chicken","Raw ground beef","Sushi-grade salmon","Raw pork"],2,"Sushi-grade fish is safe to serve raw when it meets parasite destruction standards."),
+q("Bimetallic stemmed thermometer should be inserted:",["Into the thinnest part","Into the thickest part of the food","On the surface","From the side into the center"],1,"Always insert into the thickest part for an accurate internal temperature reading."),
+q("Leftover soup must be reheated to:",["135F","145F","155F","165F"],3,"Leftovers must be reheated to 165F within 2 hours."),
+q("Correct way to thaw shrimp for same-day cooking?",["Microwave on high","Leave on counter for 2 hours","Under cold running water","In warm water bath"],2,"Thawing under cold running water (70F or below) is safe and quick."),
+q("Thermometer reads 38F in ice water. What to do?",["Use it - it is close enough","Adjust it to read 32F","Throw it away","Use a different type"],1,"Calibrate a bimetallic thermometer by adjusting it to 32F in an ice water bath."),
+q("Danger of reheating food in a steam table?",["Steam tables can reheat quickly","Steam tables cannot reliably reach 165F fast enough","Steam tables are too hot","Steam tables change the flavor"],1,"Steam tables are for holding hot food, not reheating. They heat too slowly."),
+q("Minimum cooking temperature for raw eggs for high-risk populations?",["135F","145F","155F","165F"],3,"Eggs for highly susceptible populations must reach 165F."),
+q("Maximum time food can be in the danger zone before discard?",["2 hours","4 hours","6 hours","8 hours"],1,"Food should not be in the danger zone for more than 4 hours total."),
+q("Type of thermometer that reads temperature without touching food?",["Bimetallic stemmed","Thermocouple","Infrared","Thermistor"],2,"Infrared thermometers measure surface temperature without contact."),
+q("Correct internal temp for cooking a beef roast?",["125F","130F","135F","145F"],3,"Beef roasts must reach 145F minimum internal temperature."),
+q("Acceptable reason to work while sick?",["Minor headache only","Mild sneezing","There is no acceptable reason to work when you have vomiting or diarrhea","If you wear gloves"],2,"You must not work with food if you have vomiting, diarrhea, or reportable symptoms."),
+q("Artificial nails in food service are:",["Fine if painted","Fine if short","Not allowed as they can harbor bacteria and break off","Allowed with gloves"],2,"Artificial nails are not permitted in food service."),
+q("Color uniform helps identify contamination?",["Black","Dark colors","Light colors","Any color"],2,"Light-colored uniforms make it easier to see contamination."),
+q("Food handler who handled money needs to prepare food. What to do?",["Wipe hands on apron","Use hand sanitizer only","Wash hands thoroughly before touching food","Put on gloves without washing"],2,"After handling money, hands must be thoroughly washed before touching food."),
+q("Which symptom requires restriction to non-food contact duties?",["Sore throat only","Sore throat with fever","Minor headache","Mild runny nose"],1,"A sore throat with fever requires restriction from food handling duties."),
+q("Required water temperature for handwashing?",["Cold water is fine","At least 70F","Comfortable warm water around 100F","As hot as possible"],2,"Warm, comfortable water around 100F encourages thorough handwashing."),
+q("Food handler with infected cut on finger should:",["Cover with a bandage only","Wear a glove only","Cover with bandage and wear a glove","Not work at all"],2,"An infected wound requires a bandage plus a glove."),
+q("How long symptom-free before returning after Norovirus?",["24 hours","48 hours after last symptoms","72 hours","1 week"],1,"Food handlers must be symptom-free for at least 48 hours before returning."),
+q("Most important personal hygiene practice for food handlers?",["Wearing a uniform","Proper handwashing","Tying hair back","Wearing gloves"],1,"Proper handwashing is the single most important personal hygiene practice."),
+q("Food handler washes hands then touches hair. What next?",["Continue working","Apply hand sanitizer","Wash hands again","Change gloves"],2,"Touching hair after washing requires washing hands again."),
+q("Which activity requires immediate handwashing?",["Moving from salad prep to bread slicing","Taking a break to drink water","Both of the above","Neither"],2,"Both activities represent potential contamination risks requiring handwashing."),
+q("How should aprons be handled when taking a bathroom break?",["Keep the apron on","Remove the apron before entering the bathroom","Tuck the apron in","Wash the apron after"],1,"Aprons must be removed before entering the bathroom."),
+q("Which can spread Hepatitis A?",["Touching surfaces only","Infected food handler not washing hands properly","Drinking pasteurized milk","Eating cooked meat"],1,"Hepatitis A spreads primarily through the fecal-oral route via unwashed hands."),
+q("Food handlers should report which conditions to manager?",["Only if they have a fever","Jaundice, sore throat with fever, vomiting, or diarrhea","Only diagnosed illnesses","Only if they cannot work"],1,"All significant symptoms must be reported including jaundice, vomiting, and diarrhea."),
+q("Food handler diagnosed with Salmonella Typhi should:",["Work but avoid raw foods","Be excluded until approved by health authority","Wear double gloves","Work in dish washing only"],1,"Salmonella Typhi requires exclusion until the health authority grants approval."),
+q("Which practice helps prevent hair from contaminating food?",["Wearing a baseball cap","Wearing a hair restraint such as a hairnet or hat","Tying hair in a ponytail only","Keeping hair short"],1,"A proper hair restraint like a hairnet or hat is required."),
+q("Danger of a food handler working with gastrointestinal illness?",["The food will taste different","Pathogens can be transferred to food causing illness in guests","Only a risk with raw foods","No danger if they wear gloves"],1,"A food handler with GI illness can easily transfer pathogens to food."),
+q("Handwashing stations must always have:",["Hot and cold water, soap, paper towels, and a trash receptacle","Just soap and water","A hand sanitizer dispenser","Running water only"],0,"Handwashing stations must be fully stocked with water, soap, paper towels, and a trash can."),
+q("Purpose of sanitizing?",["Remove visible dirt","Kill or reduce pathogens to safe levels","Make surfaces smell clean","Remove grease"],1,"Sanitizing reduces pathogens on already-cleaned surfaces to safe levels."),
+q("Which sanitizer works best in hard water?",["Chlorine","Iodine","Quaternary ammonium (quats)","Bleach"],2,"Quaternary ammonium compounds are effective in hard water conditions."),
+q("When should food handler change a wiping cloth?",["When it looks dirty","After each use on a food contact surface","Once per shift","Never - rinse and reuse"],1,"Wiping cloths must be changed after each use on a food contact surface."),
+q("What to do before using a chemical sanitizer?",["Read label and follow dilution instructions","Use strongest concentration possible","Mix with hot water always","Add soap to increase effectiveness"],0,"Always read and follow the manufacturer label for safe and effective use."),
+q("How should mop and bucket be stored after use?",["In the food prep area","Clean, dry, and in a utility area away from food","In the walk-in cooler","Under the 3-compartment sink"],1,"Mops and buckets must be stored clean, dry, and away from food areas."),
+q("Which surfaces are food-contact surfaces?",["Cutting boards and utensils only","Walls and floors","Cutting boards, utensils, prep tables, and equipment that touches food","Only knives and pans"],2,"All surfaces that come into contact with food are food-contact surfaces."),
+q("Minimum temperature for wash water in 3-compartment sink?",["90F","100F","110F","120F"],2,"Wash water must be at least 110F."),
+q("How are single-use items handled after use?",["Washed and reused","Sanitized and stored","Discarded immediately","Cleaned and reused if not visibly dirty"],2,"Single-use items must be discarded after use."),
+q("Which cleaner best removes mineral deposits?",["Degreasers","Abrasive cleaners","Acid cleaners","Alkaline cleaners"],2,"Acid cleaners remove mineral deposits and lime scale."),
+q("Sanitizer test strip shows inadequate concentration. What to do?",["Add more chemicals","Remake the solution to the correct concentration","Continue using it","Switch to a different brand"],1,"The sanitizer solution must be remade to the correct concentration."),
+q("Correct way to clean a commercial meat slicer?",["Wipe with a wet cloth","Disassemble, clean, rinse, sanitize all parts, and reassemble","Run through dishwasher","Spray with sanitizer only"],1,"Equipment like slicers must be fully disassembled, cleaned, rinsed, sanitized, dried, and reassembled."),
+q("How often must a food establishment be cleaned?",["Every day regardless of use","Once per week","Only when visibly dirty","Before each use"],0,"Food establishments should be cleaned daily regardless of how much they were used."),
+q("Which factor does NOT affect sanitizer effectiveness?",["Contact time","Sanitizer concentration","Color of the surface","Water temperature"],2,"The color of a surface has no effect on sanitizer effectiveness."),
+q("Pest control chemicals should be stored:",["Near food for convenience","Separately from food, clearly labeled, in a locked area","Under the sink next to cleaning supplies","Anywhere with ventilation"],1,"Pesticides must be stored separately from food, clearly labeled, and locked away."),
+q("First step in cleaning a prep table?",["Apply sanitizer","Scrape off food debris","Rinse with water","Apply degreaser"],1,"Always scrape or remove food debris first."),
+q("Which type of cleaner is used on grease and fat?",["Acid cleaner","Abrasive cleaner","Alkaline or degreasing cleaner","Sanitizer"],2,"Alkaline cleaners and degreasers break down grease and fat."),
+q("Risk of sanitizing without cleaning first?",["No risk","Sanitizer is neutralized by food residue and will not work","It takes too long","The surface gets discolored"],1,"Food residue neutralizes sanitizer, making it ineffective."),
+q("How should equipment be placed after washing and sanitizing?",["Stacked tightly","On the floor to drain","On a clean drying rack to air dry","Covered with a towel"],2,"Equipment should be placed on a clean drying rack to air dry completely."),
+q("First step in Integrated Pest Management?",["Apply pesticide","Identify pest and eliminate entry points","Call a PCO immediately","Set traps everywhere"],1,"IPM starts with identification and prevention."),
+q("How should establishment respond after a pest treatment?",["Resume operations immediately","Ventilate, clean, and follow PCO instructions before resuming","Wait 24 hours and do nothing","Throw away all food as precaution"],1,"Follow all PCO instructions and clean before resuming food service."),
+q("Which is NOT an effective pest prevention strategy?",["Sealing entry points","Using pesticide daily as prevention","Regular cleaning of drains","Proper food storage"],1,"Daily preventive pesticide use is not recommended. Prevention is the better strategy."),
+q("Cockroach egg cases are typically found:",["In cold areas","In warm, dark, hidden areas like under equipment","In open areas","In refrigerators"],1,"Cockroaches prefer warm, dark, hidden areas to lay egg cases."),
+q("Pest most commonly associated with grain and dry goods?",["Rodents","Cockroaches","Stored product pests like moths and beetles","Flies"],2,"Stored product pests like grain moths and beetles infest grain, flour, and dry goods."),
+q("Structural feature that helps prevent pest entry?",["Large windows for ventilation","Air curtains or tight-fitting doors","Bright interior lighting","Open drains"],1,"Air curtains and tight-fitting doors prevent insects from entering."),
+q("What to do with cardboard boxes received from suppliers?",["Store as-is","Remove contents and discard boxes promptly","Break down and store for recycling in food areas","Reuse for food storage"],1,"Contents should be removed and boxes discarded away from food areas."),
+q("Food handler sees a fly land on a plate of food. What to do?",["Shoo the fly away and serve","Discard the food and clean the area","Wipe the food with a napkin","Cover the food and continue"],1,"Food that a fly has landed on must be discarded."),
+q("Pest known to transmit Salmonella and E. coli through droppings?",["Cockroaches","Rats and mice","Flies","All of the above"],3,"All of these pests can spread Salmonella and E. coli."),
+q("How frequently should pest monitoring devices be checked?",["Daily","Weekly","Monthly","Only when pests are observed"],1,"Monitoring devices should be checked weekly to detect pest activity early."),
+q("Purpose of door sweeps on exterior doors?",["Improve appearance","Prevent drafts","Block pest entry at the bottom of doors","Reduce noise"],2,"Door sweeps seal the gap at the bottom of doors to prevent pest entry."),
+q("Condition that most attracts flies?",["Bright lights","Exposed garbage and standing water","Cold temperatures","Strong cleaning product odors"],1,"Exposed garbage and standing water are the primary attractants for flies."),
+q("What to do with food found near evidence of rodent activity?",["Cook it thoroughly","Discard all food in the affected area","Inspect each item individually","Rewrap and refrigerate"],1,"Food near rodent evidence must be discarded."),
+q("Who is responsible for notifying health authorities about pest infestation?",["The PCO","The establishment owner or manager","The health inspector","A concerned food handler"],1,"The establishment owner or manager is responsible for notifying health authorities."),
+q("Most effective barrier against flying insects at receiving doors?",["Window screens","Air curtains","Bug zappers","Sticky traps"],1,"Air curtains create a strong airflow barrier that prevents flying insects from entering."),
+q("Which indicates a fly infestation?",["One fly observed once","Multiple flies, larva, or pupae found near food areas","A fly trap that catches flies occasionally","Finding one dead fly"],1,"Multiple flies or finding larvae and pupae indicates an infestation."),
+q("How should pest control activities be documented?",["Verbal reports only","Written logs of PCO visits, treatments, and monitoring results","Photos only","No documentation needed"],1,"Written documentation of all pest control activities is required for regulatory compliance."),
+q("Best long-term pest control strategy?",["Monthly pesticide spraying","Eliminating food, water, and shelter sources for pests","Using maximum pesticide concentrations","Relying solely on traps"],1,"Eliminating conditions that attract and sustain pests is the most effective long-term strategy.")
+],v3:[
+q("MOST common cause of foodborne illness?",["Using metal utensils","Purchasing food from approved suppliers","Poor personal hygiene of food handlers","Using non-stick pans"],2,"Poor personal hygiene, especially improper handwashing, is the most common cause."),
+q("Shellfish must be purchased from suppliers with what certification?",["FDA certification","Shellfish safety tag / Interstate Certified Shellfish Shipper listing","State license only","USDA grade stamp"],1,"Shellfish must come from an approved certified source with a shellfish safety tag."),
+q("Best indicator that a food is a TCS food?",["It is more expensive","It contains protein or moisture that supports bacterial growth","It has a strong odor","It requires refrigeration by customer preference"],1,"TCS foods support bacterial growth because of protein content, moisture, and neutral pH."),
+q("What does FIFO stand for in food storage?",["Food Inspection For Operations","First In, First Out","Fresh Inventory For Orders","Food Items First Out"],1,"FIFO = First In, First Out. Older stock is used before newer deliveries."),
+q("Symptom of Staphylococcal food poisoning?",["High fever","Nausea and vomiting within 1-6 hours","Bloody diarrhea","Jaundice"],1,"Staph intoxication causes rapid onset of nausea and vomiting within 1-6 hours."),
+q("Key difference between foodborne infection and intoxication?",["Infection is caused by toxins; intoxication is caused by live bacteria","Intoxication is caused by toxins; infection is caused by live bacteria","They are the same thing","Infection only comes from raw food"],1,"Infection comes from live pathogens; intoxication comes from toxins already in food."),
+q("Which group is highly susceptible to foodborne illness?",["Healthy adults","Elderly, young children, pregnant women, and immunocompromised individuals","Teenagers","Athletes"],1,"These populations have weaker immune systems and face greater risk."),
+q("How to prevent transferring allergens to food?",["Wash hands and change gloves between tasks","Cook food at high temperatures","Keep all foods cold","Use same equipment for efficiency"],0,"Washing hands and changing gloves prevents allergen cross-contact."),
+q("Virus most commonly associated with ready-to-eat foods?",["Salmonella","E. coli","Norovirus","Listeria"],2,"Norovirus is the most common cause of foodborne illness in ready-to-eat food scenarios."),
+q("A food handler should NEVER:",["Wear gloves","Wash hands frequently","Taste food with a finger and then continue working","Store raw meat below cooked food"],2,"Tasting food with a finger and continuing to work is a serious contamination risk."),
+q("Food most likely to harbor Listeria monocytogenes?",["Freshly grilled chicken","Unpasteurized cheese and deli meats","Canned vegetables","Dry pasta"],1,"Listeria thrives in ready-to-eat foods like deli meats and soft unpasteurized cheeses."),
+q("Biggest risk of keeping food in the danger zone too long?",["Loss of flavor","Bacterial growth to unsafe levels","Change in food color","Loss of nutrients only"],1,"Extended time in the danger zone allows bacteria to multiply to levels that cause illness."),
+q("Which is a major food allergen?",["Corn","Sesame","Potatoes","Garlic"],1,"Sesame is one of the 9 major food allergens recognized by US food safety law."),
+q("How long can food safely remain in the danger zone before discard?",["2 hours","4 hours cumulative","6 hours","8 hours"],1,"Food must be discarded after a cumulative total of 4 hours in the danger zone."),
+q("Which food safety hazard is NOT biological?",["Mold","Bacteria","Allergen cross-contact","Virus"],2,"Allergen cross-contact is a chemical hazard, not a biological one."),
+q("Correct way to handle a recall of a product in your establishment?",["Continue using until supply is exhausted","Remove from service, quarantine, and follow recall instructions","Discard quietly and do not report","Use it only for staff meals"],1,"Recalled products must be removed from service, quarantined, and handled per recall instructions."),
+q("Condition that helps prevent bacterial growth in food?",["High moisture content","Temperature above 135F or below 41F","Neutral pH","High protein content"],1,"Keeping food above 135F or below 41F prevents bacteria from multiplying."),
+q("What should food handler do if unsure whether food is safe?",["Taste it to check","Smell it to check","When in doubt, throw it out","Ask a coworker to taste it"],2,"When in doubt about food safety, always discard the food."),
+q("A food thermometer should be cleaned and sanitized:",["Once per day","Before and after each use","Only after use with raw meat","Once per shift"],1,"Thermometers must be cleaned and sanitized before and after each use."),
+q("Which food requires the LEAST cooking temperature?",["Ground pork","Stuffed fish","Intact beef steak","Chicken breast"],2,"Intact beef steaks can be cooked to 145F, lower than ground meat or poultry."),
+q("Most effective method for cooling food?",["Placing food directly in walk-in cooler in large containers","Dividing into shallow pans and using an ice bath","Leaving at room temperature to cool before refrigerating","Covering tightly and refrigerating immediately"],1,"Dividing into shallow pans and using an ice bath is the most effective cooling method."),
+q("Temperature for high-risk population meals (elderly/sick)?",["135F","145F","155F","165F"],3,"Food served to high-risk populations must always be reheated to 165F."),
+q("Which food does NOT need to be cooked to 165F?",["Stuffed pork chops","Whole turkey","Ground chicken","Intact pork loin"],3,"An intact pork loin only needs to reach 145F with a 3-minute rest."),
+q("Main purpose of a warming lamp?",["To cook food","To maintain already hot food above 135F","To thaw food quickly","To pasteurize food"],1,"Warming lamps maintain temperature. Food must already be hot when placed under them."),
+q("Best thermometer for thin foods like fish fillets?",["Bimetallic stemmed","Thermocouple","Infrared","Candy thermometer"],1,"Thermocouples have a thin tip and respond quickly, ideal for thin foods."),
+q("Soup sitting in steam table drops to 120F. What must you do?",["Add hot soup to bring it up","Rapidly reheat to 165F on a stove before returning to steam table","Discard if below 135F for more than 4 hours","Turn up the steam table"],1,"Food that drops out of safe holding temperatures must be reheated rapidly to 165F."),
+q("Maximum time frozen food can be safely thawed in the refrigerator?",["No time limit if kept at 41F or below","24 hours","48 hours","72 hours"],0,"Food thawing in the refrigerator at 41F or below can take as long as needed."),
+q("Which action is UNSAFE when dealing with hot food?",["Dividing into smaller portions to cool","Stirring food in an ice bath","Placing large pots of hot food directly in a walk-in cooler","Using a blast chiller"],2,"Placing large pots of hot food directly in a walk-in cooler raises the cooler temperature."),
+q("Minimum temperature to cook ground turkey?",["145F","150F","155F","165F"],3,"Ground poultry must reach 165F."),
+q("Which thermometer type can be left in food while cooking?",["Bimetallic stemmed","Thermocouple","Oven-safe bimetallic or probe thermometer","Infrared"],2,"Oven-safe probe thermometers can be left in food during cooking."),
+q("How long can hot food safely be held without temperature control?",["1 hour","2 hours","4 hours","6 hours"],2,"Hot food without temperature control can be held for up to 4 hours then must be discarded."),
+q("What must be done when cooking equipment is not maintaining proper temperatures?",["Continue using at lower capacity","Take it out of service and report for repair","Manually check temperatures more often","Lower the target cooking temperature"],1,"Equipment not maintaining safe temperatures must be removed from service for repair."),
+q("Which food must be cooked to 155F?",["Whole beef tenderloin","Ground beef patty","Salmon fillet","Pork chop"],1,"Ground beef must be cooked to 155F for 15 seconds to be safe."),
+q("When taking temperature of a whole chicken, where to place thermometer?",["The breast","The thigh, away from the bone","The wing","Surface of the skin"],1,"Temperature should be taken in the thickest part of the thigh, away from the bone."),
+q("At what temperature does water boil at sea level?",["180F","200F","212F","225F"],2,"Water boils at 212F at sea level."),
+q("How should food handler handle cooked food leftovers?",["Refreeze immediately","Cool rapidly and refrigerate within the 6-hour window","Leave at room temperature if serving again within 2 hours","Discard all leftovers"],1,"Cooked food must be cooled rapidly and refrigerated within the 6-hour cooling window."),
+q("Best practice to protect food from contamination by a food handler?",["Wearing a clean uniform","Frequent and proper handwashing","Wearing gloves at all times","Working quickly to reduce contact time"],1,"Frequent and proper handwashing is the single most protective practice."),
+q("Proper way to sneeze while working in a kitchen?",["Into your hands","Into your elbow, away from food, then wash hands","Into a paper towel then continue working","Turn away from food briefly"],1,"Sneeze into your elbow, then immediately wash hands."),
+q("Food handler notices coworker not washing hands after handling raw chicken. What to do?",["Ignore it","Politely remind the coworker to wash hands","Report to health department immediately","Handle it themselves"],1,"Address the immediate hazard by reminding the coworker."),
+q("Which requires a food handler to be EXCLUDED from working with food?",["Minor sunburn","Jaundice (yellowing of skin/eyes)","Mild headache","Sore muscles"],1,"Jaundice is a symptom of hepatitis A and requires exclusion."),
+q("Can a food handler wear a bandage without a glove?",["Yes, if the bandage is waterproof","No, bandages must always be covered with a glove","Yes, if the cut is small","Only on non-dominant hand"],1,"Bandages must always be covered with a glove."),
+q("Most important reason food handlers must not wear jewelry?",["It looks unprofessional","Jewelry can fall into food or harbor bacteria","It can scratch equipment","Customers may be distracted"],1,"Jewelry can fall into food and also harbors bacteria in its crevices."),
+q("Which is NOT a reason to exclude a food handler?",["Hepatitis A diagnosis","Norovirus illness","Common cold with mild sneezing","Vomiting within the last 24 hours"],2,"A common cold with mild sneezing is not a reason for full exclusion, though good hygiene is vital."),
+q("Food handler touches their hair while preparing food. They should:",["Continue if wearing a hat","Wash their hands immediately","Wipe hands on apron and continue","Apply hand sanitizer only"],1,"Touching hair contaminates hands. Immediate handwashing is required."),
+q("Handwashing must occur after:",["Putting on gloves","Using restroom, handling raw meat, touching face, before handling food","Handling packaged goods only","Completing each full task"],1,"Handwashing is required after all these activities."),
+q("What should manager do if food handler reports having Hepatitis A?",["Let them continue if wearing gloves","Exclude them and notify the local health authority","Restrict them to dishwashing","Ask them to return when they feel better"],1,"Hepatitis A is a reportable illness. The worker must be excluded and health authority notified."),
+q("How should hair be managed in a food preparation area?",["Loose hair is fine if short","Restrained with a hairnet, hat, or appropriate covering","Only long hair needs to be restrained","Covered only when working with raw meat"],1,"All hair must be properly restrained in a food preparation area."),
+q("Which involves the fecal-oral route of transmission?",["Listeria from deli meat","Norovirus from an infected food handler","Salmonella from undercooked eggs","Botulism from improperly canned food"],1,"Norovirus spreads through the fecal-oral route."),
+q("What should food handler do if gloves tear while working with food?",["Continue if the tear is small","Replace gloves immediately after washing hands","Apply a bandage over the tear","Tape the glove and continue"],1,"Torn gloves must be removed, hands washed, and new gloves put on immediately."),
+q("Can food handlers use tobacco products in the food prep area?",["Yes, if they wash hands after","Yes, only between food tasks","No, tobacco use is prohibited in food prep areas","Only if using smokeless tobacco"],2,"Tobacco use is never allowed in food preparation areas."),
+q("Which statement about hand sanitizers is TRUE?",["They replace handwashing when hands are visibly dirty","They can be used instead of handwashing after restroom","They should supplement handwashing, not replace it","They kill all pathogens"],2,"Hand sanitizers supplement but never replace proper handwashing."),
+q("Food handler returns from break where they smoked outside. First do:",["Put on gloves","Wash their hands thoroughly","Apply hand sanitizer","Change their apron"],1,"Hands must be washed thoroughly after smoking before returning to food handling."),
+q("Which disease can be transmitted through improperly handled food by an infected worker?",["Influenza","Hepatitis A","Strep throat","Common cold"],1,"Hepatitis A can be transmitted through improperly handled food by an infected worker."),
+q("Food handler cuts their finger. After cleaning and bandaging, they should:",["Return to work immediately","Wash hands and put on a glove before returning","Work only with dry goods","Take the rest of the day off"],1,"After treating a wound, wash hands and cover with a glove before returning."),
+q("Difference between cleaning and sanitizing?",["They are the same thing","Cleaning removes dirt; sanitizing reduces pathogens to safe levels","Sanitizing removes dirt; cleaning kills bacteria","Cleaning kills bacteria; sanitizing removes odors"],1,"Cleaning removes physical dirt; sanitizing reduces bacteria to safe levels."),
+q("Example of a non-food contact surface?",["Cutting board","Kitchen floor","Mixing bowl","Cooking utensil"],1,"The kitchen floor is a non-food contact surface."),
+q("Correct procedure for cleaning and sanitizing a prep table between uses?",["Wipe with a wet cloth","Scrape, wash with detergent, rinse, sanitize, and air dry","Apply sanitizer spray only","Rinse with hot water"],1,"The full procedure: scrape debris, wash, rinse, sanitize, air dry."),
+q("When must food contact surfaces be cleaned and sanitized?",["Only when visibly dirty","After each use and every 4 hours during continuous use","Once per shift","Only after handling allergens"],1,"Food contact surfaces must be cleaned after each use and minimum every 4 hours."),
+q("What type of cleaner removes rust and mineral deposits?",["Alkaline detergent","Acid cleaner","Abrasive cleaner","Neutral cleaner"],1,"Acid cleaners are formulated to remove rust and mineral deposits."),
+q("Correct water temperature for sanitize compartment using chemical sanitizer?",["At least 55F","At least 75F","At least 100F","At least 120F"],1,"The sanitizing solution temperature must be at least 75F for most chemical sanitizers."),
+q("Best cleaning agent for removing grease from cooking equipment?",["Acid cleaner","Abrasive powder","Degreasing alkaline cleaner","Neutral cleaner"],2,"Alkaline degreasers break down grease and fat effectively."),
+q("What must be done before equipment is returned to service after cleaning?",["Inspected for cleanliness","Cleaned, sanitized, and fully air dried","Replaced yearly","Approved by management"],1,"Equipment must go through the full clean-sanitize-air dry process."),
+q("How should test strips be used in a food service operation?",["To test food temperature","To verify sanitizer concentration","To test water quality for drinking","To check if food is fully cooked"],1,"Test strips verify that sanitizer is at the correct concentration."),
+q("Best way to maintain sanitizer effectiveness throughout a shift?",["Change solution regularly and test concentration frequently","Use maximum concentration to last longer","Add more chemical as shift goes on","Use room temperature water"],0,"Changing the solution regularly and testing concentration ensures effectiveness."),
+q("Correct action if dishwasher is not reaching required rinse temperature?",["Run dishes through twice","Take out of service and use 3-compartment sink","Lower the temperature requirement","Add extra chemical sanitizer"],1,"If the dishwasher is not reaching proper temperatures, use the 3-compartment sink."),
+q("Why must abrasive cleaners be used carefully on food contact surfaces?",["They are too expensive","They can scratch surfaces creating areas where bacteria hide","They take too long","They require special training"],1,"Abrasive cleaners can scratch surfaces, creating grooves where bacteria can grow."),
+q("How to know if a surface is truly clean before sanitizing?",["If it smells clean","No visible dirt, grease, or food residue remains","If it shines","If it has been sprayed with water"],1,"A surface is ready to sanitize only when no visible dirt or food debris remains."),
+q("Correct final step of the 3-compartment sink process?",["Rinse with hot water","Air dry","Towel dry with clean cloth","Return to storage while wet"],1,"After sanitizing, items must air dry completely."),
+q("Purpose of the rinse step in the 3-compartment sink?",["To sanitize the dishes","To remove soap residue before sanitizing","To cool hot dishes","To remove bacteria"],1,"The rinse step removes detergent residue so the sanitizer can work effectively."),
+q("Sanitizer bucket smells like bleach but looks dirty. What to do?",["Continue using. The smell proves it works","Replace with fresh sanitizer solution","Add more bleach to strengthen it","Filter out the debris"],1,"Dirty sanitizer solution cannot work effectively and must be replaced."),
+q("How should single-service items like paper plates be stored?",["Uncovered in the storage area","In their original sealed packaging, protected from contamination","Loose in a drawer","On open shelves near the back door"],1,"Single-service items must remain in sealed packaging until use."),
+q("What to do if equipment is damaged and difficult to clean?",["Clean it as best as possible","Report it for repair or replacement","Continue using until it breaks completely","Cover with aluminum foil"],1,"Damaged equipment that is difficult to clean must be repaired or replaced."),
+q("Pest most commonly associated with foodborne illness through droppings and urine?",["Cockroaches","Mice and rats","Flies","Ants"],1,"Rodents spread dangerous pathogens through droppings, urine, and contact."),
+q("FIRST thing a manager should do when discovering a severe pest infestation?",["Set more traps","Close the establishment if necessary and call a licensed PCO","Spray pesticide themselves","Increase cleaning frequency only"],1,"A severe infestation may require temporarily closing and must involve a licensed PCO."),
+q("Common entry point for pests?",["Smooth concrete walls","Tight-fitting door seals","Gaps around utility pipes and drains","Walk-in freezer doors"],2,"Gaps around utility pipes and drains are common pest entry points."),
+q("What does an effective pest prevention program include?",["Pesticide use only","Inspection, sanitation, structural maintenance, and working with a PCO","Traps only","Calling PCO only when pests are seen"],1,"An effective program combines inspection, sanitation, maintenance, and professional pest control."),
+q("How to reduce risk of a fly infestation?",["Keep windows open for airflow","Ensure garbage is covered and stored away from building, and fix drainage issues","Use fly strips everywhere","Use pesticide spray daily"],1,"Covered garbage, proper drainage, and sealed entry points are the best fly prevention measures."),
+q("What type of pest leaves a greasy trail along walls and floors?",["Flies","Cockroaches","Stored product pests","Ants"],1,"Cockroaches leave greasy smear marks along walls and floors as they travel."),
+q("Why rotate food stock regularly?",["To reduce costs","To prevent pests from nesting in undisturbed food packages","To improve flavor","To meet FIFO requirements only"],1,"Regular stock rotation disturbs potential pest nesting areas."),
+q("Sign of a fruit fly infestation?",["Large droppings near food","Small flies hovering around drains, produce, and garbage areas","Gnaw marks on packaging","Feathers or nesting material"],1,"Fruit flies swarm around fermenting produce, wet garbage, and drains."),
+q("Role proper lighting plays in pest control?",["Makes pests more visible for inspection","Attracts fewer pests when yellow lighting is used","Eliminates all pests","Has no role in pest control"],0,"Good lighting helps staff spot pest evidence, and yellow lighting near entries attracts fewer insects."),
+q("New shipment of flour contains grain weevils. What to do?",["Use it before it gets worse","Reject or destroy the entire shipment","Sift out the weevils and use the rest","Freeze for 24 hours to kill pests"],1,"Any food infested with pests must be rejected or destroyed."),
+q("Structural fix that best reduces cockroach harborage?",["Adding more storage shelves","Sealing cracks in walls and floors","Improving ventilation","Installing brighter lights"],1,"Sealing cracks eliminates the dark, warm hiding places cockroaches need."),
+q("How to handle discovery of a dead rodent?",["Leave it for PCO to remove","Wear gloves, bag and discard the rodent, sanitize the area, and document the finding","Discard without documentation","Remove and continue operations without further action"],1,"A dead rodent must be handled with gloves, properly disposed of, area sanitized, and finding documented."),
+q("Area of food establishment most prone to fly breeding?",["Walk-in freezer","Floor drains with organic buildup","Clean dish storage area","Dry storage with sealed containers"],1,"Floor drains with organic buildup are a prime breeding ground for flies."),
+q("What information should be in pest control records?",["PCO name only","Date of visit, pesticides used, areas treated, and findings","Cost of treatment only","A summary of pest types only"],1,"Complete records should document all details of each pest control visit."),
+q("Best example of physical pest control?",["Pesticide spray","Installing screens on windows and doors","Using a bait station","Calling a PCO"],1,"Physical pest control includes barriers like screens, door sweeps, and sealing cracks."),
+q("What does the presence of cockroach cast skins indicate?",["A new infestation is beginning","An established, ongoing cockroach infestation","The infestation is ending","A different pest is present"],1,"Cast skins indicate cockroaches have been breeding and growing in the facility."),
+q("Why is it important to remove clutter from storage areas?",["To improve appearance","To eliminate harborage areas for pests","To reduce fire hazards only","To make inventory easier"],1,"Clutter creates hiding and nesting spots for pests."),
+q("Best practice for receiving food deliveries to prevent pests?",["Accept all deliveries at front entrance","Inspect deliveries carefully before bringing them inside, rejecting infested items","Accept deliveries quickly to minimize door open time","Deliveries are pre-screened so no inspection is needed"],1,"All deliveries must be carefully inspected for signs of pest activity.")
+],
+v4:[
+q("MOST important factor in preventing foodborne illness?",["Using expensive equipment","Temperature control and proper handwashing","Buying premium ingredients","Working quickly"],1,"Temperature control and proper handwashing are the foundation of prevention."),
+q("Which pathogen produces heat-resistant spores?",["Norovirus","Clostridium perfringens","E. coli O157:H7","Salmonella"],1,"C. perfringens produces heat-resistant spores that survive cooking."),
+q("Which best describes the incubation period of a pathogen?",["Time it takes to kill the pathogen","Time between exposure and when symptoms appear","Time food spends in the danger zone","Time needed to cook food safely"],1,"The incubation period is the time between consuming contaminated food and when symptoms appear."),
+q("Safest way to purchase shellfish?",["From a local market with fresh supply","Only from suppliers on the approved Interstate Certified Shellfish Shippers list","From the cheapest available source","From any supplier with a business license"],1,"Shellfish must come from suppliers on the approved ICSS list."),
+q("Which food is NOT associated with Listeria monocytogenes?",["Deli meats","Soft cheeses","Dry crackers","Unpasteurized dairy"],2,"Dry crackers are shelf-stable and not associated with Listeria."),
+q("What is meant by approved supplier?",["The cheapest reliable vendor","A supplier that has been inspected and meets food safety standards","Any supplier with insurance","A supplier recommended by staff"],1,"Approved suppliers meet food safety inspection standards."),
+q("Condition most likely to lead to a foodborne illness outbreak?",["Using stainless steel equipment","Cooling a large pot of stew at room temperature overnight","Refrigerating leftover cooked rice","Cooking chicken to 165F"],1,"Cooling a large pot at room temperature creates ideal conditions for dangerous bacterial growth."),
+q("Main danger of cross-contact in relation to food allergens?",["It changes the food flavor","A person with an allergy can have a severe or fatal reaction","It affects food texture","It changes cooking requirements"],1,"Allergen cross-contact can cause severe allergic reactions including anaphylaxis."),
+q("Example of proper food labeling practice?",["Using initials for food type","Including the food name and use-by date on all stored prepared food","Labeling only refrigerated items","No labels needed if food is used same day"],1,"All stored prepared food must be labeled with the food name and use-by date."),
+q("Maximum days ready-to-eat TCS food can be stored at 41F?",["3 days","5 days","7 days","14 days"],2,"Ready-to-eat TCS food stored at 41F or below can be kept for a maximum of 7 days."),
+q("Which is NOT one of the Big 6 pathogens?",["Norovirus","Salmonella Typhi","Hepatitis B","Shiga toxin-producing E. coli"],2,"Hepatitis B is not in the Big 6. Hepatitis A is."),
+q("Food handler drops a knife on the floor. What to do?",["Pick it up and wipe with a towel","Pick it up and run under water","Clean and sanitize it before using again","Replace with a new knife"],2,"The knife must be cleaned and sanitized before being returned to use."),
+q("Which storage practice reduces risk of cross-contamination in refrigerator?",["Storing all food together for efficiency","Storing raw meat below ready-to-eat foods","Storing food in original packaging","Keeping all food on same shelf"],1,"Raw meat stored below ready-to-eat food prevents drips from contaminating safe food."),
+q("Shelf life of ready-to-eat TCS food held at 41F?",["3 days","5 days","7 days","10 days"],2,"Ready-to-eat TCS food can be safely stored for 7 days at 41F or below."),
+q("Which cleaning practice reduces risk of physical contamination?",["Using stronger cleaners","Checking that no equipment parts are broken or missing","Cleaning less frequently","Using more water"],1,"Inspecting equipment ensures no broken parts can fall into food."),
+q("What information should be on a prep date label for cooked pasta?",["Expiration date only","Food name and date prepared or by which it must be used","Staff name who made it","Only the food name"],1,"Labels must include the food name and preparation or use-by date."),
+q("Operation receives canned goods with bulging lids. What should happen?",["Use immediately as they are still sealed","Reject the entire shipment","Open and inspect each can","Accept if only a few are bulging"],1,"Bulging cans indicate gas production from bacteria. The shipment should be rejected."),
+q("Practice that BEST prevents contamination during food preparation?",["Working faster","Keeping all ingredients refrigerated until use and washing hands frequently","Using disposable equipment only","Cooking everything at high temperatures"],1,"Keeping ingredients cold and washing hands frequently prevents most contamination during prep."),
+q("Key principle of HACCP?",["Clean and sanitize everything daily","Identify and control hazards at critical control points","Use approved suppliers only","Train all staff in food safety"],1,"HACCP focuses on identifying and controlling hazards at critical points."),
+q("A roast beef is measured at 140F after resting. Is it safe?",["Yes, 140F is above 135F","No, whole roasts must reach 145F","Yes, all beef just needs 135F","No, beef requires 165F"],1,"Whole roasts must reach a minimum of 145F with a 3-minute rest time."),
+q("How long can cold food be held without temperature control before discard?",["2 hours","4 hours","6 hours","8 hours"],1,"Cold food without temperature control can be held for a maximum of 4 hours."),
+q("Method of temperature measurement that gives the fastest reading?",["Bimetallic stemmed thermometer","Thermocouple","Infrared","Candy thermometer"],1,"Thermocouples provide the fastest temperature readings."),
+q("Food in steam table drops below 135F. Maximum time before discard?",["1 hour","2 hours","4 hours total in danger zone","6 hours"],2,"Food should not accumulate more than 4 hours total in the danger zone."),
+q("What does it mean to calibrate a thermometer?",["Clean and sanitize it","Adjust it to ensure it reads accurately","Replace the battery","Buy a new one"],1,"Calibration ensures the thermometer reads accurate temperatures."),
+q("Which food has the highest minimum cooking temperature?",["Whole pork roast","Ground chicken","Intact beef steak","Shrimp"],1,"Ground poultry requires 165F."),
+q("Purpose of resting meat after cooking?",["Improve appearance","Allow juices to redistribute and ensure uniform temperature throughout","Cool the meat faster","Reduce shrinkage"],1,"Resting allows carryover heat to distribute evenly."),
+q("When checking temperature of a large pot of soup, where to place thermometer?",["Near the surface","At the bottom","In the center of the food mass","On the side"],2,"Temperature should be checked in the center, the coolest point in a large container."),
+q("Which food is safe to serve rare or medium-rare?",["Ground beef burger","Intact beef steak","Chicken breast","Ground turkey"],1,"An intact beef steak can be served below 155F because its surface is seared."),
+q("What is the 2-hour/4-hour rule?",["Discard after 2 hours; safe for 4 hours total","If in danger zone 0-2 hrs: safe; 2-4 hrs: use immediately; over 4 hrs: discard","Check temperature every 2 hours and discard after 4 checks","Reheat every 2 hours; discard after 4 reheatings"],1,"The 2/4-hour rule guides decisions about food safety based on cumulative time in the danger zone."),
+q("Minimum internal temperature for cooking rabbit?",["135F","145F","155F","165F"],3,"Rabbit is classified with poultry and must reach 165F."),
+q("How should a thermometer be sanitized between uses on different foods?",["Wipe with a dry cloth","Rinse under running water","Clean with soapy water, rinse, and sanitize with alcohol swab","Apply hand sanitizer to the tip"],2,"Thermometers must be cleaned with soapy water, rinsed, and sanitized with an alcohol wipe."),
+q("What temperature should a walk-in refrigerator be set to?",["45F","41F","38F or below","32F"],2,"Setting the walk-in at 38F or slightly below ensures food stays at or below 41F."),
+q("Which equipment is BEST for rapidly cooling large batches of hot food?",["Standard refrigerator","Walk-in cooler with fan","Blast chiller","Ice water bath in the pan"],2,"A blast chiller rapidly reduces food temperature."),
+q("What must be done to a thermometer that has been dropped on the floor?",["Wipe it off and continue using","Clean, sanitize, and calibrate it before use","Discard and replace","Run under hot water only"],1,"A thermometer that has been dropped must be cleaned, sanitized, and calibrated."),
+q("Food that has been reheated must be maintained at:",["115F or above","135F or above","145F or above","165F or above"],1,"After reheating to 165F, food must be held at 135F or above."),
+q("Most important action when receiving a temperature-controlled food delivery?",["Check the appearance of packaging","Verify internal food temperatures with a thermometer","Count total number of items","Check delivery against the invoice"],1,"Internal temperatures must be verified with a thermometer."),
+q("When should bare-hand contact with ready-to-eat food be avoided?",["Only when cooking","At all times. Use utensils or gloves","Only with high-risk populations","Only with raw food"],1,"Bare-hand contact with ready-to-eat food should always be avoided."),
+q("Proper handwashing technique after using the restroom?",["Rinse with water only","Use hand sanitizer only","Wash with soap and water for 20 seconds, rinse, dry with paper towel","Quick soap and rinse is sufficient"],2,"A full 20-second handwash with soap and water is required."),
+q("Food handler tells manager they were diagnosed with Shigella. What should manager do?",["Let them work as normal","Exclude them from the operation and report to the health authority","Restrict them to non-food tasks","Have them wear double gloves"],1,"Shigella is a Big 6 pathogen requiring exclusion and notification of the health authority."),
+q("How should clean uniforms be stored?",["In the food prep area","In a clean location away from soiled laundry and food","In the employee locker near the kitchen","Anywhere convenient"],1,"Clean uniforms must be stored in a clean location separate from soiled clothing and food."),
+q("Which behavior increases the risk of contaminating food?",["Washing hands before prep","Wearing a hairnet","Tasting food with the same spoon repeatedly","Using clean gloves"],2,"Tasting food with the same spoon multiple times transfers pathogens into the food."),
+q("Which symptom requires restriction (not exclusion)?",["Vomiting","Diarrhea","Sore throat with fever in operation serving general public","Hepatitis A diagnosis"],2,"A sore throat with fever requires restriction unless serving high-risk populations."),
+q("Which is NOT a proper handwashing step?",["Wetting hands under running water","Applying soap","Scrubbing for at least 20 seconds","Using a shared cloth towel to dry"],3,"Always dry with a paper towel or air dryer. Shared cloth towels spread bacteria."),
+q("Why is it important for food handlers to report illness?",["To get time off work","To prevent the spread of illness to customers through food","To meet legal requirements only","To get medical treatment faster"],1,"Reporting illness allows managers to prevent potentially sick workers from handling food."),
+q("What should food handler do at start of each shift?",["Begin working immediately","Check their health, wash hands, and put on clean attire","Put on gloves first","Eat before starting to avoid hunger on shift"],1,"At the start of each shift, a food handler should assess their health, wash hands, and wear clean attire."),
+q("Which activity requires handwashing between steps?",["Moving from cutting tomatoes to slicing bread","Moving from washing dishes to serving food","Both of the above","Neither. Gloves eliminate this need"],2,"Both transitions carry contamination risk and require handwashing between steps."),
+q("How should food handler behave if they observe a food safety violation?",["Ignore it if not their responsibility","Report it to a manager immediately","Correct it themselves without telling anyone","Wait to see if it causes a problem"],1,"Food safety violations must be reported to a manager immediately."),
+q("Gloves are required when handling:",["All food items","Ready-to-eat foods that will not be cooked further","Raw meat only","Cold foods only"],1,"Gloves must be worn when handling ready-to-eat foods that will receive no further cooking."),
+q("Which type of work is food handler with nose/throat infection restricted from?",["Dish washing only","Working with exposed ready-to-eat food","All kitchen work","Only salad preparation"],1,"A food handler with a nose or throat infection should not handle exposed ready-to-eat food."),
+q("What should manager do if food handler refuses to follow hygiene rules?",["Ignore it to maintain morale","Address it immediately and enforce compliance up to and including sending them home","Allow it once as a warning","Report to health department first"],1,"Managers must enforce hygiene compliance immediately."),
+q("Which could be considered poor personal hygiene?",["Using a tissue to sneeze","Washing hands before breaks","Wearing a hairnet","Wearing a watch with a loose band while cooking"],3,"A loose watch can harbor bacteria and can fall into food."),
+q("What to do with leftover food tasted during cooking?",["Return unused portion to the pot","Discard any food removed for tasting","Refrigerate and add back later","Share with staff"],1,"Food removed for tasting must be discarded."),
+q("Which is a responsibility of Person in Charge (PIC) regarding hygiene?",["Tasting all food before service","Ensuring all food handlers follow hygiene policies","Cooking all food personally","Handling all customer complaints"],1,"The PIC is responsible for ensuring all staff comply with food safety and hygiene policies."),
+q("Food handler is feeling ill but not sure if serious. Best action?",["Work the shift and see how they feel","Tell the manager about symptoms immediately","Take pain medication and continue","Work only in non-food areas"],1,"Any illness symptoms must be reported to the manager immediately."),
+q("Item requiring most frequent cleaning and sanitizing?",["Storage shelves","Food contact surfaces used continuously","Walk-in refrigerator walls","Dining room chairs"],1,"Food contact surfaces in continuous use must be cleaned and sanitized at least every 4 hours."),
+q("Correct concentration for chlorine sanitizer in 3-compartment sink?",["10-20 ppm","25-50 ppm","50-100 ppm","200 ppm"],2,"Chlorine sanitizer for immersion sanitizing should be 50-100 ppm."),
+q("Which action correctly describes clean as you go?",["Cleaning entire kitchen at end of shift","Cleaning and sanitizing surfaces immediately after each use","Wiping counters every hour","Mopping floor between meals"],1,"Cleaning as you go means addressing messes and sanitizing surfaces immediately after use."),
+q("How long must chemical sanitizer contact a food-contact surface to be effective?",["5 seconds","30 seconds","1 minute","5 minutes"],1,"Most chemical sanitizers require at least 30 seconds of contact time."),
+q("Why must cleaning cloths be stored in sanitizer solution when not in use?",["To keep them moist","To prevent bacterial growth on the cloth","To save on laundry costs","To soften the cloth"],1,"Storing cloths in sanitizer prevents bacteria from multiplying on the cloth."),
+q("Which type of contamination results from failing to properly clean a knife between uses?",["Physical contamination","Chemical contamination","Biological contamination (cross-contamination)","Radiological contamination"],2,"A dirty knife can spread biological contaminants from one food to another."),
+q("Purpose of the rinse step in 3-compartment sink?",["Kill remaining bacteria","Remove detergent and food residue before sanitizing","Apply sanitizer more effectively","Cool the items"],1,"Rinsing removes soap and residue so the sanitizer can make proper contact."),
+q("Which cleaning tool should NOT be used on food contact surfaces?",["Brush","Cloth dampened with sanitizer","Steel wool","Sponge"],2,"Steel wool sheds fibers that can physically contaminate food and scratches surfaces."),
+q("How should drain covers be maintained?",["Replaced annually","Cleaned regularly to prevent organic buildup and pest breeding","Left alone as they self-clean","Removed for ventilation"],1,"Drain covers must be cleaned regularly to prevent organic buildup."),
+q("Which factor makes a surface harder to clean and sanitize?",["Smooth stainless steel","Scratches, cracks, or porous material","Bright lighting","Proper ventilation"],1,"Scratches and porous materials harbor bacteria that are difficult to remove."),
+q("What to do with single-use food containers after use?",["Wash and reuse if clean-looking","Sanitize and reuse for dry storage","Discard immediately","Return to supplier"],2,"Single-use containers must always be discarded after their first use."),
+q("Most important when setting up a 3-compartment sink?",["Using hottest water in all sinks","Setting up wash, rinse, and sanitize compartments in correct order with correct concentrations","Using same solution in all three","Filling all three at same time"],1,"Correct setup order and proper concentrations in each compartment are critical."),
+q("What temperature should sanitizing solution be in 3-compartment sink?",["At least 41F","At least 75F","At least 100F","At least 120F"],1,"Sanitizing solution should be at least 75F for most chemical sanitizers."),
+q("Correct way to use a test strip for sanitizer?",["Dip and leave in solution","Dip briefly, remove, and compare color to the chart","Smell the solution instead","Use it only at start of shift"],1,"Dip the test strip briefly, remove, and compare color to the manufacturer chart."),
+q("Food equipment must be cleaned after changing from one type of food to another to prevent:",["Flavor mixing","Cross-contamination of allergens and pathogens","Equipment damage","Loss of food color"],1,"Cleaning between food types prevents allergen cross-contact and pathogen cross-contamination."),
+q("Surface in a kitchen requiring MOST rigorous cleaning schedule?",["Office desks","Dining tables","Cutting boards and prep surfaces","Storage shelf exteriors"],2,"Cutting boards and prep surfaces are food-contact surfaces requiring the most rigorous cleaning regimen."),
+q("What should be used to dry dishes and utensils after sanitizing?",["A clean towel","A paper towel","Air drying only","A blow dryer"],2,"Items must air dry. Using any type of towel risks re-contamination."),
+q("Which hazard is reduced by maintaining clean floor drains?",["Pest breeding and fly infestations","Chemical contamination","Food allergies","Biological contamination of stored food"],0,"Clean drains eliminate the organic matter that attracts and breeds flies and other pests."),
+q("MOST effective long-term approach to pest management?",["Maximum pesticide use","Integrated Pest Management combining prevention, monitoring, and control","Relying on traps only","Calling PCO only when pests are found"],1,"IPM combining prevention, monitoring, sanitation, and targeted control is the most effective approach."),
+q("What action if pests are found in food during delivery?",["Remove pests and accept delivery","Reject the entire delivery","Accept if only small portion is affected","Cook food immediately to kill pests"],1,"Any delivery found to contain pests must be rejected entirely."),
+q("Area of kitchen MOST vulnerable to cockroach infestation?",["Walk-in freezer","Warm, moist areas near dishwashers and under equipment","Dry storage with metal shelving","Open prep area"],1,"Cockroaches prefer warm, moist, dark areas like under dishwashers and behind equipment."),
+q("Why are cardboard boxes a pest risk?",["They are expensive","Cockroaches and other pests can hide and reproduce in cardboard","They create clutter","They are flammable"],1,"Cardboard provides warmth and shelter for cockroaches and other pests."),
+q("Key sign of a stored product pest infestation?",["Mouse droppings","Webbing or larvae in dry goods like flour or cereal","Grease marks on walls","Fruit fly clusters near drains"],1,"Webbing, larvae, or clumping in dry goods are signs of stored product pests."),
+q("What should be posted near pest control chemical storage areas?",["A menu","Safety Data Sheets (SDS) and usage instructions","A cleaning schedule","A training record"],1,"SDS sheets and usage instructions must be available near all chemical storage."),
+q("How can proper waste management help control pests?",["It cannot help","Properly sealed and regularly removed garbage eliminates a major food and harborage source","It reduces chemical use","It only helps with fly control"],1,"Sealed, regularly removed garbage removes food and shelter that attract pests."),
+q("Best description of pest monitoring?",["Waiting for pests to appear before taking action","Regular inspection using logs and monitoring devices to detect pest activity early","Spraying pesticide monthly regardless of pest activity","Relying on staff to report pests only when observed"],1,"Proactive monitoring through regular inspection and logging detects problems early."),
+q("Food handler sees a cockroach during service. What to do?",["Ignore it and finish the rush","Kill it themselves","Immediately notify the manager and document the sighting","Set a trap and continue working"],1,"Any pest sighting during service must be immediately reported to the manager."),
+q("How should pest control treatments be documented?",["Verbally only","In a logbook with date, chemical used, concentration, areas treated, and PCO signature","On a whiteboard","In memory only"],1,"All treatments must be fully documented in a logbook for regulatory compliance."),
+q("Best indicator that a pest problem is worsening?",["Same number of traps catching pests each week","Increasing pest activity shown in monitoring logs","One pest seen during inspection","Staff mentioning pests occasionally"],1,"Increasing pest activity in monitoring logs is a clear sign the problem is growing."),
+q("Type of bait commonly used for rodent control?",["Sugar and water","Rodenticide bait stations placed by a licensed PCO","Cheese in snap traps only","Open food bowls"],1,"Licensed PCOs use properly secured rodenticide bait stations."),
+q("When must a food establishment report a pest infestation to health authority?",["Only if customers complain","When required by local regulations, typically for significant or persistent infestations","Never. It is a private matter","Only if pests are found in food"],1,"Local regulations typically require reporting significant pest infestations."),
+q("Purpose of door sweeps and air curtains?",["Aesthetic improvement","Prevent pests from entering through door gaps","Improve temperature control","Reduce noise"],1,"Door sweeps and air curtains physically block pest entry."),
+q("Which pest is capable of squeezing through gaps as small as 1/4 inch?",["Rats","Mice","Cockroaches","Ants"],1,"Mice can squeeze through gaps as small as 1/4 inch."),
+q("What does harborage mean in pest control?",["A place where pesticides are stored","Any place where pests can hide, nest, or breed","The entry point for pests","The area treated by a PCO"],1,"Harborage refers to any area that provides shelter, nesting, or breeding space for pests."),
+q("Best description of role of Person in Charge in pest control?",["Apply pesticides when needed","Ensure a pest control program is in place, logs are maintained, and infestations are reported","Only schedule PCO visits","Personally inspect for pests daily"],1,"The PIC is responsible for ensuring the pest management program is functioning and properly documented."),
+q("What to do with food stored in area where rodents were found?",["Inspect and use if it looks okay","Discard all food in the affected area regardless of packaging","Rewrap and refrigerate","Cook thoroughly before serving"],1,"All food in an area with rodent activity must be discarded due to contamination risk.")
+],
+v5:[
+q("Which BEST defines a foodborne illness?",["Feeling sick after eating any meal","A disease transmitted to people through food containing harmful agents","Getting sick from overeating","An allergic reaction to food"],1,"A foodborne illness is a disease caused by eating food containing harmful agents."),
+q("PRIMARY way pathogens are transferred from food handler to food?",["Breathing near food","Improper handwashing via the fecal-oral route","Wearing the same clothes","Working too quickly"],1,"The fecal-oral route via improperly washed hands is the most common transfer route."),
+q("Most effective control measure against Norovirus?",["Cooking food to 165F","Proper handwashing by food handlers","Refrigerating all food","Using bleach on all surfaces"],1,"Norovirus is most effectively controlled through rigorous proper handwashing."),
+q("Can of tomatoes arrives dented at the seam. What to do?",["Use immediately","Reject the can","Discount and use today","Transfer to another container"],1,"Dented cans at the seam may allow contamination and must be rejected."),
+q("Which is a major food allergen?",["Corn","Avocado","Tree nuts","Potatoes"],2,"Tree nuts are one of the 9 major food allergens."),
+q("What does time as a public health control mean?",["Cooking food longer","Tracking how long food is in the danger zone and discarding at 4 hours","Scheduling health inspections","Limiting service hours"],1,"Time as a public health control means tracking cumulative time in the danger zone."),
+q("Condition required for most pathogens to grow?",["Very cold temperatures","Moisture, warmth, nutrients, and time","Only oxygen","Low protein content"],1,"Most pathogens need moisture, warmth, nutrients, and time to grow."),
+q("Recommended minimum internal temperature for commercially raised game animals?",["135F","145F","155F","165F"],3,"Commercially raised game animals must be cooked to 165F."),
+q("Which item would NOT be labeled with a use-by date in a refrigerator?",["Prepared chicken salad","Sliced tomatoes","Whole uncut tomato","Cooked pasta"],2,"A whole, uncut tomato does not require a date label."),
+q("BEST approach when a customer reports a possible foodborne illness?",["Deny any food safety issues","Document the complaint, preserve the food, and contact health authorities if needed","Apologize and offer a refund only","Ignore until more complaints come in"],1,"Reports of possible foodborne illness must be documented and authorities notified if required."),
+q("Which food is associated with Vibrio vulnificus?",["Poultry","Raw oysters","Ground beef","Unpasteurized milk"],1,"Vibrio vulnificus is found in raw shellfish, especially oysters."),
+q("What to do with food employee who refuses to disclose illness symptoms?",["Force disclosure","Observe them and exclude if symptoms are visible, and review illness policies with them","Allow them to work as normal","Have other staff monitor them"],1,"Managers should observe for visible symptoms and enforce illness policies."),
+q("Practice that best prevents allergen cross-contact?",["Cooking food at high temperatures","Dedicated utensils, equipment, and surfaces for allergen-free food preparation","Using disposable gloves only","Rinsing equipment with hot water between uses"],1,"Dedicated equipment and surfaces are the best protection against allergen cross-contact."),
+q("Scombroid fish poisoning is caused by:",["Undercooking fish","Histamine produced in improperly stored fish","A bacteria in fish","Parasites in raw fish"],1,"Scombroid poisoning is caused by histamine that forms in fish stored at improper temperatures."),
+q("Correct storage order from TOP to BOTTOM in a refrigerator?",["Raw chicken, raw beef, raw fish, ready-to-eat food","Ready-to-eat food, raw fish, raw beef, raw chicken","Ready-to-eat food, raw chicken, raw beef, raw fish","Raw fish, ready-to-eat food, raw beef, raw chicken"],1,"Correct order top to bottom: ready-to-eat, raw fish, raw beef, raw ground meat, raw poultry."),
+q("Which is TRUE about mold on food?",["Cutting off visible mold makes the rest safe","Mold may have invisible roots deep in food, making entire item unsafe","Mold only affects appearance","Cooking food with mold makes it safe"],1,"Mold roots penetrate deep into food. Visible mold means the food should be discarded."),
+q("Correct receiving temperature for fresh fish?",["32F or below on ice","41F or below","45F or below","50F or below"],0,"Fresh fish should be received at 32F or below, properly iced."),
+q("Which demonstrates proper FIFO practice?",["Placing new deliveries at the front of shelves","Placing new deliveries behind older items so older items are used first","Using items randomly","Using newest items first"],1,"FIFO means new items go BEHIND older items so older stock is used first."),
+q("Minimum internal temperature for cooking stuffed pork chops?",["145F","155F","165F","175F"],2,"Stuffed items must reach 165F because stuffing can harbor bacteria."),
+q("At what temperature can bacteria double in number in as little as 20 minutes?",["32F","70F within danger zone","98.6F","135F"],1,"Around 70F, bacteria can double approximately every 20 minutes."),
+q("When should food thermometers be calibrated?",["Once per month","Before each shift and after dropping, extreme temperature changes, or rough handling","Once per year","Only after purchase"],1,"Thermometers should be calibrated regularly and after any event that may affect accuracy."),
+q("Which food requires a 3-minute rest time after cooking?",["Poultry","Intact steaks and roasts","Ground beef","Fish"],1,"Intact steaks and roasts require a 3-minute rest after reaching 145F."),
+q("What happens to food held in the danger zone for more than 4 hours?",["It must be reheated to 165F","It must be discarded","It can be refrigerated and used later","It can be served if it looks and smells fine"],1,"Food that has been in the danger zone for more than 4 cumulative hours must be discarded."),
+q("Which method correctly measures temperature of a thin burger patty?",["Insert thermometer from the top","Insert thermometer from the side into the center","Use infrared thermometer on the surface","Estimate by pressing the burger"],1,"Insert the thermometer probe from the side into the center."),
+q("Minimum temperature for the wash sink in a 3-compartment sink?",["100F","110F","120F","130F"],1,"The wash sink must be at least 110F for effective removal of food residue."),
+q("Food going to be served immediately after cooking can be held without temperature control for how long?",["30 minutes","1 hour","2 hours","4 hours"],2,"Hot food without temperature control can be held for up to 4 hours."),
+q("When using a bimetallic thermometer in ice water, it should read:",["28F","32F","38F","41F"],1,"A properly calibrated bimetallic thermometer reads exactly 32F in ice water."),
+q("Temperature range that causes MOST rapid bacterial growth?",["32F-41F","41F-70F","70F-125F","135F-165F"],2,"Bacteria multiply most rapidly between approximately 70F and 125F."),
+q("Safe way to reheat food in a microwave?",["Heat to 135F","Heat to 165F and let stand covered 2 minutes, rotating during heating","Heat until hot and serve immediately","Heat at 50% power until warm"],1,"Microwave reheating must reach 165F throughout with resting and rotating."),
+q("Which food should be cooked to 145F with a 3-minute rest?",["Ground pork","Whole intact pork roast","Stuffed peppers with meat","Chicken wings"],1,"Whole intact pork roasts must reach 145F with a 3-minute rest."),
+q("How does depth of a food container affect cooling time?",["Deeper containers cool faster","Shallower containers cool faster by allowing heat to escape","Depth has no effect","Covered containers always cool fastest"],1,"Shallower pans cool food much faster than deep containers."),
+q("What does time-temperature abuse describe?",["Using old equipment","Allowing food to remain in the temperature danger zone long enough for dangerous bacterial growth","Cooking food too hot","Refrigerating food too long"],1,"Time-temperature abuse means food spent too much cumulative time in the danger zone."),
+q("Which action prevents temperature abuse during food preparation?",["Preparing all ingredients at once","Taking only small amounts of food out of temperature control at a time","Leaving all ingredients out for the shift","Using warmer water for rinsing"],1,"Taking only what is immediately needed minimizes time food spends in the danger zone."),
+q("Correct temperature for a walk-in cooler?",["50F or below","45F or below","41F or below","38F or below"],2,"Walk-in coolers must maintain food at 41F or below."),
+q("A roast has been sitting at 50F for 3 hours. What to do?",["Cook immediately to 145F and serve","Continue cooling and serve later","Discard if total danger zone time will exceed 4 hours","Refrigerate and use within 24 hours"],2,"With 3 hours already in the danger zone, total time must not exceed 4 hours."),
+q("What if a food thermometer gives inconsistent readings?",["Average the readings","Take it out of service and replace or recalibrate","Only use it for hot food","Use a backup thermometer instead"],1,"An inconsistent thermometer must be removed from service until properly calibrated or replaced."),
+q("Example of restricted (not excluded) food handler duties?",["Handing out menus only","Working in dishwashing, not touching food directly","Going home immediately","Working in dry storage"],1,"Restricted food handlers can work in non-food contact roles like dishwashing."),
+q("Food handler who has just eaten must wash hands before:",["Putting on a hairnet","Handling any food or food contact surfaces","Starting a break","Putting on an apron"],1,"After eating, hands must be washed before touching any food or food contact surfaces."),
+q("Food handler at GREATEST risk of spreading a foodborne illness?",["One with a headache","One with vomiting or diarrhea","One with mild allergies","One with a sprained wrist"],1,"Vomiting and diarrhea are symptoms most associated with contagious pathogens."),
+q("MOST important characteristic of a handwashing sink?",["It must be near the exit","It must be dedicated to handwashing only, stocked with soap and paper towels","It can be shared with food prep","It only needs cold water"],1,"Handwashing sinks must be dedicated solely to handwashing and always stocked."),
+q("Manager actions if food handler has Hepatitis A and has been working for the past week?",["Monitor the situation","Exclude the worker, notify the health authority, and cooperate with any outbreak investigation","Ask the worker to stay home temporarily","Increase cleaning frequency"],1,"Hepatitis A requires exclusion, health authority notification, and full cooperation with investigation."),
+q("Which practice is INCORRECT when wearing disposable gloves?",["Changing gloves between tasks","Washing gloves with soap and reusing them","Washing hands before putting on gloves","Discarding gloves when torn"],1,"Disposable gloves must never be washed and reused. They must be discarded and replaced."),
+q("Food handler accidentally touches nose while preparing food. What to do?",["Continue if they were wearing gloves","Remove gloves if worn, wash hands, put on new gloves before continuing","Use hand sanitizer only","Wipe hands on a sanitized cloth"],1,"After touching the face or nose, remove gloves, wash hands, and put on fresh gloves."),
+q("Maximum days food handler excluded due to Norovirus should stay home?",["24 hours after symptoms stop","48 hours after all symptoms have resolved","5 days","Until a doctor clears them"],1,"Food handlers with Norovirus must be symptom-free for at least 48 hours."),
+q("How often should food handlers change gloves at minimum during continuous food preparation?",["Every 30 minutes","Every 4 hours or when switching tasks","Once per shift","Only when visibly soiled"],1,"Gloves must be changed at least every 4 hours during continuous use."),
+q("Food handler washes hands but does not dry them. Why is this a problem?",["Wet hands feel uncomfortable","Wet hands transfer bacteria more easily than dry hands","Wet hands cool food too quickly","There is no problem"],1,"Wet hands spread bacteria more easily. Always dry with a paper towel after washing."),
+q("Key difference between restriction and exclusion of a food handler?",["Restriction means they cannot work at all; exclusion means limited duties","Exclusion means they cannot work at all; restriction means limited to non-food contact duties","They mean the same thing","Restriction only applies to managers"],1,"Exclusion means no work at all. Restriction means can work but no food contact."),
+q("Which food handler behavior is ACCEPTABLE?",["Wearing nail polish under gloves","Tasting food with a clean spoon and discarding it","Touching ready-to-eat food with bare hands","Wearing a ring while prepping raw meat"],1,"Using a clean, single-use spoon and discarding it after tasting is acceptable."),
+q("After handling garbage, a food handler must:",["Apply hand sanitizer","Wash hands with soap and water before returning to food handling","Change their gloves only","Wipe hands on apron"],1,"After handling garbage, thorough handwashing with soap and water is required."),
+q("MAIN purpose of a hair restraint in food service?",["Maintain professional appearance","Prevent hair from falling into food","Make food handlers identifiable","Improve job performance"],1,"Hair restraints prevent hair from falling into food."),
+q("When can food handler use bare hands to handle ready-to-eat food?",["If they washed hands recently","Never. Bare hand contact with ready-to-eat food is not allowed unless approved procedures are in place","If they are the only one in the kitchen","If the food will be heated later"],1,"Bare hand contact with ready-to-eat food is generally prohibited."),
+q("What to do with a food handler personal drink in the kitchen?",["Stored on prep table for convenience","Kept in a covered container in a designated area away from food","Not allowed at all on shift","Kept in a pocket"],1,"Personal drinks must be in covered containers and kept in a designated area."),
+q("Which food handler action would require IMMEDIATE managerial intervention?",["Wearing a hairnet","Washing hands before putting on gloves","Handling ready-to-eat food with bare hands","Using a thermometer to check food temperature"],2,"Handling ready-to-eat food with bare hands is an immediate food safety violation."),
+q("Food handler returning from a sick day must do what before handling food?",["Begin work immediately if feeling better","Confirm with management that they are cleared to return based on symptom guidelines","Get a doctor note only if asked","Clock in and start shift as usual"],1,"Returning after illness requires management confirmation that the food handler meets return-to-work guidelines."),
+q("Which scenario correctly describes sanitizing?",["Removing grease from a grill","Applying a chemical solution to a clean surface to reduce pathogens to safe levels","Rinsing a cutting board with hot water","Scrubbing a pot with a sponge"],1,"Sanitizing reduces pathogens to safe levels on already-cleaned surfaces."),
+q("Why is it important to clean before sanitizing?",["To save time","Food residue prevents sanitizer from making contact with and reducing bacteria","To save money on sanitizer","Cleaning alone is sufficient"],1,"Food residue physically blocks sanitizer from reaching the surface."),
+q("Factor NOT relevant to effectiveness of a sanitizer?",["Concentration","Contact time","Brand name or packaging color","Water temperature and pH"],2,"Brand name and packaging color are irrelevant to sanitizer effectiveness."),
+q("Purpose of a test kit in a food service operation?",["Measure food temperature","Verify sanitizer concentration is within the effective range","Test food for allergens","Measure employee performance"],1,"Test kits verify that sanitizer concentration is within the effective range."),
+q("How should a commercial slicer be cleaned and sanitized?",["Wipe with damp cloth","Disassemble all removable parts, clean, rinse, sanitize each part, air dry, then reassemble","Run through dishwasher assembled","Spray with sanitizer and wipe dry"],1,"Slicers must be fully disassembled, cleaned, rinsed, sanitized, dried, and reassembled."),
+q("Which type of sanitizer works best at lower concentrations?",["Chlorine","Quaternary ammonium","Iodine","All work the same at low concentrations"],1,"Quaternary ammonium sanitizers can be effective at lower concentrations than chlorine."),
+q("Risk of using too HIGH a concentration of sanitizer?",["It will not be effective","It can be toxic, leave chemical residue, and may corrode equipment","It will change the smell of food","It will make surfaces too slippery"],1,"Overly concentrated sanitizer is dangerous. It can be toxic and damage equipment."),
+q("Cleaning schedule item that should occur MOST frequently?",["Cleaning oven hood filters","Wiping down and sanitizing food prep surfaces between uses","Descaling dishwasher","Deep cleaning walk-in cooler walls"],1,"Food prep surfaces must be wiped and sanitized most frequently."),
+q("Primary purpose of the rinse step between wash and sanitize in 3-sink setup?",["Remove visible food particles","Remove detergent so it does not neutralize the sanitizer","Cool the items","Final cleaning before sanitizing"],1,"Detergent residue can neutralize sanitizer. Rinsing removes it."),
+q("Correct way to dispose of old sanitizer solution?",["Pour down the nearest drain","Pour down a utility sink drain and replace with fresh solution","Reuse by adding fresh chemical","Store for later use"],1,"Old sanitizer should be disposed of down a utility drain and replaced."),
+q("Piece of equipment requiring most thorough cleaning and hardest to fully sanitize?",["Stainless steel pans","Equipment with many small parts or difficult-to-reach areas","Smooth cutting boards","Glass dishes"],1,"Complex equipment with many parts or tight spaces is the hardest to fully clean and sanitize."),
+q("How should food contact surfaces be maintained between cleaning cycles?",["Left as-is","Kept clean of visible debris and wiped with sanitizer solution as needed","Covered with plastic wrap","Rinsed with water periodically"],1,"Between full cleaning cycles, surfaces should be kept clear of debris."),
+q("Sign that a cleaning and sanitizing program is effective?",["No visible dirt on surfaces","Pest activity is absent and surfaces pass inspection with no pathogen concerns","Staff report the surfaces look clean","No customer complaints"],1,"An effective cleaning and sanitizing program results in no pest issues and surfaces that pass inspections."),
+q("What to do if a cleaning product label is missing from a container?",["Continue using. Label is not needed","Stop using and relabel or discard the container","Identify by smell and continue","Transfer to a clearly labeled container"],2,"Chemical containers must always have proper labels."),
+q("Practice that helps maintain 3-compartment sink water quality throughout a shift?",["Changing all solutions at least every 2-4 hours or when visibly dirty","Only changing water at end of shift","Adding fresh chemical without changing water","Using same water all day if not visibly dirty"],0,"Sink solutions must be changed regularly to maintain cleaning and sanitizing effectiveness."),
+q("Cleaning tool best for scrubbing baked-on food from stainless steel?",["Steel wool","Nylon brush or non-abrasive scrubber","Metal spatula","Abrasive powder"],1,"A nylon brush or non-abrasive scrubber cleans effectively without scratching stainless steel."),
+q("Risk of not drying equipment thoroughly after sanitizing?",["The equipment rusts","Moisture promotes bacterial regrowth and contamination","The sanitizer weakens","The equipment becomes harder to use"],1,"Moisture remaining after sanitizing can allow bacteria to regrow."),
+q("What should also be sanitized in addition to food preparation surfaces?",["Office computers","Food contact surfaces including utensils, knives, and equipment interiors","Storage shelves only","Dining chairs"],1,"All food contact surfaces including utensils, knives, and equipment that touches food must be sanitized."),
+q("Most reliable indicator of a current rodent infestation?",["Old droppings from last year","Fresh droppings, gnaw marks, and greasy rub marks in active areas","A dead mouse found once","An occasional sighting during a health inspection"],1,"Fresh droppings, gnaw marks, and active greasy rub marks confirm a current, active rodent presence."),
+q("What is a pheromone trap used for in pest management?",["Killing pests with chemicals","Attracting and monitoring the presence of specific insects","Repelling rodents","Trapping flying insects only"],1,"Pheromone traps attract specific insects and are used for monitoring pest presence."),
+q("Food establishment has recurring fruit fly problems. Most effective fix?",["Set more traps","Eliminate breeding sources. Fix drains, remove overripe produce, and seal garbage","Spray pesticide daily","Seal all windows"],1,"Fruit flies breed in organic matter. Eliminating breeding sources is the most effective fix."),
+q("BIGGEST risk of not maintaining pest control records?",["Higher PCO costs","Inability to demonstrate compliance during health inspections and failure to track infestation trends","Increased cleaning requirements","Staff do not know about pest activity"],1,"Records are critical for regulatory compliance and for identifying trends in pest activity."),
+q("Condition in dry storage that MOST promotes pest infestation?",["Metal shelving","Open food containers, spilled food, and clutter","Bright lighting","Cold temperatures"],1,"Open containers, food spills, and clutter attract and shelter pests in dry storage."),
+q("How far should outdoor garbage containers be kept from the building?",["Right next to the door","As far away as practical, at least several feet from the building","Inside the building","In the parking lot regardless of distance"],1,"Garbage should be stored as far from the building as practical."),
+q("Pest associated with filth and can spread over 200 known pathogens?",["Ants","Cockroaches","Stored product beetles","Grain mites"],1,"Cockroaches are associated with filth and can carry and spread more than 200 known pathogens."),
+q("What does exclusion mean in the context of pest management?",["Using pesticides to exclude pests","Physical methods that prevent pests from entering a building","Excluding certain pests from a program","Only pest-proofing exterior areas"],1,"Pest exclusion involves physical barriers like caulking, screens, door sweeps, and sealed pipes."),
+q("Bag of flour has small holes and powdery residue around it. What to do?",["Sift the flour and use it","Discard the flour and report to the manager","Transfer to a sealed container","Inspect flour for visible insects only"],1,"Signs of pest damage mean the food must be discarded and the incident reported."),
+q("Which is an example of poor pest prevention practice?",["Storing food in sealed containers","Keeping doors propped open for ventilation","Regular PCO inspections","Proper garbage management"],1,"Propping doors open creates a direct entry point for pests."),
+q("When should a food establishment contact a PCO?",["Only during annual inspections","At the first sign of pest activity and on a regular preventive schedule","Only when a health inspector requests it","When pest damage is severe"],1,"PCO contact should be proactive at first sign of activity and on a regular preventive schedule."),
+q("Which action reduces risk of stored product pests in dry storage?",["Keeping original bags open for easy access","Transferring all dry goods to sealed, pest-proof containers and inspecting regularly","Stacking bags on the floor","Using cardboard boxes for organization"],1,"Sealed containers and regular inspection prevent stored product pests from infesting dry goods."),
+q("Correct way to dispose of a rodenticide bait station?",["Throw in regular trash","Follow PCO instructions and hazardous waste disposal guidelines","Bury outside the building","Leave for the PCO to collect later"],1,"Rodenticide disposal must follow the PCO instructions and local hazardous waste guidelines."),
+q("MOST effective at controlling rodent populations?",["Snap traps everywhere","Rodent-proofing the building combined with a licensed PCO program","Keeping food tightly covered only","Increasing cleaning frequency only"],1,"Structural rodent-proofing combined with a professional PCO program is the most effective approach."),
+q("Manager discovers pest control logbook has not been updated for 3 months. What should happen?",["Update it immediately with approximate dates","Investigate any missed visits or treatments and ensure PCO is following the schedule","Discard and start a new log","No action needed unless pests are found"],1,"Missing log entries require investigation to ensure the pest control program has been operating correctly."),
+q("How to best protect food during a pest treatment?",["Cover food with plastic wrap","Remove all food from treated areas or ensure it is in sealed, pest-proof containers","Continue normal operations","Close only the treated room"],1,"During pest treatments, food must be removed from treated areas or fully sealed."),
+q("Role of a food handler in an Integrated Pest Management program?",["No role. It is only the PCO responsibility","Report pest sightings, maintain cleanliness, and follow sanitation procedures","Apply pesticides when needed","Set and monitor traps"],1,"Food handlers support IPM by reporting pest activity and following sanitation procedures."),
+q("What is the MOST important action a food establishment can take to prevent pest problems?",["Spray pesticide weekly","Maintain a clean, clutter-free facility with sealed entry points and proper food storage","Only call a PCO when pests are seen","Use maximum strength pesticides"],1,"Prevention through cleanliness, proper storage, and sealing entry points is the most important and effective pest control action.")
+]};
+
+// ═══════════════════════════════════════════
+// JSONBIN CONFIG
+// ═══════════════════════════════════════════
+const JSONBIN = {
+  binId: "6a1dc936a5160c15fd97e3ad",
+  masterKey: "$2a$10$nVmjEwLhwXLRrL88.zZ1s.ZCCzZ4igJKpPymaesgglCrFHi8.pYNe",
+  accessKey: "$2a$10$FS1jjYCZydUARFZr8QcxdOMmnKtm1xmPNAB.xoNPrQGKDuc5F0u3.",
+  baseUrl: "https://api.jsonbin.io/v3/b"
+};
+
+let syncTimeout = null;
+let lastSyncedData = null;
+
+async function loadFromCloud() {
+  try {
+    const resp = await fetch(JSONBIN.baseUrl + "/" + JSONBIN.binId + "/latest", {
+      headers: {
+        "X-Master-Key": JSONBIN.masterKey,
+        "X-Access-Key": JSONBIN.accessKey
+      }
+    });
+    if (!resp.ok) throw new Error("Load failed: " + resp.status);
+    const data = await resp.json();
+    const record = data.record;
+    if (record.examHistory) S.examHistory = record.examHistory;
+    if (record.savedGuides) S.savedGuides = record.savedGuides;
+    if (record.techDone) S.techDone = record.techDone;
+    if (record.topicDone) S.topicDone = record.topicDone;
+    lastSyncedData = JSON.stringify(buildSyncPayload());
+    console.log("Loaded from cloud ✓");
+    const el=document.getElementById("syncStatus");
+    if(el){el.textContent="☁️ Progress loaded";setTimeout(()=>{if(el)el.textContent="";},3000);}
+  } catch(e) {
+    console.warn("Cloud load failed, using local data:", e.message);
+  }
+}
+
+function buildSyncPayload() {
+  return {
+    examHistory: S.examHistory,
+    savedGuides: S.savedGuides,
+    techDone: S.techDone,
+    topicDone: S.topicDone
+  };
+}
+
+async function saveToCloud() {
+  const payload = buildSyncPayload();
+  const payloadStr = JSON.stringify(payload);
+  if (payloadStr === lastSyncedData) return; // nothing changed
+  try {
+    const resp = await fetch(JSONBIN.baseUrl + "/" + JSONBIN.binId, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Master-Key": JSONBIN.masterKey,
+        "X-Access-Key": JSONBIN.accessKey
+      },
+      body: payloadStr
+    });
+    if (!resp.ok) throw new Error("Save failed: " + resp.status);
+    lastSyncedData = payloadStr;
+    console.log("Saved to cloud ✓");
+    const el=document.getElementById("syncStatus");
+    if(el){el.textContent="☁️ Synced just now";setTimeout(()=>{if(el)el.textContent="";},3000);}
+  } catch(e) {
+    console.warn("Cloud save failed, data kept locally:", e.message);
+  }
+}
+
+// Debounced save — waits 1.5s after last change before syncing
+function scheduleSave() {
+  clearTimeout(syncTimeout);
+  syncTimeout = setTimeout(saveToCloud, 1500);
+}
+
+const techLessons=[
+  {id:"gmail",title:"Sending an Email with a Photo or File",icon:"\u{1F4E7}",accent:"#2E7D32",light:"#81C784",color:"#E8F5E9",steps:[
+    {img:"\u{1F310}",title:"Open Gmail",text:"Open your internet browser and go to gmail.com or click the Gmail app.",tip:"\u{1F4A1} Gmail is your digital mailbox!"},
+    {img:"✏️",title:"Click Compose",text:"Find the Compose button on the left side and click it once to start a new email.",tip:"\u{1F4A1} Compose just means write a new message."},
+    {img:"\u{1F464}",title:"Type Who It Is For",text:"Click the To field and type the email address of the person you are sending to.",tip:"\u{1F4A1} All email addresses have an @ symbol in them."},
+    {img:"\u{1F3F7}️",title:"Add a Subject",text:"Click the Subject box and type a short description of what your email is about.",tip:"\u{1F4A1} The subject is like a label on an envelope."},
+    {img:"\u{1F4AC}",title:"Write Your Message",text:"Click in the big empty area and type your message as slowly as you like.",tip:"\u{1F4A1} Nobody is watching or waiting. Take your time!"},
+    {img:"\u{1F4CE}",title:"Attach a File or Photo",text:"Click the paperclip icon at the bottom of the email. Find your photo or file and double-click it.",tip:"\u{1F4A1} When the file name appears at the bottom of the email, it worked!"},
+    {img:"\u{1F680}",title:"Send Your Email",text:"Click the blue Send button at the bottom left. The window will disappear. That means it was sent!",tip:"\u{1F4A1} Check the Sent folder on the left to confirm it went through."}
+  ]},
+  {id:"tv",title:"Using the Xfinity App on Your Samsung TV",icon:"\u{1F4FA}",accent:"#1565C0",light:"#64B5F6",color:"#E3F2FD",steps:[
+    {img:"\u{1F534}",title:"Turn On the TV",text:"Press the Power button on your remote, usually at the top. Wait a few seconds for the TV to turn on.",tip:"\u{1F4A1} If nothing happens, check the batteries and aim the remote at the TV."},
+    {img:"\u{1F3E0}",title:"Get to the Home Screen",text:"Press the Home button on your remote. It looks like a little house and shows the main Samsung menu.",tip:"\u{1F4A1} Home is your safe place. Press it any time you feel lost!"},
+    {img:"✖️",title:"Find the Xfinity App",text:"Use the arrow buttons to move around the screen. Find the Xfinity app with the X logo and press OK.",tip:"\u{1F4A1} If you do not see it right away, scroll left or right."},
+    {img:"⏳",title:"Wait for It to Load",text:"Give the Xfinity app 10 to 15 seconds to open. You will see a loading screen. Do not press anything yet.",tip:"\u{1F4A1} Apps sometimes need a moment to wake up. Be patient!"},
+    {img:"\u{1F4E1}",title:"Browse Live TV",text:"Once Xfinity opens, find Live TV or TV Guide. Use the arrow buttons to highlight it and press OK.",tip:"\u{1F4A1} The arrow buttons point, and OK says yes to what you highlighted."},
+    {img:"\u{1F3AC}",title:"Change the Channel",text:"Use the Up and Down arrows to move through channels. Press OK on the one you want to watch.",tip:"\u{1F4A1} If a channel is not loading, press Back and try again."},
+    {img:"\u{1F50A}",title:"Adjust Volume",text:"Use the Volume buttons on the side of the remote to adjust sound. Press Back to go to the previous screen.",tip:"\u{1F4A1} Back is the undo button. Press it any time you go somewhere by accident."}
+  ]},
+  {id:"login",title:"Logging In and Handling CAPTCHAs",icon:"\u{1F510}",accent:"#E65100",light:"#FFB74D",color:"#FFF3E0",steps:[
+    {img:"\u{1F50D}",title:"Find the Login Box",text:"On most websites there is a Sign In or Log In button at the top right corner. Click it.",tip:"\u{1F4A1} Sign In and Log In all mean the same thing."},
+    {img:"\u{1F4E7}",title:"Type Your Email",text:"Click the Email or Username box and type your email address carefully.",tip:"\u{1F4A1} If you make a mistake, press the Backspace key to erase."},
+    {img:"\u{1F511}",title:"Type Your Password",text:"Click the Password box and type your password. It will show as dots to keep it private.",tip:"\u{1F4A1} Check if Caps Lock is on if the password is not working."},
+    {img:"\u{1F916}",title:"What is a CAPTCHA?",text:"Sometimes a box asks you to prove you are human. It might show a checkbox or pictures to click.",tip:"\u{1F4A1} A CAPTCHA is just a security check. It is not grading you!"},
+    {img:"☑️",title:"Checkbox CAPTCHA",text:"If you see a checkbox next to I am not a robot, click the checkbox once. A checkmark will appear.",tip:"\u{1F4A1} It might spin for a second after you click. Just wait."},
+    {img:"\u{1F5BC}️",title:"Picture CAPTCHA",text:"If it shows pictures and asks you to click matching ones, look carefully and click each one. Then click Verify.",tip:"\u{1F4A1} If you get it wrong it just shows new pictures. No big deal!"},
+    {img:"✅",title:"Click Sign In",text:"After filling in your information, click the Sign In button. If something is wrong the page will tell you. Just try again.",tip:"\u{1F4A1} Use Forgot Password to reset by email if needed."}
+  ]}
+];
+
+const pretestLinks=[
+  {name:"ServSafe Official Exam Registration",url:"https://www.servsafe.com/ServSafe-Manager/Get-Certified/Take-the-ServSafe-Manager-Exam",desc:"The official ServSafe site to register for the real exam and access official study materials."},
+  {name:"360training Free ServSafe Practice Test",url:"https://www.360training.com/learn-edu/servsafe-practice-test",desc:"Free practice questions modeled after the real ServSafe exam."},
+  {name:"FoodHandlerAnswers ServSafe Practice Exam",url:"https://www.foodhandleranswers.com/servsafe-practice-test/",desc:"Free 40-question practice test with instant answer explanations."},
+  {name:"ProProfs ServSafe Practice Quiz",url:"https://www.proprofs.com/quiz-school/story.php?title=servsafe-food-handler-practice-test",desc:"Multiple free quizzes covering all ServSafe topics."},
+  {name:"StateFoodSafety ServSafe Study Guide",url:"https://www.statefoodsafety.com/Resources/Resources/servsafe-study-guide",desc:"Free downloadable study guide covering all main ServSafe topics in plain language."}
+];
+
+const ssTopics=[
+  {id:"contamination",title:"Food Safety & Contamination",icon:"\u{1F9A0}",accent:"#C62828",light:"#EF9A9A",color:"#FCE4EC",
+   lesson:[{h:"What is Food Contamination?",t:"Contamination means something harmful has gotten into food. There are three types: biological like bacteria, chemical like cleaning products, and physical like a piece of glass."},{h:"The Temperature Danger Zone",t:"Bacteria grow fastest between 41F and 135F. This is the Danger Zone. Always keep cold food cold and hot food hot."},{h:"Cross-Contamination",t:"This happens when germs spread from one food to another, usually from raw meat to ready-to-eat foods. Always use separate cutting boards for meat and vegetables."},{h:"TCS Foods",t:"Some foods need extra care because bacteria love them. These include meat, poultry, fish, eggs, dairy, cooked rice, beans, and cut fruits and vegetables."},{h:"How Food Gets Contaminated",t:"Common causes include not cooking to the right temperature, improper storage, using dirty equipment, and poor personal hygiene."}],
+   questions:BANK.v1.slice(0,5)},
+  {id:"temperature",title:"Time and Temperature Control",icon:"\u{1F321}️",accent:"#F57F17",light:"#FFD54F",color:"#FFF8E1",
+   lesson:[{h:"Why Temperature Matters",t:"Cooking food to the right temperature kills harmful bacteria. Using a food thermometer is the only reliable way to know if food is safe."},{h:"Key Cooking Temperatures",t:"Poultry must reach 165F. Ground meat must reach 155F. Seafood and whole cuts of beef and pork must reach 145F."},{h:"Hot and Cold Holding",t:"Hot food being held must stay at 135F or above. Cold food must stay at 41F or below. Check temperatures regularly."},{h:"Cooling Food Safely",t:"Cool food from 135F to 70F within 2 hours, then from 70F to 41F within 4 more hours. Total cooling time must not exceed 6 hours."},{h:"Thawing Food Safely",t:"Never thaw food on the counter. Safe methods include the refrigerator, cold running water, microwave before cooking, or as part of the cooking process."}],
+   questions:BANK.v1.slice(18,23)},
+  {id:"hygiene",title:"Personal Hygiene",icon:"\u{1F9FC}",accent:"#283593",light:"#7986CB",color:"#E8EAF6",
+   lesson:[{h:"Why Hygiene Matters",t:"Food handlers are one of the most common sources of food contamination. Good hygiene habits protect every customer you serve."},{h:"When to Wash Your Hands",t:"Wash hands before handling food, after touching raw meat, after using the restroom, after sneezing, after touching your face or hair, and after handling garbage."},{h:"How to Wash Hands Properly",t:"Use soap and warm water. Scrub for at least 20 seconds. Rinse well and dry with a paper towel."},{h:"Gloves Are Not a Substitute",t:"Always wash hands before putting on gloves. Change gloves when switching tasks, after touching your face, and at least every 4 hours."},{h:"When to Stay Home",t:"If you have vomiting, diarrhea, or jaundice, or a diagnosis of Salmonella, Shigella, E. coli, Hepatitis A, or Norovirus, do not work with food."}],
+   questions:BANK.v1.slice(36,41)},
+  {id:"cleaning",title:"Cleaning and Sanitizing",icon:"\u{1F9F9}",accent:"#00695C",light:"#4DB6AC",color:"#E0F7FA",
+   lesson:[{h:"Cleaning vs Sanitizing",t:"Cleaning removes dirt and food from a surface. Sanitizing reduces bacteria to safe levels. You must always clean before you sanitize."},{h:"The 3-Compartment Sink",t:"Step 1: Wash in hot soapy water. Step 2: Rinse in clean water. Step 3: Sanitize. Then air dry. Never towel dry."},{h:"Common Sanitizers",t:"The three most common sanitizers are chlorine, iodine, and quaternary ammonium. Each has specific concentration and contact time requirements."},{h:"Sanitizing Surfaces",t:"Surfaces should be cleaned and sanitized after each use, before working with a different food type, and at least every 4 hours during continuous use."},{h:"Dishwasher Sanitizing",t:"High-temperature dishwashers require 180F in the final rinse. Chemical dishwashers require water at least 120F."}],
+   questions:BANK.v1.slice(54,59)},
+  {id:"pests",title:"Pest Control and Facilities",icon:"\u{1F41B}",accent:"#6A1B9A",light:"#CE93D8",color:"#F3E5F5",
+   lesson:[{h:"Why Pest Control Matters",t:"Pests carry diseases and contaminate food. A single sighting is a serious problem in any food service establishment."},{h:"Signs of a Pest Problem",t:"Watch for droppings, gnaw marks, nesting materials, grease marks along walls, and live or dead insects or rodents."},{h:"Preventing Pests",t:"Seal cracks, keep doors closed, store food in sealed containers at least 6 inches off the floor, take out garbage regularly, and keep everything clean."},{h:"Working with a PCO",t:"Only a licensed Pest Control Operator should apply pesticides. Keep records of all visits and treatments."},{h:"Facility Maintenance",t:"Fix leaky pipes because pests love moisture. Maintain proper lighting and keep walls, floors, and ceilings in good repair."}],
+   questions:BANK.v1.slice(72,77)}
+];
+
+let S={screen:"home",lesson:null,step:0,techDone:{},techComplete:false,topic:null,lessonPage:0,quizIdx:0,quizSel:null,quizAnswers:[],topicDone:{},examVersion:null,examQs:[],examIdx:0,examSel:null,examAnswers:[],examHistory:[],showCheer:false,cheerMsg:"",aiRequest:"",aiLesson:null,aiStep:0,aiComplete:false,aiLoading:false,aiError:false,savedGuides:[]};
+try{const h=localStorage.getItem("pp_hist");if(h)S.examHistory=JSON.parse(h);}catch(e){}
+try{const g=localStorage.getItem("pp_guides");if(g)S.savedGuides=JSON.parse(g);}catch(e){}
+try{const td=localStorage.getItem("pp_techDone");if(td)S.techDone=JSON.parse(td);}catch(e){}
+try{const tpd=localStorage.getItem("pp_topicDone");if(tpd)S.topicDone=JSON.parse(tpd);}catch(e){}
+function saveHist(){try{localStorage.setItem("pp_hist",JSON.stringify(S.examHistory));}catch(e){} scheduleSave();}
+function saveGuides(){try{localStorage.setItem("pp_guides",JSON.stringify(S.savedGuides));}catch(e){} scheduleSave();}
+const cheers=["You are doing wonderfully!","That is exactly right! Keep going!","Look at you go!","You are a natural at this!","Perfect! One step closer!","Fantastic work!","You have got this!"];
+function buildExam(ver){return BANK[ver].map((q,i)=>({...q,topicIdx:Math.floor(i/18)}));}
+function stopSpeech(){try{if(window.speechSynthesis)window.speechSynthesis.cancel();}catch(e){}}
+function speak(txt){stopSpeech();if(!window.speechSynthesis)return;try{const u=new SpeechSynthesisUtterance(txt);u.rate=0.88;u.pitch=1.05;u.volume=1;const voices=window.speechSynthesis.getVoices();const v=voices.find(v=>v.name.includes("Samantha")||v.name.includes("Karen")||(v.lang&&v.lang.startsWith("en")&&v.localService));if(v)u.voice=v;window.speechSynthesis.speak(u);}catch(e){}}
+function r(){document.getElementById("app").innerHTML=render();bindEvents();}
+function render(){
+  const bgMap={home:"linear-gradient(160deg,#004C54 0%,#002f35 100%)",techLesson:S.lesson?"linear-gradient(160deg,"+S.lesson.color+" 0%,#fff 60%)":"#fff",servsafeLesson:S.topic?"linear-gradient(160deg,"+S.topic.color+" 0%,#fff 60%)":"#fff",quiz:S.topic?"linear-gradient(160deg,"+S.topic.color+" 0%,#fff 60%)":"#fff",quizResult:S.topic?"linear-gradient(160deg,"+S.topic.color+" 0%,#fff 60%)":"#fff",selectExam:"linear-gradient(135deg,#1a237e,#283593 50%,#3949AB)",practiceExam:"linear-gradient(135deg,#263238,#455A64)",examResult:"linear-gradient(135deg,#263238,#455A64)",reports:"linear-gradient(135deg,#004D40,#00695C)",links:"linear-gradient(135deg,#004C54,#002f35)",servsafe:"linear-gradient(160deg,#004C54 0%,#002f35 100%)",askAI:"linear-gradient(160deg,#002f35 0%,#004C54 100%)",aiLesson:"linear-gradient(160deg,#002f35 0%,#004C54 100%)"};
+  document.body.style.background=bgMap[S.screen]||"#f5f5f5";
+  const screens={home:renderHome,servsafe:renderServSafe,techLesson:renderTechLesson,servsafeLesson:renderSSLesson,quiz:renderQuiz,quizResult:renderQuizResult,selectExam:renderSelectExam,practiceExam:renderExam,examResult:renderExamResult,reports:renderReports,links:renderLinks,askAI:renderAskAI,aiLesson:renderAILesson};
+  const content=(screens[S.screen]||renderHome)();
+  const cheer=S.showCheer?"<div class='overlay'><div class='overlay-box'><div style='font-size:60px;margin-bottom:12px'>\u{1F31F}</div><div style='font-size:22px;font-weight:bold;color:#333'>"+S.cheerMsg+"</div></div></div>":"";
+  return content+cheer;
+}
+function renderHome(){
+  const tc=techLessons.map(l=>"<button class='home-card' data-action='openTech' data-id='"+l.id+"'><span style='font-size:32px'>"+l.icon+"</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>"+l.title+"</div><div style='font-size:12px;color:#555'>"+l.steps.length+" easy steps</div></div>"+(S.techDone[l.id]?"<span style='font-size:18px'>✅</span>":"")+"<span style='font-size:16px;color:#aaa'>›</span></button>").join("");
+  const topicsDone=ssTopics.filter(t=>S.topicDone[t.id]).length;
+  const passedExams=S.examHistory.filter(e=>e.pct>=75).length;
+  const ssProgress=topicsDone+" of "+ssTopics.length+" lessons done · "+S.examHistory.length+" exam"+(S.examHistory.length!==1?"s":"")+" taken";
+  return"<div class='wrap'>"
+  +"<div class='eagles-header' style='padding:16px 18px'>"
+  +"<div style='display:flex;align-items:center;gap:18px'>"
+  +"<img src='https://upload.wikimedia.org/wikipedia/en/thumb/8/8e/Philadelphia_Eagles_logo.svg/1280px-Philadelphia_Eagles_logo.svg.png' alt='Philadelphia Eagles' style='width:33vw;max-width:160px;min-width:110px;height:auto;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 3px 12px rgba(0,0,0,0.7))'>"
+  +"<div style='text-align:left;flex:1'>"
+  +"<h1 style='font-size:34px;color:#fff;margin:0 0 4px;letter-spacing:0.05em;font-family:Oswald,sans-serif;line-height:1'>Puddin POP</h1>"
+  +"<div style='width:44px;height:3px;background:#A5ACAF;margin:8px 0;border-radius:2px'></div>"
+  +"<p style='color:rgba(255,255,255,0.9);font-size:14px;font-style:italic;margin:0 0 5px'>Your friendly helper 💛</p>"
+  +"<p style='color:#A5ACAF;font-size:13px;margin:0;font-family:Oswald,sans-serif;letter-spacing:0.1em;font-weight:600'>FLY EAGLES FLY!</p>"
+  +"</div>"
+  +"</div>"
+  +"<div id='syncStatus' style='font-size:11px;color:rgba(255,255,255,0.45);margin-top:8px;text-align:center'></div>"
+  +"</div>"
+  +"<div class='sec-label'>🤖 Ask for Help with Anything</div>"
+  +"<button class='home-card' style='border-left-color:#c4a35a' data-action='goAskAI'><span style='font-size:32px'>💬</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Build Me a How-To Guide</div><div style='font-size:12px;color:#555'>Type what you need help with and I will make a step-by-step guide!</div></div><span style='font-size:16px;color:#aaa'>›</span></button>"
+  +"<div class='sec-label' style='margin-top:14px'>🍽️ ServSafe Study</div>"
+  +"<button class='home-card' style='border-left-color:#004C54' data-action='goServSafe'><span style='font-size:32px'>🍽️</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>ServSafe Certification Prep</div><div style='font-size:12px;color:#555'>"+ssProgress+"</div></div>"+(topicsDone===ssTopics.length&&passedExams>0?"<span style='font-size:18px'>🏆</span>":"")+"<span style='font-size:16px;color:#aaa'>›</span></button>"
+  +"<div class='sec-label' style='margin-top:14px'>💻 Tech Help</div>"+tc
+  +"<div style='background:rgba(0,0,0,0.25);border-radius:13px;padding:12px 16px;text-align:center;margin-top:11px;border:1px solid rgba(255,255,255,0.1)'><p style='color:rgba(255,255,255,0.85);margin:0;font-size:13px;line-height:1.7'>💚 No timer. No score pressure. Fly Eagles Fly! 💚</p></div>"
+  +"</div>";
+}
+function renderServSafe(){
+  const sc=ssTopics.map(t=>"<button class='home-card' data-action='openTopic' data-id='"+t.id+"'><span style='font-size:32px'>"+t.icon+"</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>"+t.title+"</div><div style='font-size:12px;color:#555'>Lesson + Pop Quiz</div></div>"+(S.topicDone[t.id]?"<span style='font-size:18px'>✅</span>":"")+"<span style='font-size:16px;color:#ccc'>›</span></button>").join("");
+  const passedCount=S.examHistory.filter(e=>e.pct>=75).length;
+  return"<div class='wrap'>"
+  +"<div class='top-bar'><button class='home-btn' data-action='goHome'>← Home</button><div><div style='font-size:15px;font-weight:bold;color:#fff;font-family:Oswald,sans-serif;letter-spacing:0.04em'>SERVSAFE PREP</div><div style='font-size:12px;color:rgba(255,255,255,0.7);margin-top:1px'>Lessons, quizzes & practice exams</div></div></div>"
+  +"<div class='sec-label'>📖 Study by Topic</div>"
+  +sc
+  +"<div class='sec-label' style='margin-top:14px'>📝 Practice Exams</div>"
+  +"<button class='home-card' data-action='goSelectExam'><span style='font-size:32px'>📝</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Full 90-Question Practice Exams</div><div style='font-size:12px;color:#555'>5 unique versions · Just like the real test!</div></div><span style='font-size:16px;color:#ccc'>›</span></button>"
+  +"<button class='home-card' data-action='goReports'><span style='font-size:32px'>📊</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>My Progress Report</div><div style='font-size:12px;color:#555'>"+S.examHistory.length+" exam"+(S.examHistory.length!==1?"s":"")+" taken · "+passedCount+" passed</div></div><span style='font-size:16px;color:#ccc'>›</span></button>"
+  +"<button class='home-card' data-action='openLinks'><span style='font-size:32px'>🔗</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Official Pretest Resources</div><div style='font-size:12px;color:#555'>Free practice from trusted sites</div></div><span style='font-size:16px;color:#ccc'>›</span></button>"
+  +"</div>";
+}
+function renderSelectExam(){
+  const versions=[{ver:"v1",num:1,icon:"\u{1F331}",desc:"The foundation. All 5 topics with core ServSafe concepts."},{ver:"v2",num:2,icon:"\u{1F4D8}",desc:"Deeper dive. Pathogens, advanced temperature, and cleaning."},{ver:"v3",num:3,icon:"\u{1F525}",desc:"Challenging scenarios. Real-world situations and decision-making."},{ver:"v4",num:4,icon:"\u{1F49C}",desc:"Management focus. HACCP, policies, and food handler responsibilities."},{ver:"v5",num:5,icon:"\u{1F3C6}",desc:"Exam-ready. The toughest version, closest to the real ServSafe exam."}];
+  const cards=versions.map(v=>{const hist=S.examHistory.filter(e=>e.version===v.ver);const best=hist.length?Math.max(...hist.map(e=>e.pct)):null;const passed=best!==null&&best>=75;return"<button class='ver-btn"+(passed?" done":"")+"' data-action='startExam' data-ver='"+v.ver+"'><span style='font-size:32px'>"+v.icon+"</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Version "+v.num+(passed?" ✅":"")+"</div><div style='font-size:13px;color:#666;margin-bottom:5px'>"+v.desc+"</div>"+(hist.length?"<div style='font-size:12px;color:#555'>Best: <strong style='color:"+(passed?"#2E7D32":"#E65100")+"'>"+best+"%</strong> · Taken "+hist.length+" time"+(hist.length!==1?"s":"")+"</div>":"<div style='font-size:12px;color:#aaa'>Not taken yet</div>")+"</div><span style='font-size:16px;color:#ccc'>›</span></button>";}).join("");
+  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goHome'>← Home</button><div><div style='font-size:15px;font-weight:bold;color:#fff'>\u{1F4DD} Choose a Practice Exam</div><div style='font-size:12px;color:rgba(255,255,255,0.75);margin-top:1px'>90 questions · All 5 ServSafe topics</div></div></div><div style='background:rgba(255,255,255,0.12);border-radius:13px;padding:11px 15px;margin-bottom:15px;color:#fff;font-size:13px;line-height:1.6'>\u{1F4A1} Each version has 90 unique questions. The real ServSafe exam requires <strong>75% to pass</strong>. Take all 5 for the best preparation!</div>"+cards+"</div>";
+}
+function renderExam(){
+  if(!S.examQs.length)return renderSelectExam();
+  const q=S.examQs[S.examIdx];
+  const pct=(S.examIdx/S.examQs.length)*100;
+  const tn=TOPICS[q.topicIdx]||"General";
+  const opts=q.opts.map((o,i)=>{let cls="opt-btn";if(S.examSel!==null){if(i===q.ans)cls+=" opt-correct";else if(i===S.examSel&&i!==q.ans)cls+=" opt-wrong";}return"<button class='"+cls+"' data-action='selectExam' data-i='"+i+"'"+(S.examSel!==null?" style='cursor:default'":"")+">ABCD"[i]+". "+o+"</button>";}).join("");
+  const explain=S.examSel!==null?"<div style='margin-top:11px;padding:12px 14px;border-radius:12px;background:"+(S.examSel===q.ans?"#E8F5E9":"#FFF3E0")+";font-size:14px;color:#444;line-height:1.6'>"+(S.examSel===q.ans?"Correct! ":"Not quite. ")+q.ex+"</div>":"";
+  const nb=S.examSel!==null?"<button class='big-btn' style='background:linear-gradient(135deg,#333,#004C54)' data-action='examNext'>"+(S.examIdx+1>=S.examQs.length?"See My Results":"Next Question")+"</button>":"<p style='text-align:center;color:rgba(255,255,255,0.7);font-size:13px;font-style:italic;margin-top:8px'>Tap an answer to continue \u{1F49B}</p>";
+  const vn=S.examVersion?S.examVersion.replace("v",""):"";
+  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goHome'>← Home</button><div><div style='font-size:14px;font-weight:bold;color:#fff'>Version "+vn+" · Q "+(S.examIdx+1)+"/90</div><div style='font-size:12px;color:rgba(255,255,255,0.7);margin-top:1px'>"+tn+"</div></div></div><div class='prog-wrap'><div class='prog-bar' style='width:"+pct+"%;background:linear-gradient(90deg,#90A4AE,#546E7A)'></div></div><div class='card'><p style='font-size:16px;color:#333;font-weight:bold;line-height:1.6;margin:0 0 14px'>"+q.q+"</p>"+opts+explain+"</div>"+nb+"</div>";
+}
+function renderExamResult(){
+  const total=S.examQs.length,score=S.examAnswers.filter((a,i)=>a===S.examQs[i].ans).length,pct=Math.round((score/total)*100),pass=pct>=75;
+  const bd=TOPICS.map((name,ti)=>{const idxs=S.examQs.map((q,i)=>q.topicIdx===ti?i:-1).filter(i=>i>=0);const correct=idxs.filter(i=>S.examAnswers[i]===S.examQs[i].ans).length;const tot=idxs.length;const tp=tot>0?Math.round((correct/tot)*100):0;return{name,correct,tot,tp};});
+  S.examHistory.unshift({version:S.examVersion,score,total,pct,date:new Date().toLocaleDateString(),topicBreakdown:bd});
+  if(S.examHistory.length>50)S.examHistory=S.examHistory.slice(0,50);saveHist();
+  const rows=S.examQs.map((q,i)=>"<div class='result-row' style='color:"+(S.examAnswers[i]===q.ans?"#2E7D32":"#C62828")+"'><span>"+(S.examAnswers[i]===q.ans?"✓":"✗")+"</span><span style='flex:1'>"+q.q+"</span></div>").join("");
+  const bdH=bd.map(b=>{const c=b.tp>=75?"#2E7D32":b.tp>=50?"#F57F17":"#C62828";return"<div style='margin-bottom:9px'><div style='display:flex;justify-content:space-between;font-size:13px;color:#333;margin-bottom:2px'><span>"+b.name+"</span><span style='font-weight:bold;color:"+c+"'>"+b.tp+"% ("+b.correct+"/"+b.tot+")</span></div><div class='rbar-wrap'><div class='rbar' style='width:"+b.tp+"%;background:"+c+"'></div></div></div>";}).join("");
+  const vn=S.examVersion?S.examVersion.replace("v",""):"";
+  return"<div class='wrap'><div style='text-align:center;padding-top:12px;margin-bottom:14px'><div style='font-size:56px;margin-bottom:8px'>"+(pass?"\u{1F3C6}":"\u{1F4AA}")+"</div><h1 style='font-size:22px;color:#fff;margin-bottom:5px'>"+(pass?"You Would Pass the Real Exam!":"Keep Going. You Are Getting There!")+"</h1><div style='font-size:13px;color:rgba(255,255,255,0.8)'>Version "+vn+" · "+new Date().toLocaleDateString()+"</div></div><div class='card'><div style='text-align:center;margin-bottom:14px'><div style='font-size:44px;font-weight:bold;color:"+(pass?"#2E7D32":"#E65100")+"'>"+score+"/90</div><div style='font-size:17px;color:#666;margin-top:2px'>"+pct+"% correct · Passing is 75%</div><div style='margin-top:9px;padding:9px 13px;border-radius:11px;background:"+(pass?"#E8F5E9":"#FFF3E0")+";font-size:13px;color:#555;line-height:1.6'>"+(pass?"Wonderful! You scored above 75% on Version "+vn+". Consider trying another version to stay sharp.":"You scored "+pct+"%. Review the topics with lower scores below and try again. You have totally got this!")+"</div></div><div style='margin-bottom:12px'><div style='font-size:13px;font-weight:bold;color:#333;margin-bottom:9px'>Topic Breakdown:</div>"+bdH+"</div><details><summary style='font-size:13px;font-weight:bold;color:#555;cursor:pointer;padding:7px 0'>All Questions (tap to expand)</summary><div style='margin-top:9px'>"+rows+"</div></details></div><button class='big-btn' style='background:linear-gradient(135deg,#333,#004C54)' data-action='retryExam'>\u{1F501} Retake This Version</button><button class='big-btn' style='background:linear-gradient(135deg,#004C54,#002f35)' data-action='goSelectExam'>\u{1F4DD} Try a Different Version</button><button class='big-btn' style='background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.4)' data-action='goHome'>\u{1F3E0} Home</button></div>";
+}
+function renderReports(){
+  if(!S.examHistory.length)return"<div class='wrap' style='text-align:center;padding-top:50px'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goHome'>← Home</button><div style='color:#fff;font-size:15px;font-weight:bold'>My Progress Report</div></div><div style='font-size:56px;margin:36px 0 14px'>\u{1F4CA}</div><p style='color:#fff;font-size:17px;line-height:1.7'>No exams taken yet!<br>Complete a practice exam to see your progress here. \u{1F49B}</p><button class='big-btn' style='background:linear-gradient(135deg,#004C54,#002f35);margin-top:22px;max-width:300px' data-action='goSelectExam'>Take Your First Exam</button></div>";
+  const tot=S.examHistory.length,passed=S.examHistory.filter(e=>e.pct>=75).length,avg=Math.round(S.examHistory.reduce((s,e)=>s+e.pct,0)/tot),best=Math.max(...S.examHistory.map(e=>e.pct));
+  const vs=["v1","v2","v3","v4","v5"].map(ver=>{const h=S.examHistory.filter(e=>e.version===ver);if(!h.length)return null;const bV=Math.max(...h.map(e=>e.pct));return{ver,num:ver.replace("v",""),count:h.length,best:bV,passed:h.filter(e=>e.pct>=75).length};}).filter(Boolean);
+  const ta=TOPICS.map((name,ti)=>{const all=S.examHistory.filter(e=>e.topicBreakdown).map(e=>e.topicBreakdown[ti]);if(!all.length)return null;return{name,avg:Math.round(all.reduce((s,b)=>s+b.tp,0)/all.length)};}).filter(Boolean);
+  const vc=vs.map(v=>{const c=v.best>=75?"#4CAF50":v.best>=60?"#FFB74D":"#EF9A9A";return"<div style='background:rgba(255,255,255,0.1);border-radius:13px;padding:12px 14px;margin-bottom:9px'><div style='display:flex;justify-content:space-between;align-items:center'><div style='color:#fff;font-weight:bold;font-size:14px'>Version "+v.num+"</div><div style='color:"+c+";font-weight:bold;font-size:15px'>"+v.best+"% best</div></div><div style='color:rgba(255,255,255,0.75);font-size:12px;margin-top:3px'>Taken "+v.count+" time"+(v.count!==1?"s":"")+" · "+v.passed+" passed</div><div class='rbar-wrap' style='margin-top:7px'><div class='rbar' style='width:"+v.best+"%;background:"+c+"'></div></div></div>";}).join("");
+  const tc2=ta.map(t=>{const c=t.avg>=75?"#4CAF50":t.avg>=50?"#FFB74D":"#EF9A9A";return"<div style='margin-bottom:9px'><div style='display:flex;justify-content:space-between;font-size:13px;color:rgba(255,255,255,0.9);margin-bottom:2px'><span>"+t.name+"</span><span style='font-weight:bold;color:"+c+"'>"+t.avg+"% avg</span></div><div class='rbar-wrap'><div class='rbar' style='width:"+t.avg+"%;background:"+c+"'></div></div></div>";}).join("");
+  const rr=S.examHistory.slice(0,10).map(e=>{const c=e.pct>=75?"#4CAF50":e.pct>=60?"#FFB74D":"#EF9A9A";const vn=e.version?e.version.replace("v",""):"?";return"<div style='display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.1)'><div><div style='color:#fff;font-size:14px;font-weight:bold'>Version "+vn+"</div><div style='color:rgba(255,255,255,0.6);font-size:12px'>"+e.date+"</div></div><div style='text-align:right'><div style='color:"+c+";font-size:17px;font-weight:bold'>"+e.pct+"%</div><div style='color:rgba(255,255,255,0.6);font-size:12px'>"+e.score+"/"+e.total+"</div></div></div>";}).join("");
+  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goHome'>← Home</button><div><div style='font-size:15px;font-weight:bold;color:#fff'>\u{1F4CA} My Progress Report</div><div style='font-size:12px;color:rgba(255,255,255,0.75);margin-top:1px'>"+tot+" exam"+(tot!==1?"s":"")+" taken</div></div></div><div class='stat-grid'><div class='stat-box'><div class='stat-num'>"+passed+"</div><div class='stat-lbl'>Exams Passed (75%+)</div></div><div class='stat-box'><div class='stat-num'>"+avg+"%</div><div class='stat-lbl'>Average Score</div></div><div class='stat-box'><div class='stat-num'>"+best+"%</div><div class='stat-lbl'>Best Score Ever</div></div><div class='stat-box'><div class='stat-num'>"+tot+"</div><div class='stat-lbl'>Total Exams Taken</div></div></div><div style='background:rgba(255,255,255,0.12);border-radius:15px;padding:14px;margin-bottom:13px'><div style='font-size:13px;font-weight:bold;color:#fff;margin-bottom:11px'>Results by Version</div>"+(vc||"<p style='color:rgba(255,255,255,0.6);font-size:13px'>No data yet.</p>")+"</div><div style='background:rgba(255,255,255,0.12);border-radius:15px;padding:14px;margin-bottom:13px'><div style='font-size:13px;font-weight:bold;color:#fff;margin-bottom:11px'>Average Score by Topic</div>"+(tc2||"<p style='color:rgba(255,255,255,0.6);font-size:13px'>No data yet.</p>")+"<div style='font-size:12px;color:rgba(255,255,255,0.6);margin-top:7px'>\u{1F4A1} Topics under 75% are worth extra review!</div></div><div style='background:rgba(255,255,255,0.12);border-radius:15px;padding:14px;margin-bottom:13px'><div style='font-size:13px;font-weight:bold;color:#fff;margin-bottom:3px'>Recent Exams</div>"+rr+"</div><button class='big-btn' style='background:linear-gradient(135deg,#004C54,#002f35)' data-action='goSelectExam'>\u{1F4DD} Take Another Exam</button>"+(S.examHistory.length?"<button class='big-btn' style='background:rgba(255,100,100,0.3);border:1px solid rgba(255,255,255,0.3)' data-action='clearHistory'>\u{1F5D1}️ Clear All History</button>":"")+"</div>";
+}
+function renderSSLesson(){
+  if(!S.topic)return renderHome();
+  const pg=S.topic.lesson[S.lessonPage],pct=(S.lessonPage/S.topic.lesson.length)*100,isLast=S.lessonPage+1>=S.topic.lesson.length;
+  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:"+S.topic.accent+"' data-action='goHome'>← Home</button><div><div style='font-size:14px;font-weight:bold;color:#333'>"+S.topic.icon+" "+S.topic.title+"</div><div style='font-size:12px;color:#999;margin-top:1px'>Reading "+(S.lessonPage+1)+" of "+S.topic.lesson.length+"</div></div></div><div class='prog-wrap'><div class='prog-bar' style='width:"+pct+"%;background:linear-gradient(90deg,"+S.topic.light+","+S.topic.accent+")'></div></div><div class='card' style='border-left:5px solid "+S.topic.accent+"'><h2 style='font-size:17px;color:"+S.topic.accent+";margin:0 0 11px'>"+pg.h+"</h2><p style='font-size:16px;color:#333;line-height:1.8;margin:0'>"+pg.t+"</p></div><button class='big-btn' style='background:"+S.topic.accent+"' data-action='readLesson'>\u{1F50A} Read This Aloud</button><div style='display:flex;gap:9px'><button style='flex:1;padding:14px;border-radius:15px;background:"+(S.lessonPage===0?"#e0e0e0":"#f5f5f5")+";color:"+(S.lessonPage===0?"#bbb":"#555")+";font-size:14px;font-weight:bold;border:none;font-family:Georgia,serif;cursor:"+(S.lessonPage===0?"not-allowed":"pointer")+"' data-action='lessonBack'"+(S.lessonPage===0?" disabled":"")+">← Back</button><button style='flex:2;padding:14px;border-radius:15px;background:linear-gradient(135deg,"+S.topic.light+","+S.topic.accent+");color:#fff;font-size:16px;font-weight:bold;border:none;font-family:Georgia,serif;cursor:pointer' data-action='lessonNext'>"+(isLast?"Take the Quiz!":"Next →")+"</button></div></div>";
+}
+function renderQuiz(){
+  if(!S.topic)return renderHome();
+  const q=S.topic.questions[S.quizIdx],pct=(S.quizIdx/S.topic.questions.length)*100;
+  const opts=q.opts.map((o,i)=>{let cls="opt-btn";if(S.quizSel!==null){if(i===q.ans)cls+=" opt-correct";else if(i===S.quizSel&&i!==q.ans)cls+=" opt-wrong";}return"<button class='"+cls+"' data-action='selectQuiz' data-i='"+i+"'"+(S.quizSel!==null?" style='cursor:default'":"")+">ABCD"[i]+". "+o+"</button>";}).join("");
+  const explain=S.quizSel!==null?"<div style='margin-top:11px;padding:12px 14px;border-radius:12px;background:"+(S.quizSel===q.ans?"#E8F5E9":"#FFF3E0")+";font-size:14px;color:#444;line-height:1.6'>"+(S.quizSel===q.ans?"Correct! ":"Not quite. ")+q.ex+"</div>":"";
+  const nb=S.quizSel!==null?"<button class='big-btn' style='background:linear-gradient(135deg,"+S.topic.light+","+S.topic.accent+")' data-action='quizNext'>"+(S.quizIdx+1>=S.topic.questions.length?"See Results":"Next Question")+"</button>":"<p style='text-align:center;color:#aaa;font-size:13px;font-style:italic;margin-top:8px'>Tap an answer to continue \u{1F49B}</p>";
+  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:"+S.topic.accent+"' data-action='goHome'>← Home</button><div><div style='font-size:14px;font-weight:bold;color:#333'>\u{1F4DD} "+S.topic.title+" Quiz</div><div style='font-size:12px;color:#999;margin-top:1px'>Question "+(S.quizIdx+1)+" of "+S.topic.questions.length+"</div></div></div><div class='prog-wrap'><div class='prog-bar' style='width:"+pct+"%;background:linear-gradient(90deg,"+S.topic.light+","+S.topic.accent+")'></div></div><div class='card'><p style='font-size:16px;color:#333;font-weight:bold;line-height:1.6;margin:0 0 14px'>"+q.q+"</p>"+opts+explain+"</div>"+nb+"</div>";
+}
+function renderQuizResult(){
+  const qs=S.topic.questions,score=S.quizAnswers.filter((a,i)=>a===qs[i].ans).length,pct=Math.round((score/qs.length)*100),pass=pct>=60;
+  return"<div class='wrap' style='text-align:center;padding-top:30px'><div style='font-size:60px;margin-bottom:9px'>"+(pass?"\u{1F3C6}":"\u{1F4AA}")+"</div><h1 style='font-size:24px;color:"+(pass?S.topic.accent:"#E65100")+";margin-bottom:12px'>"+(pass?"Great Job!":"Keep Practicing!")+"</h1><div class='card'><div style='font-size:40px;font-weight:bold;color:"+S.topic.accent+"'>"+score+"/"+qs.length+"</div><div style='font-size:15px;color:#666;margin-top:2px'>"+pct+"% correct</div><p style='color:#555;margin-top:9px;line-height:1.7;font-size:14px'>"+(pass?"You passed this topic! You are building real knowledge.":"You got "+score+" right. That is a great start! Review the lesson and try again.")+"</p></div><button class='big-btn' style='background:linear-gradient(135deg,"+S.topic.light+","+S.topic.accent+")' data-action='retryQuiz'>\u{1F501} Retake Quiz</button><button class='big-btn' style='background:white;color:"+S.topic.accent+";border:2px solid "+S.topic.accent+"' data-action='reviewLesson'>\u{1F4D6} Review the Lesson</button><button class='big-btn' style='background:rgba(0,0,0,0.1);border:2px solid rgba(0,0,0,0.2);color:#555' data-action='goHome'>\u{1F3E0} Back to Home</button></div>";
+}
+function renderTechLesson(){
+  if(!S.lesson)return renderHome();
+  if(S.techComplete)return"<div class='wrap' style='text-align:center;padding-top:44px'><div style='font-size:74px;margin-bottom:14px'>\u{1F3C6}</div><h1 style='font-size:26px;color:"+S.lesson.accent+";margin-bottom:9px'>You Did It!</h1><p style='font-size:16px;color:#555;line-height:1.7;margin-bottom:22px'>You completed every step of<br><strong>"+S.lesson.title+"</strong>.<br>That is something to be really proud of!</p><button class='big-btn' style='background:white;color:"+S.lesson.accent+";border:2px solid "+S.lesson.accent+";max-width:320px' data-action='techRepeat'>\u{1F501} Practice Again</button><button class='big-btn' style='background:linear-gradient(135deg,"+S.lesson.light+","+S.lesson.accent+");max-width:320px' data-action='goHome'>\u{1F3E0} Back to All Lessons</button></div>";
+  const s=S.lesson.steps[S.step],pct=(S.step/S.lesson.steps.length)*100;
+  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:"+S.lesson.accent+"' data-action='goHome'>← Home</button><div><div style='font-size:14px;font-weight:bold;color:#333'>"+S.lesson.icon+" "+S.lesson.title+"</div><div style='font-size:12px;color:#999;margin-top:1px'>Step "+(S.step+1)+" of "+S.lesson.steps.length+"</div></div></div><div class='prog-wrap'><div class='prog-bar' style='width:"+pct+"%;background:linear-gradient(90deg,"+S.lesson.light+","+S.lesson.accent+")'></div></div><div class='card' style='border-left:5px solid "+S.lesson.accent+"'><div style='font-size:44px;text-align:center;margin-bottom:11px'>"+s.img+"</div><h2 style='font-size:18px;color:"+S.lesson.accent+";margin:0 0 9px;text-align:center'>"+s.title+"</h2><p style='font-size:15px;color:#333;line-height:1.8;margin:0 0 13px;text-align:center'>"+s.text+"</p><div style='background:"+S.lesson.color+";border-radius:12px;padding:10px 13px;font-size:14px;color:#444;line-height:1.6;margin-bottom:11px'>"+s.tip+"</div><button class='big-btn' style='background:"+S.lesson.accent+";margin:0' data-action='readStep'>\u{1F50A} Read This Step Aloud</button></div><div style='display:flex;gap:9px'><button style='flex:1;padding:14px;border-radius:15px;background:"+(S.step===0?"#e0e0e0":"#f5f5f5")+";color:"+(S.step===0?"#bbb":"#555")+";font-size:14px;font-weight:bold;border:none;font-family:Georgia,serif;cursor:"+(S.step===0?"not-allowed":"pointer")+"' data-action='techBack'"+(S.step===0?" disabled":"")+">← Go Back</button><button style='flex:2;padding:14px;border-radius:15px;background:linear-gradient(135deg,"+S.lesson.light+","+S.lesson.accent+");color:#fff;font-size:16px;font-weight:bold;border:none;font-family:Georgia,serif;cursor:pointer' data-action='techNext'>"+(S.step+1>=S.lesson.steps.length?"I Did It!":"Got It! Next →")+"</button></div><p style='text-align:center;color:#aaa;font-size:12px;margin-top:12px;font-style:italic'>No rush! Read it as many times as you need. \u{1F49B}</p></div>";
+}
+function renderAskAI(){
+  const val=S.aiRequest||"";
+  const savedCards=S.savedGuides.length
+    ?"<div style='margin-top:4px'><div class='sec-label' style='margin-bottom:8px'>YOUR SAVED GUIDES</div>"
+      +S.savedGuides.map((g,i)=>
+        "<div style='background:rgba(255,255,255,0.97);border-radius:13px;padding:13px 15px;margin-bottom:9px;display:flex;align-items:center;gap:11px;box-shadow:0 3px 14px rgba(0,0,0,0.2);border-left:4px solid #004C54'>"
+        +"<span style='font-size:26px'>📖</span>"
+        +"<div style='flex:1;min-width:0'>"
+        +"<div style='font-size:14px;font-weight:bold;color:#222;font-family:Oswald,sans-serif;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>"+escHtml(g.title)+"</div>"
+        +"<div style='font-size:11px;color:#555'>"+escHtml(g.date)+" · "+g.lesson.steps.length+" steps</div>"
+        +"</div>"
+        +"<button style='background:#004C54;color:#fff;border:none;border-radius:9px;padding:7px 12px;font-size:12px;font-family:Oswald,sans-serif;cursor:pointer;white-space:nowrap;letter-spacing:0.04em' data-action='loadGuide' data-i='"+i+"'>GO ›</button>"
+        +"</div>"
+      ).join("")
+      +"</div>"
+    :"";
+  return"<div class='wrap'>"
+  +"<div class='top-bar'><button class='home-btn' data-action='goHome'>← Home</button><div><div style='font-size:15px;font-weight:bold;color:#fff;font-family:Oswald,sans-serif;letter-spacing:0.05em'>BUILD A HOW-TO GUIDE</div><div style='font-size:12px;color:rgba(255,255,255,0.7);margin-top:1px'>Tell me what you need help with!</div></div></div>"
+  +"<div class='ai-bubble'>🤖 Hi there! Type what you need help with and I will build you a step-by-step guide just like the ones in the app. I save every guide I make for you so you can come back to it anytime!</div>"
+  +"<div class='card'>"
+  +"<label style='font-size:13px;font-weight:bold;color:#555;font-family:Oswald,sans-serif;letter-spacing:0.05em;display:block;margin-bottom:8px'>WHAT DO YOU NEED HELP WITH?</label>"
+  +"<textarea id='aiInput' rows='4' placeholder='Example: How do I video call my grandkids on my iPhone?\nOr: How do I pay a bill online?\nOr: How do I use the self-checkout at the store?'>"+val+"</textarea>"
+  +"<div style='font-size:12px;color:#aaa;margin-top:6px;font-style:italic'>Type as much or as little as you like. No wrong answers!</div>"
+  +"</div>"
+  +"<button class='big-btn' style='background:linear-gradient(135deg,#004C54,#002f35)' data-action='submitAI'>Build My Guide! 💬</button>"
+  +savedCards
+  +"<button class='big-btn' style='background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2)' data-action='goHome'>← Back Home</button>"
+  +"</div>";
+}
+function renderAILesson(){
+  if(!S.aiLesson){
+    if(S.aiLoading){
+      return"<div class='wrap' style='text-align:center;padding-top:80px'>"
+      +"<div class='top-bar'><button class='home-btn' data-action='goHome'>← Home</button><div style='color:#fff;font-size:15px;font-weight:bold;font-family:Oswald,sans-serif'>Building Your Guide...</div></div>"
+      +"<div style='margin-top:40px'>"
+      +"<div style='font-size:52px;margin-bottom:20px'>🤖</div>"
+      +"<div class='ai-thinking'><div class='dot'></div><div class='dot'></div><div class='dot'></div></div>"
+      +"<p style='color:rgba(255,255,255,0.85);font-size:16px;margin-top:18px;line-height:1.8'>Building your personal guide<br><em style='color:#A5ACAF'>\""+escHtml(S.aiRequest)+"\"</em></p>"
+      +"<p style='color:rgba(255,255,255,0.6);font-size:13px;margin-top:12px'>This takes about 10-20 seconds...</p>"
+      +"</div></div>";
+    }
+    if(S.aiError){
+      return"<div class='wrap'>"
+      +"<div class='top-bar'><button class='home-btn' data-action='goHome'>← Home</button><div style='color:#fff;font-size:15px;font-weight:bold;font-family:Oswald,sans-serif'>Oops!</div></div>"
+      +"<div class='card'><div style='font-size:40px;text-align:center;margin-bottom:12px'>😬</div>"
+      +"<p style='color:#333;font-size:15px;line-height:1.7;text-align:center'>I had a little trouble building that guide. It might be a connection issue.<br><br>Let me try again!</p></div>"
+      +"<button class='big-btn' style='background:linear-gradient(135deg,#004C54,#002f35)' data-action='retryAI'>Try Again</button>"
+      +"<button class='big-btn' style='background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2)' data-action='goAskAI'>✏ Edit My Request</button>"
+      +"</div>";
+    }
+    return renderAskAI();
+  }
+
+  const lesson=S.aiLesson;
+  const step=S.aiStep;
+  const steps=lesson.steps||[];
+  if(S.aiComplete){
+    return"<div class='wrap' style='text-align:center;padding-top:44px'>"
+    +"<div style='font-size:72px;margin-bottom:12px'>🏆</div>"
+    +"<h1 style='font-size:26px;color:#fff;margin-bottom:8px;font-family:Oswald,sans-serif;letter-spacing:0.05em'>YOU DID IT!</h1>"
+    +"<p style='color:rgba(255,255,255,0.85);font-size:15px;line-height:1.7;margin-bottom:22px'>You completed every step of<br><strong>"+escHtml(lesson.title)+"</strong><br>That is something to be proud of!</p>"
+    +"<button class='big-btn' style='background:linear-gradient(135deg,#004C54,#002f35)' data-action='aiRepeat'>🔁 Go Through It Again</button>"
+    +"<button class='big-btn' style='background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25)' data-action='goAskAI'>Ask for Another Guide</button>"
+    +"<button class='big-btn' style='background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15)' data-action='goHome'>🏠 Back Home</button>"
+    +"</div>";
+  }
+
+  const s=steps[step]||{title:"",text:"",tip:""};
+  const pct=steps.length?(step/steps.length)*100:0;
+  return"<div class='wrap'>"
+  +"<div class='top-bar'><button class='home-btn' data-action='goHome'>← Home</button>"
+  +"<div><div style='font-size:14px;font-weight:bold;color:#fff;font-family:Oswald,sans-serif;letter-spacing:0.04em'>"+escHtml(lesson.title).substring(0,36)+"</div>"
+  +"<div style='font-size:12px;color:rgba(255,255,255,0.7);margin-top:1px'>Step "+(step+1)+" of "+steps.length+"</div></div></div>"
+  +"<div class='prog-wrap'><div class='prog-bar' style='width:"+pct+"%'></div></div>"
+  +"<div class='step-card'>"
+  +"<div style='font-size:42px;text-align:center;margin-bottom:10px'>"+escHtml(s.icon||"\u{1F4CC}")+"</div>"
+  +"<h2 style='font-size:18px;color:#004C54;margin:0 0 10px;text-align:center;font-family:Oswald,sans-serif;letter-spacing:0.03em'>"+escHtml(s.title)+"</h2>"
+  +"<p style='font-size:15px;color:#333;line-height:1.8;margin:0 0 13px;text-align:center'>"+escHtml(s.text)+"</p>"
+  +(s.tip?"<div style='background:#e6f4f5;border-radius:11px;padding:10px 13px;font-size:13px;color:#444;line-height:1.6;margin-bottom:11px;border-left:3px solid #004C54'>"+escHtml(s.tip)+"</div>":"")
+  +"<button class='big-btn' style='background:linear-gradient(135deg,#004C54,#002f35);margin:0' data-action='readAIStep'>🔊 Read This Step Aloud</button>"
+  +"</div>"
+  +"<div style='display:flex;gap:9px'>"
+  +"<button style='flex:1;padding:13px;border-radius:13px;background:"+(step===0?"#e0e0e0":"rgba(255,255,255,0.15)")+";color:"+(step===0?"#bbb":"#fff")+";font-size:14px;font-weight:bold;border:none;font-family:Oswald,sans-serif;cursor:"+(step===0?"not-allowed":"pointer")+";letter-spacing:0.05em' data-action='aiBack'"+(step===0?" disabled":"")+">← BACK</button>"
+  +"<button style='flex:2;padding:13px;border-radius:13px;background:linear-gradient(135deg,#A5ACAF,#004C54);color:#fff;font-size:15px;font-weight:bold;border:none;font-family:Oswald,sans-serif;cursor:pointer;letter-spacing:0.05em' data-action='aiNext'>"+(step+1>=steps.length?"I DID IT! 🏆":"GOT IT! NEXT →")+"</button>"
+  +"</div>"
+  +"<p style='text-align:center;color:rgba(255,255,255,0.55);font-size:12px;margin-top:12px;font-style:italic'>No rush. Read as many times as you need. 💛</p>"
+  +"</div>";
+}
+
+function escHtml(s){
+  if(!s)return"";
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+async function fetchAILesson(request){
+  S.aiLoading=true;S.aiError=false;S.aiLesson=null;S.screen="aiLesson";r();
+  try{
+    const sys="You are building a friendly, simple step-by-step how-to guide for a non-technical adult woman who gets nervous with technology and new tasks. She is a Philadelphia Eagles fan and loves warm encouragement. Return ONLY valid JSON, no markdown, no explanation. The JSON must be: {\"title\":\"Short friendly title\",\"steps\":[{\"icon\":\"single emoji\",\"title\":\"Step title\",\"text\":\"Clear simple instruction in plain English. One idea per step. Warm and reassuring tone.\",\"tip\":\"A short encouraging tip starting with a lightbulb emoji\"}]}. Include 5 to 8 steps. Make every step feel safe and doable. Use simple words. If a step involves technology, explain exactly what to look for on screen. Always be warm and never make her feel dumb.";
+    const resp=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:"Please build a step-by-step guide for: "+request}],system:sys})
+    });
+    const data=await resp.json();
+    let text="";
+    if(data.content&&data.content.length>0){
+      text=data.content.filter(b=>b.type==="text").map(b=>b.text).join("");
+    }
+    // Strip any markdown code fences
+    text=text.replace(/```json\s*/gi,"").replace(/```\s*/g,"").trim();
+    const lesson=JSON.parse(text);
+    if(!lesson.steps||!lesson.steps.length)throw new Error("No steps");
+    S.aiLesson=lesson;
+    // Save to savedGuides list if not already there
+    const exists=S.savedGuides.some(g=>g.title===lesson.title&&g.request===request);
+    if(!exists){S.savedGuides.unshift({title:lesson.title,request:request,lesson:lesson,date:new Date().toLocaleDateString()});if(S.savedGuides.length>20)S.savedGuides=S.savedGuides.slice(0,20);saveGuides();}
+    S.aiStep=0;S.aiComplete=false;S.aiLoading=false;
+  }catch(e){
+    S.aiLoading=false;S.aiError=true;
+  }
+  r();
+}
+
+function renderLinks(){
+  const cards=pretestLinks.map(l=>"<div class='link-card'><a href='"+l.url+"' target='_blank' rel='noopener noreferrer'>"+l.name+"</a><p>"+l.desc+"</p></div>").join("");
+  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goHome'>← Home</button><div style='color:#fff;font-size:15px;font-weight:bold'>\u{1F517} Official Pretest Resources</div></div><div style='background:rgba(255,255,255,0.15);border-radius:13px;padding:11px 15px;margin-bottom:14px;color:#fff;font-size:13px;line-height:1.7'>\u{1F4A1} These are real, free resources. Tap any link to open it in your browser!</div>"+cards+"<div style='background:rgba(255,255,255,0.12);border-radius:13px;padding:12px 15px;margin-top:5px;color:#fff;font-size:13px;line-height:1.7'>\u{1F3C6} The real ServSafe exam is 90 questions. Passing score is <strong>75%</strong>. The online proctored version can be taken from home with a webcam. You have got this!</div></div>";
+}
+function bindEvents(){
+  document.querySelectorAll("[data-action]").forEach(el=>{
+    el.addEventListener("click",()=>{
+      const a=el.dataset.action;
+      if(a==="goHome"){S.screen="home";stopSpeech();r();}
+      else if(a==="goServSafe"){S.screen="servsafe";r();}
+      else if(a==="goSelectExam"){S.screen="selectExam";r();}
+      else if(a==="goReports"){S.screen="reports";r();}
+      else if(a==="openLinks"){S.screen="links";r();}
+      else if(a==="clearHistory"){if(confirm("Clear all exam history? This cannot be undone.")){S.examHistory=[];saveHist();r();}}
+      else if(a==="openTech"){const l=techLessons.find(x=>x.id===el.dataset.id);S.lesson=l;S.step=0;S.techComplete=false;S.screen="techLesson";stopSpeech();r();}
+      else if(a==="techNext"){if(S.step+1>=S.lesson.steps.length){S.techDone[S.lesson.id]=true;S.techComplete=true;stopSpeech();try{localStorage.setItem("pp_techDone",JSON.stringify(S.techDone));}catch(e){} scheduleSave();r();}else{const msg=cheers[Math.floor(Math.random()*cheers.length)];S.showCheer=true;S.cheerMsg=msg;speak(msg);r();setTimeout(()=>{S.showCheer=false;S.step++;r();},2000);}}
+      else if(a==="techBack"){if(S.step>0){stopSpeech();S.step--;r();}}
+      else if(a==="techRepeat"){S.step=0;S.techComplete=false;r();}
+      else if(a==="readStep"){const s=S.lesson.steps[S.step];speak("Step "+(S.step+1)+". "+s.title+". "+s.text+". Tip: "+s.tip.replace(/\u{1F4A1}/gu,""));}
+      else if(a==="openTopic"){const t=ssTopics.find(x=>x.id===el.dataset.id);S.topic=t;S.lessonPage=0;S.quizIdx=0;S.quizSel=null;S.quizAnswers=[];S.screen="servsafeLesson";stopSpeech();r();}
+      else if(a==="lessonNext"){if(S.lessonPage+1>=S.topic.lesson.length){S.screen="quiz";S.quizIdx=0;S.quizSel=null;S.quizAnswers=[];stopSpeech();r();}else{stopSpeech();S.lessonPage++;r();}}
+      else if(a==="lessonBack"){if(S.lessonPage>0){stopSpeech();S.lessonPage--;r();}}
+      else if(a==="readLesson"){speak(S.topic.lesson[S.lessonPage].t);}
+      else if(a==="selectQuiz"){if(S.quizSel===null){S.quizSel=parseInt(el.dataset.i);r();}}
+      else if(a==="quizNext"){const newA=[...S.quizAnswers,S.quizSel];if(S.quizIdx+1>=S.topic.questions.length){S.quizAnswers=newA;const sc=newA.filter((a,i)=>a===S.topic.questions[i].ans).length;if(sc/S.topic.questions.length>=0.6){S.topicDone[S.topic.id]=true;try{localStorage.setItem("pp_topicDone",JSON.stringify(S.topicDone));}catch(e){} scheduleSave();}S.screen="quizResult";r();}else{S.quizAnswers=newA;S.quizIdx++;S.quizSel=null;r();}}
+      else if(a==="retryQuiz"){S.quizIdx=0;S.quizSel=null;S.quizAnswers=[];S.screen="quiz";r();}
+      else if(a==="reviewLesson"){S.lessonPage=0;S.screen="servsafeLesson";r();}
+      else if(a==="startExam"){S.examVersion=el.dataset.ver;S.examQs=buildExam(S.examVersion);S.examIdx=0;S.examSel=null;S.examAnswers=[];S.screen="practiceExam";stopSpeech();r();}
+      else if(a==="selectExam"){if(S.examSel===null){S.examSel=parseInt(el.dataset.i);r();}}
+      else if(a==="examNext"){const newA=[...S.examAnswers,S.examSel];if(S.examIdx+1>=S.examQs.length){S.examAnswers=newA;S.screen="examResult";r();}else{S.examAnswers=newA;S.examIdx++;S.examSel=null;r();}}
+      else if(a==="retryExam"){S.examQs=buildExam(S.examVersion);S.examIdx=0;S.examSel=null;S.examAnswers=[];S.screen="practiceExam";r();}
+      else if(a==="goAskAI"){S.screen="askAI";stopSpeech();r();}
+      else if(a==="submitAI"){const inp=document.getElementById("aiInput");const val=inp?inp.value.trim():"";if(!val){alert("Please type what you need help with first!");return;}S.aiRequest=val;fetchAILesson(val);}
+      else if(a==="retryAI"){fetchAILesson(S.aiRequest);}
+      else if(a==="aiNext"){if(S.aiLesson&&S.aiStep+1>=S.aiLesson.steps.length){S.aiComplete=true;stopSpeech();r();}else{const msg=cheers[Math.floor(Math.random()*cheers.length)];S.showCheer=true;S.cheerMsg=msg;speak(msg);r();setTimeout(()=>{S.showCheer=false;S.aiStep++;r();},2000);}}
+      else if(a==="aiBack"){if(S.aiStep>0){stopSpeech();S.aiStep--;r();}}
+      else if(a==="aiRepeat"){S.aiStep=0;S.aiComplete=false;r();}
+      else if(a==="readAIStep"){if(S.aiLesson&&S.aiLesson.steps){const s=S.aiLesson.steps[S.aiStep];speak("Step "+(S.aiStep+1)+". "+s.title+". "+s.text+(s.tip?". Tip: "+s.tip.replace(/💡/g,""):""));}}
+      else if(a==="loadGuide"){const i=parseInt(el.dataset.i);const g=S.savedGuides[i];if(g){S.aiRequest=g.request;S.aiLesson=g.lesson;S.aiStep=0;S.aiComplete=false;S.aiLoading=false;S.aiError=false;S.screen="aiLesson";r();}}
+    });
+  });
+}
+window.addEventListener("load", async function() {
+  r(); // render immediately with local data
+  await loadFromCloud(); // then pull latest from cloud
+  r(); // re-render with cloud data
+});
+</script></body></html>
