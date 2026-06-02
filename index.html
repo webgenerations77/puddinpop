@@ -668,7 +668,38 @@ const cheers=["You are doing wonderfully!","That is exactly right! Keep going!",
 function buildExam(ver){return BANK[ver].map((q,i)=>({...q,topicIdx:Math.floor(i/18)}));}
 function stopSpeech(){try{if(window.speechSynthesis)window.speechSynthesis.cancel();}catch(e){}}
 function speak(txt){stopSpeech();if(!window.speechSynthesis)return;try{const u=new SpeechSynthesisUtterance(txt);u.rate=0.88;u.pitch=1.05;u.volume=1;const voices=window.speechSynthesis.getVoices();const v=voices.find(v=>v.name.includes("Samantha")||v.name.includes("Karen")||(v.lang&&v.lang.startsWith("en")&&v.localService));if(v)u.voice=v;window.speechSynthesis.speak(u);}catch(e){}}
-function r(){document.getElementById("app").innerHTML=render();bindEvents();}
+function r(pushState){
+  document.getElementById("app").innerHTML=render();
+  bindEvents();
+  if(pushState!==false){
+    // Push a history entry whenever the screen changes
+    const state={screen:S.screen};
+    const title="Puddin POP";
+    if(history.state===null||history.state.screen!==S.screen){
+      history.pushState(state,title,"#"+S.screen);
+    }
+  }
+}
+
+// Handle browser back/forward button
+window.addEventListener("popstate",function(e){
+  if(e.state&&e.state.screen){
+    const prev=e.state.screen;
+    // Restore screen without pushing another history entry
+    S.screen=prev;
+    // Clear transient states that don't make sense to restore mid-flow
+    if(prev==="home"){S.showCheer=false;stopSpeech();}
+    if(prev==="servsafe"){S.showCheer=false;}
+    if(prev==="askAI"){S.aiLoading=false;}
+    r(false);
+  } else {
+    // No state means we're at the very start — go home
+    S.screen="home";
+    S.showCheer=false;
+    stopSpeech();
+    r(false);
+  }
+});
 function render(){
   const bgMap={home:"linear-gradient(160deg,#004C54 0%,#002f35 100%)",techLesson:S.lesson?"linear-gradient(160deg,"+S.lesson.color+" 0%,#fff 60%)":"#fff",servsafeLesson:S.topic?"linear-gradient(160deg,"+S.topic.color+" 0%,#fff 60%)":"#fff",quiz:S.topic?"linear-gradient(160deg,"+S.topic.color+" 0%,#fff 60%)":"#fff",quizResult:S.topic?"linear-gradient(160deg,"+S.topic.color+" 0%,#fff 60%)":"#fff",selectExam:"linear-gradient(135deg,#1a237e,#283593 50%,#3949AB)",practiceExam:"linear-gradient(135deg,#263238,#455A64)",examResult:"linear-gradient(135deg,#263238,#455A64)",reports:"linear-gradient(135deg,#004D40,#00695C)",links:"linear-gradient(135deg,#004C54,#002f35)",servsafe:"linear-gradient(160deg,#004C54 0%,#002f35 100%)",askAI:"linear-gradient(160deg,#002f35 0%,#004C54 100%)",aiLesson:"linear-gradient(160deg,#002f35 0%,#004C54 100%)"};
   document.body.style.background=bgMap[S.screen]||"#f5f5f5";
@@ -913,7 +944,7 @@ function bindEvents(){
       else if(a==="openLinks"){S.screen="links";r();}
       else if(a==="clearHistory"){if(confirm("Clear all exam history? This cannot be undone.")){S.examHistory=[];saveHist();r();}}
       else if(a==="openTech"){const l=techLessons.find(x=>x.id===el.dataset.id);S.lesson=l;S.step=0;S.techComplete=false;S.screen="techLesson";stopSpeech();r();}
-      else if(a==="techNext"){if(S.step+1>=S.lesson.steps.length){S.techDone[S.lesson.id]=true;S.techComplete=true;stopSpeech();try{localStorage.setItem("pp_techDone",JSON.stringify(S.techDone));}catch(e){} scheduleSave();r();}else{const msg=cheers[Math.floor(Math.random()*cheers.length)];S.showCheer=true;S.cheerMsg=msg;speak(msg);r();setTimeout(()=>{S.showCheer=false;S.step++;r();},2000);}}
+      else if(a==="techNext"){if(S.step+1>=S.lesson.steps.length){S.techDone[S.lesson.id]=true;S.techComplete=true;stopSpeech();try{localStorage.setItem("pp_techDone",JSON.stringify(S.techDone));}catch(e){} scheduleSave();r();}else{const msg=cheers[Math.floor(Math.random()*cheers.length)];S.showCheer=true;S.cheerMsg=msg;speak(msg);r(false);setTimeout(()=>{S.showCheer=false;S.step++;r(false);},2000);}}
       else if(a==="techBack"){if(S.step>0){stopSpeech();S.step--;r();}}
       else if(a==="techRepeat"){S.step=0;S.techComplete=false;r();}
       else if(a==="readStep"){const s=S.lesson.steps[S.step];speak("Step "+(S.step+1)+". "+s.title+". "+s.text+". Tip: "+s.tip.replace(/\u{1F4A1}/gu,""));}
@@ -921,18 +952,18 @@ function bindEvents(){
       else if(a==="lessonNext"){if(S.lessonPage+1>=S.topic.lesson.length){S.screen="quiz";S.quizIdx=0;S.quizSel=null;S.quizAnswers=[];stopSpeech();r();}else{stopSpeech();S.lessonPage++;r();}}
       else if(a==="lessonBack"){if(S.lessonPage>0){stopSpeech();S.lessonPage--;r();}}
       else if(a==="readLesson"){speak(S.topic.lesson[S.lessonPage].t);}
-      else if(a==="selectQuiz"){if(S.quizSel===null){S.quizSel=parseInt(el.dataset.i);r();}}
+      else if(a==="selectQuiz"){if(S.quizSel===null){S.quizSel=parseInt(el.dataset.i);r(false);}}
       else if(a==="quizNext"){const newA=[...S.quizAnswers,S.quizSel];if(S.quizIdx+1>=S.topic.questions.length){S.quizAnswers=newA;const sc=newA.filter((a,i)=>a===S.topic.questions[i].ans).length;if(sc/S.topic.questions.length>=0.6){S.topicDone[S.topic.id]=true;try{localStorage.setItem("pp_topicDone",JSON.stringify(S.topicDone));}catch(e){} scheduleSave();}S.screen="quizResult";r();}else{S.quizAnswers=newA;S.quizIdx++;S.quizSel=null;r();}}
       else if(a==="retryQuiz"){S.quizIdx=0;S.quizSel=null;S.quizAnswers=[];S.screen="quiz";r();}
       else if(a==="reviewLesson"){S.lessonPage=0;S.screen="servsafeLesson";r();}
       else if(a==="startExam"){S.examVersion=el.dataset.ver;S.examQs=buildExam(S.examVersion);S.examIdx=0;S.examSel=null;S.examAnswers=[];S.screen="practiceExam";stopSpeech();r();}
-      else if(a==="selectExam"){if(S.examSel===null){S.examSel=parseInt(el.dataset.i);r();}}
+      else if(a==="selectExam"){if(S.examSel===null){S.examSel=parseInt(el.dataset.i);r(false);}}
       else if(a==="examNext"){const newA=[...S.examAnswers,S.examSel];if(S.examIdx+1>=S.examQs.length){S.examAnswers=newA;S.screen="examResult";r();}else{S.examAnswers=newA;S.examIdx++;S.examSel=null;r();}}
       else if(a==="retryExam"){S.examQs=buildExam(S.examVersion);S.examIdx=0;S.examSel=null;S.examAnswers=[];S.screen="practiceExam";r();}
       else if(a==="goAskAI"){S.screen="askAI";stopSpeech();r();}
       else if(a==="submitAI"){const inp=document.getElementById("aiInput");const val=inp?inp.value.trim():"";if(!val){alert("Please type what you need help with first!");return;}S.aiRequest=val;fetchAILesson(val);}
       else if(a==="retryAI"){fetchAILesson(S.aiRequest);}
-      else if(a==="aiNext"){if(S.aiLesson&&S.aiStep+1>=S.aiLesson.steps.length){S.aiComplete=true;stopSpeech();r();}else{const msg=cheers[Math.floor(Math.random()*cheers.length)];S.showCheer=true;S.cheerMsg=msg;speak(msg);r();setTimeout(()=>{S.showCheer=false;S.aiStep++;r();},2000);}}
+      else if(a==="aiNext"){if(S.aiLesson&&S.aiStep+1>=S.aiLesson.steps.length){S.aiComplete=true;stopSpeech();r();}else{const msg=cheers[Math.floor(Math.random()*cheers.length)];S.showCheer=true;S.cheerMsg=msg;speak(msg);r(false);setTimeout(()=>{S.showCheer=false;S.aiStep++;r(false);},2000);}}
       else if(a==="aiBack"){if(S.aiStep>0){stopSpeech();S.aiStep--;r();}}
       else if(a==="aiRepeat"){S.aiStep=0;S.aiComplete=false;r();}
       else if(a==="readAIStep"){if(S.aiLesson&&S.aiLesson.steps){const s=S.aiLesson.steps[S.aiStep];speak("Step "+(S.aiStep+1)+". "+s.title+". "+s.text+(s.tip?". Tip: "+s.tip.replace(/💡/g,""):""));}}
@@ -941,8 +972,10 @@ function bindEvents(){
   });
 }
 window.addEventListener("load", async function() {
-  r(); // render immediately with local data
+  // Seed the initial history entry for the home screen
+  history.replaceState({screen:"home"},"Puddin POP","#home");
+  r(false); // render immediately with local data (no extra push)
   await loadFromCloud(); // then pull latest from cloud
-  r(); // re-render with cloud data
+  r(false); // re-render with cloud data (same screen, no push)
 });
 </script></body></html>
