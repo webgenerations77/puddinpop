@@ -59,11 +59,31 @@ h1,h2,h3{font-family:'Oswald',sans-serif;letter-spacing:0.03em}
 textarea{width:100%;border:2px solid #ddd;border-radius:12px;padding:13px 14px;font-size:15px;font-family:'Lora',Georgia,serif;resize:none;outline:none;transition:border-color 0.2s;line-height:1.6;color:#222}
 textarea:focus{border-color:var(--green)}
 .step-card{background:#fff;border-radius:16px;padding:20px 17px;box-shadow:0 6px 28px rgba(0,0,0,0.18);margin-bottom:12px;border-top:4px solid var(--green)}
+
+.fb-label{font-size:12px;font-weight:bold;color:#555;font-family:'Oswald',sans-serif;letter-spacing:0.06em;display:block;margin-bottom:6px;text-transform:uppercase}
+.fb-input{width:100%;border:2px solid #ddd;border-radius:11px;padding:11px 13px;font-size:15px;font-family:'Lora',Georgia,serif;outline:none;transition:border-color 0.2s;color:#222;background:#fafafa}
+.fb-input:focus{border-color:#004C54;background:#fff}
+.fb-textarea{width:100%;border:2px solid #ddd;border-radius:11px;padding:11px 13px;font-size:15px;font-family:'Lora',Georgia,serif;resize:none;outline:none;transition:border-color 0.2s;color:#222;background:#fafafa;line-height:1.6}
+.fb-textarea:focus{border-color:#004C54;background:#fff}
+.fb-tag{display:inline-block;padding:6px 13px;border-radius:99px;border:2px solid #ddd;font-size:13px;font-family:'Lora',Georgia,serif;cursor:pointer;margin:4px 4px 4px 0;background:#fff;color:#444;transition:all 0.15s}
+.fb-tag.active{background:#004C54;border-color:#004C54;color:#fff}
+.fb-stars{display:flex;gap:6px;margin:4px 0}
+.fb-star{font-size:30px;cursor:pointer;transition:transform 0.1s;filter:grayscale(1) opacity(0.4)}
+.fb-star.lit{filter:none}
+.fb-star:hover{transform:scale(1.15)}
+.fb-sending{display:flex;align-items:center;justify-content:center;gap:10px;padding:16px;color:#004C54;font-family:'Oswald',sans-serif;font-size:15px;letter-spacing:0.05em}
+.fb-spinner{width:22px;height:22px;border:3px solid #e0f0e8;border-top-color:#004C54;border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 <div id="app"></div>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
+
+(function(){emailjs.init({publicKey:"Gekp4bAXEDvqr4H5v"});})();
+const EMAILJS_SERVICE="service_wicmvh8";
+const EMAILJS_TEMPLATE="template_gdfz5op";
 const TOPICS=["Food Safety & Contamination","Time & Temperature","Personal Hygiene","Cleaning & Sanitizing","Pest Control & Facilities"];
 function q(question,opts,ans,ex){return{q:question,opts:opts,ans:ans,ex:ex};}
 const BANK={v1:[
@@ -341,6 +361,7 @@ q("Why is it important to remove clutter from storage areas?",["To improve appea
 q("Best practice for receiving food deliveries to prevent pests?",["Accept all deliveries at front entrance","Inspect deliveries carefully before bringing them inside, rejecting infested items","Accept deliveries quickly to minimize door open time","Deliveries are pre-screened so no inspection is needed"],1,"All deliveries must be carefully inspected for signs of pest activity.")
 ],
 v4:[
+],v4:[
 q("MOST important factor in preventing foodborne illness?",["Using expensive equipment","Temperature control and proper handwashing","Buying premium ingredients","Working quickly"],1,"Temperature control and proper handwashing are the foundation of prevention."),
 q("Which pathogen produces heat-resistant spores?",["Norovirus","Clostridium perfringens","E. coli O157:H7","Salmonella"],1,"C. perfringens produces heat-resistant spores that survive cooking."),
 q("Which best describes the incubation period of a pathogen?",["Time it takes to kill the pathogen","Time between exposure and when symptoms appear","Time food spends in the danger zone","Time needed to cook food safely"],1,"The incubation period is the time between consuming contaminated food and when symptoms appear."),
@@ -433,6 +454,7 @@ q("Best description of role of Person in Charge in pest control?",["Apply pestic
 q("What to do with food stored in area where rodents were found?",["Inspect and use if it looks okay","Discard all food in the affected area regardless of packaging","Rewrap and refrigerate","Cook thoroughly before serving"],1,"All food in an area with rodent activity must be discarded due to contamination risk.")
 ],
 v5:[
+],v5:[
 q("Which BEST defines a foodborne illness?",["Feeling sick after eating any meal","A disease transmitted to people through food containing harmful agents","Getting sick from overeating","An allergic reaction to food"],1,"A foodborne illness is a disease caused by eating food containing harmful agents."),
 q("PRIMARY way pathogens are transferred from food handler to food?",["Breathing near food","Improper handwashing via the fecal-oral route","Wearing the same clothes","Working too quickly"],1,"The fecal-oral route via improperly washed hands is the most common transfer route."),
 q("Most effective control measure against Norovirus?",["Cooking food to 165F","Proper handwashing by food handlers","Refrigerating all food","Using bleach on all surfaces"],1,"Norovirus is most effectively controlled through rigorous proper handwashing."),
@@ -553,6 +575,21 @@ async function loadFromCloud() {
     if (record.savedGuides) S.savedGuides = record.savedGuides;
     if (record.techDone) S.techDone = record.techDone;
     if (record.topicDone) S.topicDone = record.topicDone;
+    if (record.eggPin) S.cloudPin = record.eggPin;
+    if (record.hockeyStats) S.hockeyStats = record.hockeyStats;
+    // Load rich lessons from GitHub
+    try {
+      const ghResp = await fetch("https://raw.githubusercontent.com/webgenerations77/kenzie/main/lessons.json");
+      if (ghResp.ok) {
+        const ghData = await ghResp.json();
+        if (ghData.topics) {
+          ghData.topics.forEach(lc => {
+            const topic = ssTopics.find(t => t.id === lc.id);
+            if (topic && lc.lesson && lc.lesson.length > 0) topic.lesson = lc.lesson;
+          });
+        }
+      }
+    } catch(e) { console.warn("GitHub lessons failed:", e.message); }
     lastSyncedData = JSON.stringify(buildSyncPayload());
     console.log("Loaded from cloud ✓");
     const el=document.getElementById("syncStatus");
@@ -563,11 +600,32 @@ async function loadFromCloud() {
 }
 
 function buildSyncPayload() {
+  const examsTaken = S.examHistory.length;
+  const passed = S.examHistory.filter(e=>e.pct>=75).length;
+  const avg = examsTaken ? Math.round(S.examHistory.reduce((s,e)=>s+e.pct,0)/examsTaken) : 0;
+  const best = examsTaken ? Math.max(...S.examHistory.map(e=>e.pct)) : 0;
+  const topicsDone = ssTopics ? ssTopics.filter(t=>S.topicDone[t.id]).length : 0;
+  const versionBests = {};
+  ["v1","v2","v3","v4","v5"].forEach(ver=>{
+    const h = S.examHistory.filter(e=>e.version===ver);
+    if(h.length) versionBests[ver] = Math.max(...h.map(e=>e.pct));
+  });
+  const topicAverages = {};
+  if(typeof TOPICS !== "undefined") {
+    TOPICS.forEach((name,ti)=>{
+      const all = S.examHistory.filter(e=>e.topicBreakdown).map(e=>e.topicBreakdown[ti]).filter(b=>b&&b.tot>0);
+      if(all.length) topicAverages[name] = Math.round(all.reduce((s,b)=>s+b.tp,0)/all.length);
+    });
+  }
   return {
     examHistory: S.examHistory,
     savedGuides: S.savedGuides,
     techDone: S.techDone,
-    topicDone: S.topicDone
+    topicDone: S.topicDone,
+    stats: { examsTaken, examsPassed:passed, averageScore:avg, bestScore:best, topicsCompleted:topicsDone, lastUpdated:new Date().toISOString() },
+    versionBests, topicAverages,
+    eggPin: "1997",
+    hockeyStats: ["The Red Wings have 11 Stanley Cups. The Flyers are still waiting for their second.","Steve Yzerman captained Detroit for 20 seasons — the longest captaincy in NHL history.","Detroit swept the Flyers 4-0 in the 1997 Stanley Cup Finals. The Eagles went 6-9-1 that year.","Gordie Howe played in FIVE different decades: the 40s, 50s, 60s, 70s, and 80s.","The Red Wings retired 9 jersey numbers. Nine legends in one franchise.","Dominik Hasek won back-to-back Hart Trophies (97 & 98) — the only goalie ever to do so.","The Red Wings won the Cup in 1997, 1998, 2002, and 2008. Four titles in 11 years.","Nicklas Lidstrom won the Norris Trophy 7 times as the NHL's best defenseman.","A hockey puck can travel at 108 mph. Fast enough to outrun any Eagles comeback.","The Red Wings franchise was founded in 1926 — seven years before the Eagles existed.","In 1997, while Detroit was winning the Cup, the Eagles finished 6-9-1. Just saying.","Joe Louis Arena held 20,058 fans. All of them louder than anything in Philly.","The Red Wings have won more playoff games than any franchise in NHL history outside Montreal.","Brendan Shanahan scored 656 career goals and won three Stanley Cups.","The octopus tradition in Detroit started in 1952 — eight arms for eight playoff wins.","Patrick Roy won three Conn Smythe Trophies. Three.","Steve Yzerman finally lifted the Cup in 1997 after 13 years as captain. Pure dedication.","Vladimir Konstantinov was named to the All-Star team in 1997. Six days later, tragedy struck.","The Red Wings dedicated their 1998 Cup to Konstantinov. They carried him on the ice in his wheelchair.","Detroit has the third-most Stanley Cups of any franchise. The Eagles have zero Cups — different sport, same energy.","Sergei Fedorov won the Hart Trophy in 1994. A center winning MVP is rare. Detroit does rare.","Hockey players lose 5-8 pounds per game from sweat and effort. Eagles linemen lose that in warmups.","The Stanley Cup weighs 34.5 pounds. It is very heavy. Detroit has lifted it 11 times.","Gordie Howe scored 801 regular-season goals. A number that stood for decades.","Wayne Gretzky has more assists than any other player has total points. Context: Detroit played him in the playoffs.","Mario Lemieux scored 5 goals 5 different ways in one game. A standard Detroit fans expect.","The Stanley Cup has been used as a cereal bowl, a baptismal font, and once left roadside. Legends.","Eleven Cups. Four decades of dominance. One great truth: Detroit hockey is different. Good luck on your exam.","The real ServSafe exam is 90 questions. You have taken practice versions of every single one. You are ready.","Passing ServSafe requires a 75% score. Your practice tests show you can do far better. Keep going.","One more stat: zero Eagles fans have ever out-argued a Red Wings fan about hockey. Study hard anyway.","Fun fact: this app was built with love and a deep appreciation for the Detroit Red Wings and the Philadelphia Eagles — in that order."]
   };
 }
 
@@ -632,11 +690,11 @@ const techLessons=[
 ];
 
 const pretestLinks=[
-  {name:"ServSafe Official Exam Registration",url:"https://www.servsafe.com/ServSafe-Manager/Get-Certified/Take-the-ServSafe-Manager-Exam",desc:"The official ServSafe site to register for the real exam and access official study materials."},
-  {name:"360training Free ServSafe Practice Test",url:"https://www.360training.com/learn-edu/servsafe-practice-test",desc:"Free practice questions modeled after the real ServSafe exam."},
-  {name:"FoodHandlerAnswers ServSafe Practice Exam",url:"https://www.foodhandleranswers.com/servsafe-practice-test/",desc:"Free 40-question practice test with instant answer explanations."},
-  {name:"ProProfs ServSafe Practice Quiz",url:"https://www.proprofs.com/quiz-school/story.php?title=servsafe-food-handler-practice-test",desc:"Multiple free quizzes covering all ServSafe topics."},
-  {name:"StateFoodSafety ServSafe Study Guide",url:"https://www.statefoodsafety.com/Resources/Resources/servsafe-study-guide",desc:"Free downloadable study guide covering all main ServSafe topics in plain language."}
+  {name:"ServSafe Official — Manager Certification",url:"https://www.servsafe.com/servsafe-manager",desc:"The official ServSafe site. Register for the real exam, access 9th Edition (2026) materials, and find a proctor near you."},
+  {name:"Union Test Prep — Free ServSafe Practice Tests",url:"https://uniontestprep.com/servsafe/practice-test",desc:"Free practice tests updated for 2026 covering all ServSafe Manager topics with answer explanations. No sign-up required."},
+  {name:"Practice Tester — ServSafe Manager Exam",url:"https://www.practicetester.com/servsafe/test",desc:"Free scored practice tests with instant feedback. Covers Food Handler and Manager exams."},
+  {name:"Easy Prep — Full ServSafe Practice Test",url:"https://easy-prep.org/servsafe-practice-test",desc:"Free full-length ServSafe practice exams with topic-focused quizzes. No account needed. Updated 2026."},
+  {name:"Practice Test Geeks — ServSafe 2026",url:"https://practicetestgeeks.com/servsafe-practice-test-exam/",desc:"Free practice questions covering Foodborne Illness, Personal Hygiene, Cross-Contamination, Temperature, and Allergens."}
 ];
 
 const ssTopics=[
@@ -657,20 +715,49 @@ const ssTopics=[
    questions:BANK.v1.slice(72,77)}
 ];
 
-let S={screen:"home",lesson:null,step:0,techDone:{},techComplete:false,topic:null,lessonPage:0,quizIdx:0,quizSel:null,quizAnswers:[],topicDone:{},examVersion:null,examQs:[],examIdx:0,examSel:null,examAnswers:[],examHistory:[],showCheer:false,cheerMsg:"",aiRequest:"",aiLesson:null,aiStep:0,aiComplete:false,aiLoading:false,aiError:false,savedGuides:[]};
-try{const h=localStorage.getItem("pp_hist");if(h)S.examHistory=JSON.parse(h);}catch(e){}
-try{const g=localStorage.getItem("pp_guides");if(g)S.savedGuides=JSON.parse(g);}catch(e){}
-try{const td=localStorage.getItem("pp_techDone");if(td)S.techDone=JSON.parse(td);}catch(e){}
-try{const tpd=localStorage.getItem("pp_topicDone");if(tpd)S.topicDone=JSON.parse(tpd);}catch(e){}
-function saveHist(){try{localStorage.setItem("pp_hist",JSON.stringify(S.examHistory));}catch(e){} scheduleSave();}
-function saveGuides(){try{localStorage.setItem("pp_guides",JSON.stringify(S.savedGuides));}catch(e){} scheduleSave();}
+let S={screen:"home",lesson:null,step:0,techDone:{},techComplete:false,topic:null,lessonPage:0,quizIdx:0,quizSel:null,quizAnswers:[],topicDone:{},examVersion:null,examQs:[],examIdx:0,examSel:null,examAnswers:[],examHistory:[],examType:"full",eggTaunt:null,cloudPin:"1997",pin:{entry:"",error:"",wrongCount:0,locked:false,lockSecondsLeft:0,statIdx:0,statInterval:null,lockCountdown:null,lockStats:[]},fb:{type:"",mood:0,tags:[],message:"",sending:false,sent:false,error:""},showCheer:false,cheerMsg:"",aiRequest:"",aiLesson:null,aiStep:0,aiComplete:false,aiLoading:false,aiError:false,savedGuides:[]};
+function saveHist(){ scheduleSave(); }
+function saveGuides(){ scheduleSave(); }
 const cheers=["You are doing wonderfully!","That is exactly right! Keep going!","Look at you go!","You are a natural at this!","Perfect! One step closer!","Fantastic work!","You have got this!"];
-function buildExam(ver){return BANK[ver].map((q,i)=>({...q,topicIdx:Math.floor(i/18)}));}
+function buildExam(ver, type){
+  const pool = BANK[ver].map((q,i)=>({...q, topicIdx:Math.floor(i/18)}));
+  if(type === "short") {
+    const selected = [];
+    for(let t=0;t<5;t++){
+      const group = pool.filter(q=>q.topicIdx===t);
+      const shuffled = group.slice().sort(()=>Math.random()-0.5);
+      selected.push(...shuffled.slice(0,4));
+    }
+    return selected.sort(()=>Math.random()-0.5);
+  }
+  return pool;
+}
+
+// Handle browser back/forward button
+window.addEventListener("popstate",function(e){
+  if(e.state&&e.state.screen){
+    const prev=e.state.screen;
+    // Restore screen without pushing another history entry
+    S.screen=prev;
+    // Clear transient states that don't make sense to restore mid-flow
+    if(prev==="home"){S.showCheer=false;stopSpeech();}
+    if(prev==="servsafe"){S.showCheer=false;}
+    if(prev==="askAI"){S.aiLoading=false;}
+    r(false);
+  } else {
+    // No state means we're at the very start — go home
+    S.screen="home";
+    S.showCheer=false;
+    stopSpeech();
+    r(false);
+  }
+});
 function stopSpeech(){try{if(window.speechSynthesis)window.speechSynthesis.cancel();}catch(e){}}
 function speak(txt){stopSpeech();if(!window.speechSynthesis)return;try{const u=new SpeechSynthesisUtterance(txt);u.rate=0.88;u.pitch=1.05;u.volume=1;const voices=window.speechSynthesis.getVoices();const v=voices.find(v=>v.name.includes("Samantha")||v.name.includes("Karen")||(v.lang&&v.lang.startsWith("en")&&v.localService));if(v)u.voice=v;window.speechSynthesis.speak(u);}catch(e){}}
 function r(pushState){
   document.getElementById("app").innerHTML=render();
   bindEvents();
+  if(typeof bindFeedbackHandlers==="function")bindFeedbackHandlers();
   if(pushState!==false){
     // Push a history entry whenever the screen changes
     const state={screen:S.screen};
@@ -700,13 +787,19 @@ window.addEventListener("popstate",function(e){
     r(false);
   }
 });
+
 function render(){
   const bgMap={home:"linear-gradient(160deg,#004C54 0%,#002f35 100%)",techLesson:S.lesson?"linear-gradient(160deg,"+S.lesson.color+" 0%,#fff 60%)":"#fff",servsafeLesson:S.topic?"linear-gradient(160deg,"+S.topic.color+" 0%,#fff 60%)":"#fff",quiz:S.topic?"linear-gradient(160deg,"+S.topic.color+" 0%,#fff 60%)":"#fff",quizResult:S.topic?"linear-gradient(160deg,"+S.topic.color+" 0%,#fff 60%)":"#fff",selectExam:"linear-gradient(135deg,#1a237e,#283593 50%,#3949AB)",practiceExam:"linear-gradient(135deg,#263238,#455A64)",examResult:"linear-gradient(135deg,#263238,#455A64)",reports:"linear-gradient(135deg,#004D40,#00695C)",links:"linear-gradient(135deg,#004C54,#002f35)",servsafe:"linear-gradient(160deg,#004C54 0%,#002f35 100%)",askAI:"linear-gradient(160deg,#002f35 0%,#004C54 100%)",aiLesson:"linear-gradient(160deg,#002f35 0%,#004C54 100%)"};
   document.body.style.background=bgMap[S.screen]||"#f5f5f5";
-  const screens={home:renderHome,servsafe:renderServSafe,techLesson:renderTechLesson,servsafeLesson:renderSSLesson,quiz:renderQuiz,quizResult:renderQuizResult,selectExam:renderSelectExam,practiceExam:renderExam,examResult:renderExamResult,reports:renderReports,links:renderLinks,askAI:renderAskAI,aiLesson:renderAILesson};
+  const screens={home:renderHome,servsafe:renderServSafe,techLesson:renderTechLesson,servsafeLesson:renderSSLesson,quiz:renderQuiz,quizResult:renderQuizResult,selectExam:renderSelectExam,practiceExam:renderExam,examResult:renderExamResult,reports:renderReports,links:renderLinks,askAI:renderAskAI,aiLesson:renderAILesson,selectShortExam:renderSelectShortExam,feedback:renderFeedback,pin:renderPin,pinVictory:renderPinVictory,eggList:renderEggList};
   const content=(screens[S.screen]||renderHome)();
+
+  const footer="<div style='text-align:center;padding:18px 14px 28px;opacity:0.85;display:flex;align-items:center;justify-content:center;gap:10px'>"
+    +"<span style='font-size:16px;color:#fff;font-family:Oswald,sans-serif;letter-spacing:0.12em;text-transform:uppercase;font-weight:400'>Powered by</span>"
+    +"<img src='https://raw.githubusercontent.com/webgenerations77/kenzie/main/Logo.png' alt='Web Generations' style='height:88px;width:auto;object-fit:contain;cursor:pointer' data-action='goPin' title='Secret area...'>"
+    +"</div>";
   const cheer=S.showCheer?"<div class='overlay'><div class='overlay-box'><div style='font-size:60px;margin-bottom:12px'>\u{1F31F}</div><div style='font-size:22px;font-weight:bold;color:#333'>"+S.cheerMsg+"</div></div></div>":"";
-  return content+cheer;
+  return content+footer+cheer;
 }
 function renderHome(){
   const tc=techLessons.map(l=>"<button class='home-card' data-action='openTech' data-id='"+l.id+"'><span style='font-size:32px'>"+l.icon+"</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>"+l.title+"</div><div style='font-size:12px;color:#555'>"+l.steps.length+" easy steps</div></div>"+(S.techDone[l.id]?"<span style='font-size:18px'>✅</span>":"")+"<span style='font-size:16px;color:#aaa'>›</span></button>").join("");
@@ -731,7 +824,7 @@ function renderHome(){
   +"<div class='sec-label' style='margin-top:14px'>🍽️ ServSafe Study</div>"
   +"<button class='home-card' style='border-left-color:#004C54' data-action='goServSafe'><span style='font-size:32px'>🍽️</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>ServSafe Certification Prep</div><div style='font-size:12px;color:#555'>"+ssProgress+"</div></div>"+(topicsDone===ssTopics.length&&passedExams>0?"<span style='font-size:18px'>🏆</span>":"")+"<span style='font-size:16px;color:#aaa'>›</span></button>"
   +"<div class='sec-label' style='margin-top:14px'>💻 Tech Help</div>"+tc
-  +"<div style='background:rgba(0,0,0,0.25);border-radius:13px;padding:12px 16px;text-align:center;margin-top:11px;border:1px solid rgba(255,255,255,0.1)'><p style='color:rgba(255,255,255,0.85);margin:0;font-size:13px;line-height:1.7'>💚 No timer. No score pressure. Fly Eagles Fly! 💚</p></div>"
+  +"<div style='background:rgba(0,0,0,0.25);border-radius:13px;padding:12px 16px;text-align:center;margin-top:11px;border:1px solid rgba(255,255,255,0.1)'><p style='color:rgba(255,255,255,0.85);margin:0;font-size:13px;line-height:1.7'>💚 No timer. No score pressure. Fly Eagles Fly! 💚</p></div>"+"<button class='big-btn' style='background:linear-gradient(135deg,#c4a35a,#8a6f2e);margin-top:10px' data-action='goFeedback'>💬 Send Feedback</button>"
   +"</div>";
 }
 function renderServSafe(){
@@ -742,26 +835,789 @@ function renderServSafe(){
   +"<div class='sec-label'>📖 Study by Topic</div>"
   +sc
   +"<div class='sec-label' style='margin-top:14px'>📝 Practice Exams</div>"
-  +"<button class='home-card' data-action='goSelectExam'><span style='font-size:32px'>📝</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Full 90-Question Practice Exams</div><div style='font-size:12px;color:#555'>5 unique versions · Just like the real test!</div></div><span style='font-size:16px;color:#ccc'>›</span></button>"
+  +"<button class='home-card' data-action='goSelectExam'><span style='font-size:32px'>📝</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Full 90-Question Practice Exam</div><div style='font-size:12px;color:#555'>5 unique versions · Just like the real test!</div></div><span style='font-size:16px;color:#ccc'>›</span></button>"
+  +"<button class='home-card' style='border-left-color:#c4a35a' data-action='goSelectShortExam'><span style='font-size:32px'>⚡</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Quick Practice · 20 Questions</div><div style='font-size:12px;color:#555'>Fast focused review from all 5 topics!</div></div><span style='font-size:16px;color:#ccc'>›</span></button>"
   +"<button class='home-card' data-action='goReports'><span style='font-size:32px'>📊</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>My Progress Report</div><div style='font-size:12px;color:#555'>"+S.examHistory.length+" exam"+(S.examHistory.length!==1?"s":"")+" taken · "+passedCount+" passed</div></div><span style='font-size:16px;color:#ccc'>›</span></button>"
   +"<button class='home-card' data-action='openLinks'><span style='font-size:32px'>🔗</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Official Pretest Resources</div><div style='font-size:12px;color:#555'>Free practice from trusted sites</div></div><span style='font-size:16px;color:#ccc'>›</span></button>"
   +"</div>";
 }
 function renderSelectExam(){
   const versions=[{ver:"v1",num:1,icon:"\u{1F331}",desc:"The foundation. All 5 topics with core ServSafe concepts."},{ver:"v2",num:2,icon:"\u{1F4D8}",desc:"Deeper dive. Pathogens, advanced temperature, and cleaning."},{ver:"v3",num:3,icon:"\u{1F525}",desc:"Challenging scenarios. Real-world situations and decision-making."},{ver:"v4",num:4,icon:"\u{1F49C}",desc:"Management focus. HACCP, policies, and food handler responsibilities."},{ver:"v5",num:5,icon:"\u{1F3C6}",desc:"Exam-ready. The toughest version, closest to the real ServSafe exam."}];
-  const cards=versions.map(v=>{const hist=S.examHistory.filter(e=>e.version===v.ver);const best=hist.length?Math.max(...hist.map(e=>e.pct)):null;const passed=best!==null&&best>=75;return"<button class='ver-btn"+(passed?" done":"")+"' data-action='startExam' data-ver='"+v.ver+"'><span style='font-size:32px'>"+v.icon+"</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Version "+v.num+(passed?" ✅":"")+"</div><div style='font-size:13px;color:#666;margin-bottom:5px'>"+v.desc+"</div>"+(hist.length?"<div style='font-size:12px;color:#555'>Best: <strong style='color:"+(passed?"#2E7D32":"#E65100")+"'>"+best+"%</strong> · Taken "+hist.length+" time"+(hist.length!==1?"s":"")+"</div>":"<div style='font-size:12px;color:#aaa'>Not taken yet</div>")+"</div><span style='font-size:16px;color:#ccc'>›</span></button>";}).join("");
+  const cards=versions.map(v=>{const hist=S.examHistory.filter(e=>e.version===v.ver&&e.examType!=="short");const best=hist.length?Math.max(...hist.map(e=>e.pct)):null;const passed=best!==null&&best>=75;return"<button class='ver-btn"+(passed?" done":"")+"' data-action='startExam' data-ver='"+v.ver+"' data-type='full'><span style='font-size:32px'>"+v.icon+"</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Version "+v.num+(passed?" ✅":"")+"</div><div style='font-size:13px;color:#666;margin-bottom:5px'>"+v.desc+"</div>"+(hist.length?"<div style='font-size:12px;color:#555'>Best: <strong style='color:"+(passed?"#2E7D32":"#E65100")+"'>"+best+"%</strong> · Taken "+hist.length+" time"+(hist.length!==1?"s":"")+"</div>":"<div style='font-size:12px;color:#aaa'>Not taken yet</div>")+"</div><span style='font-size:16px;color:#ccc'>›</span></button>";}).join("");
   return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goHome'>← Home</button><div><div style='font-size:15px;font-weight:bold;color:#fff'>\u{1F4DD} Choose a Practice Exam</div><div style='font-size:12px;color:rgba(255,255,255,0.75);margin-top:1px'>90 questions · All 5 ServSafe topics</div></div></div><div style='background:rgba(255,255,255,0.12);border-radius:13px;padding:11px 15px;margin-bottom:15px;color:#fff;font-size:13px;line-height:1.6'>\u{1F4A1} Each version has 90 unique questions. The real ServSafe exam requires <strong>75% to pass</strong>. Take all 5 for the best preparation!</div>"+cards+"</div>";
 }
+function renderSelectShortExam(){
+  const versions=[{ver:"v1",num:1,icon:"🌱",desc:"Core fundamentals from all 5 topics."},{ver:"v2",num:2,icon:"📘",desc:"Pathogens, temperature, and cleaning highlights."},{ver:"v3",num:3,icon:"🔥",desc:"Real-world scenarios and decision-making."},{ver:"v4",num:4,icon:"💙",desc:"Management and HACCP essentials."},{ver:"v5",num:5,icon:"🏆",desc:"Hardest questions from all topics."}];
+  const cards=versions.map(v=>{const hist=S.examHistory.filter(e=>e.version===v.ver&&e.examType==="short");const best=hist.length?Math.max(...hist.map(e=>e.pct)):null;const passed=best!==null&&best>=75;return"<button class='ver-btn"+(passed?" done":"")+"' data-action='startExam' data-ver='"+v.ver+"' data-type='short'><span style='font-size:32px'>"+v.icon+"</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Quick Version "+v.num+(passed?" ✅":"")+"</div><div style='font-size:13px;color:#666;margin-bottom:5px'>"+v.desc+"</div>"+(hist.length?"<div style='font-size:12px;color:#555'>Best: <strong style='color:"+(passed?"#2E7D32":"#E65100")+"'>"+best+"%</strong> · Taken "+hist.length+" time"+(hist.length!==1?"s":"")+"</div>":"<div style='font-size:12px;color:#aaa'>Not taken yet</div>")+"</div><span style='font-size:16px;color:#ccc'>›</span></button>";}).join("");
+  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goServSafe'>← Back</button><div><div style='font-size:15px;font-weight:bold;color:#fff'>⚡ Quick Practice · 20 Questions</div><div style='font-size:12px;color:rgba(255,255,255,0.75);margin-top:1px'>4 questions per topic · Randomly selected</div></div></div><div style='background:rgba(255,255,255,0.12);border-radius:13px;padding:11px 15px;margin-bottom:15px;color:#fff;font-size:13px;line-height:1.6'>⚡ Each Quick Exam picks 20 random questions — 4 from each topic. Great for a fast focused review anytime!</div>"+cards+"</div>";
+}
+
+// ═══════════════════════════════════════════
+// PRACTICE EXAM
+// ═══════════════════════════════════════════
+const RW_LOGO="https://upload.wikimedia.org/wikipedia/en/thumb/e/e0/Detroit_Red_Wings_logo.svg/500px-Detroit_Red_Wings_logo.svg.png";
+const NYR_LOGO="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Philadelphia_Eagles.svg/500px-Philadelphia_Eagles.svg.png";
+
+// Egg state — persists for the session
+const EGG={
+  logoTapCount:0,
+  logoTapTimer:null,
+  wingsThemeActive:false,
+  wingsThemeTimer:null,
+  wrongAnswerCount:0,
+  flashVisible:false,
+  flashTimer:null
+};
+
+// EGG 1 — Tuesday logo swap + monthly tagline swap
+function eggGetHomeLogoAndTagline(){
+  const now=new Date();
+  const day=now.getDay(); // 0=Sun, 2=Tue
+  const date=now.getDate();
+  // Tuesday (day===2): full Wings swap
+  if(day===2){
+    return{
+      logo:RW_LOGO,
+      tagline:"<p style='color:#FFCC00;font-size:12px;margin:0 0 3px;font-style:italic'>🪄 It's Tuesday — Wings Day! Every Tuesday the Red Wings take over. Why? Because they've won the Stanley Cup 11 times to the Rangers' 4. Just saying. 😇</p>",
+      slogan:"<p style='color:#FFCC00;font-size:13px;margin:0;font-family:Oswald,sans-serif;letter-spacing:0.1em;font-weight:600'>LET'S GO RED WINGS! 🔴</p>"
+    };
+  }
+  // First day of month: tagline swap only
+  if(date===1){
+    return{
+      logo:NYR_LOGO,
+      tagline:"<p style='color:rgba(255,255,255,0.9);font-size:14px;font-style:italic;margin:0 0 5px'>Turning food safety into a superpower 🦸‍♀️</p>",
+      slogan:"<p style='color:#FFCC00;font-size:12px;margin:0;font-family:Oswald,sans-serif;letter-spacing:0.08em;font-weight:600'>🔴 Red Wings are better (it's the 1st — fact of the month!)</p>"
+    };
+  }
+  // Konami/tap override active
+  if(EGG.wingsThemeActive){
+    return{
+      logo:RW_LOGO,
+      tagline:"<p style='color:#FFCC00;font-size:12px;margin:0 0 3px;font-style:italic'>🥚 Easter Egg activated! You tapped the logo 5 times. The Red Wings theme is yours for 30 seconds — enjoy it while it lasts! 😄</p>",
+      slogan:"<p style='color:#FFCC00;font-size:13px;margin:0;font-family:Oswald,sans-serif;letter-spacing:0.1em;font-weight:600'>LET'S GO RED WINGS! 🔴</p>"
+    };
+  }
+  return{
+    logo:NYR_LOGO,
+    tagline:"<p style='color:rgba(255,255,255,0.9);font-size:14px;font-style:italic;margin:0 0 5px'>Turning food safety into a superpower 🦸‍♀️</p>",
+    slogan:"<p style='color:#A2AAAD;font-size:13px;margin:0;font-family:Oswald,sans-serif;letter-spacing:0.1em;font-weight:600'>LET'S GO RANGERS!</p>"
+  };
+}
+
+// EGG 2 — Wrong answer taunt (1 in 12 chance)
+function eggWrongAnswerTaunt(){
+  EGG.wrongAnswerCount++;
+  if(Math.random()<(1/12)){
+    const taunts=[
+      "Not quite... even a Red Wings fan would've known that one. 🔴",
+      "Oops! The Red Wings won the Cup in '97, '98, '02, and '08 — they know a thing or two about winning. You'll get there! 🏒",
+      "Not this time! Fun fact: the Red Wings have retired 9 numbers. The Rangers? 8. Details matter! 😇",
+      "Almost! The Red Wings' Gordie Howe once scored 801 regular-season goals. Precision counts — keep going! 🏒",
+      "Not quite! Steve Yzerman captained the Wings for 20 seasons. Persistence wins — just like you will! 🔴"
+    ];
+    return taunts[Math.floor(Math.random()*taunts.length)];
+  }
+  return null;
+}
+
+// EGG 3 — Sync status sneak (1 in 15 chance)
+function eggSyncMessage(normal){
+  if(Math.random()<(1/15)){
+    const msgs=[
+      "☁️ Synced (Red Wings still better btw)",
+      "☁️ Saved! 🔴 11 Cups > 4 Cups. Just syncing facts.",
+      "☁️ Synced just now — unlike the Rangers' Cup drought 😇",
+      "☁️ Progress saved! Wings have been Cup contenders since 1926 🔴"
+    ];
+    return msgs[Math.floor(Math.random()*msgs.length)];
+  }
+  return normal;
+}
+
+// EGG 4 — Score 71% easter egg (Gordie Howe's #71 / 1971)
+function eggCheck71(pct){
+  if(pct===71){
+    return"<div style='background:linear-gradient(135deg,#C8102E,#8B0000);border-radius:13px;padding:12px 15px;margin-top:10px;display:flex;gap:12px;align-items:center'>"
+    +"<img src='"+RW_LOGO+"' style='width:40px;height:40px;object-fit:contain;flex-shrink:0'>"
+    +"<div style='font-size:12px;color:#fff;line-height:1.7'>"
+    +"🥚 <strong>Easter Egg!</strong> You scored 71%! In 1971, Gordie Howe — the greatest Red Wing ever — came out of retirement at age 45 to play with his sons. He wore #9 his whole career but his legacy is #1. The Red Wings retired his number in 1972. Try again and beat 71 like Gordie beat Father Time! 🔴"
+    +"</div></div>";
+  }
+  return"";
+}
+
+// EGG 5 — Perfect score (100%) Wings invasion
+function eggPerfectScore(pct){
+  if(pct===100){
+    return"<div style='background:linear-gradient(135deg,#C8102E,#8B0000);border-radius:13px;padding:14px 16px;margin-top:10px;text-align:center'>"
+    +"<img src='"+RW_LOGO+"' style='width:55px;height:55px;object-fit:contain;margin-bottom:8px'>"
+    +"<div style='font-size:13px;color:#fff;line-height:1.7'>"
+    +"🥚 <strong>Easter Egg!</strong> A PERFECT SCORE! Even we have to admit that's impressive — and we're Red Wings fans. For context: the Wings have scored 100+ points in a season 13 times. You just matched that energy. Perfection belongs to Detroit... but today, it belongs to you too. 🔴🏆"
+    +"</div></div>";
+  }
+  return"";
+}
+
+// EGG 6 — Barely passing (exactly 75%) Wings confetti
+function eggBarely75(pct){
+  if(pct===75){
+    return"<div style='background:rgba(200,16,46,0.15);border:1px solid rgba(200,16,46,0.4);border-radius:13px;padding:12px 15px;margin-top:10px;display:flex;gap:12px;align-items:center'>"
+    +"<img src='"+RW_LOGO+"' style='width:36px;height:36px;object-fit:contain;flex-shrink:0'>"
+    +"<div style='font-size:12px;color:#fff;line-height:1.7'>"
+    +"🥚 <strong>Easter Egg!</strong> Exactly 75% — the minimum to pass! The Red Wings once finished a season at exactly .500 in 1985-86... and still made the playoffs. Sometimes just enough IS enough. Congrats! 🔴"
+    +"</div></div>";
+  }
+  return"";
+}
+
+// EGG 7 — Best score on progress report is 71
+function eggReportBest71(best){
+  if(best===71){
+    return"<div style='background:linear-gradient(135deg,#C8102E,#8B0000);border-radius:13px;padding:12px 15px;margin-bottom:13px;display:flex;gap:12px;align-items:center'>"
+    +"<img src='"+RW_LOGO+"' style='width:38px;height:38px;object-fit:contain;flex-shrink:0'>"
+    +"<div style='font-size:12px;color:#fff;line-height:1.7'>"
+    +"🥚 <strong>Easter Egg!</strong> Your best score is 71%! #71 is a legendary number in Detroit — it was worn by several Wings greats. But more importantly: the Red Wings franchise was founded in 1926, and by 1971 they already had 3 Stanley Cups. The Rangers? Also 3 at that point. They've been tied ever since... except Detroit kept winning. 😇 Keep studying!"
+    +"</div></div>";
+  }
+  return"";
+}
+
+// EGG 8 — 8th exam taken (Steve Yzerman wore #19, won Cup in '97, '98, '02 — 8 is the number of Wings Hall of Famers active 1990-2004)
+function eggEighthExam(total){
+  if(total===8){
+    return"<div style='background:rgba(200,16,46,0.12);border:1px solid rgba(200,16,46,0.35);border-radius:13px;padding:12px 15px;margin-bottom:13px;display:flex;gap:12px;align-items:center'>"
+    +"<img src='"+RW_LOGO+"' style='width:36px;height:36px;object-fit:contain;flex-shrink:0'>"
+    +"<div style='font-size:12px;color:#fff;line-height:1.7'>"
+    +"🥚 <strong>Easter Egg!</strong> 8 exams taken! The Red Wings have retired 8 jersey numbers — #1 Terry Sawchuk, #6 Larry Aurie, #7 Ted Lindsay, #9 Gordie Howe, #10 Alex Delvecchio, #12 Sid Abel, #16 Vladimir Konstantinov, and #19 Steve Yzerman. Eight legends. You're on your own legendary run! 🔴"
+    +"</div></div>";
+  }
+  return"";
+}
+
+// EGG 9 — All 5 topics completed
+function eggAllTopicsDone(topicsDone){
+  if(topicsDone===5){
+    return"<div style='background:linear-gradient(135deg,#C8102E,#8B0000);border-radius:13px;padding:12px 15px;margin-bottom:10px;display:flex;gap:12px;align-items:center'>"
+    +"<img src='"+RW_LOGO+"' style='width:40px;height:40px;object-fit:contain;flex-shrink:0'>"
+    +"<div style='font-size:12px;color:#fff;line-height:1.7'>"
+    +"🥚 <strong>Easter Egg!</strong> All 5 topics mastered! The Detroit Red Wings have 5 retired numbers from players who were also named to the NHL's Top 100 Players of All Time list — Gordie Howe, Ted Lindsay, Terry Sawchuk, Alex Delvecchio, and Steve Yzerman. Five legends. Five topics. You're in good company. 🔴🏆"
+    +"</div></div>";
+  }
+  return"";
+}
+
+// EGG 10 — Logo tap 5x activates Wings theme for 30 seconds
+function eggActivateWingsTheme(){
+  EGG.wingsThemeActive=true;
+  if(EGG.wingsThemeTimer) clearTimeout(EGG.wingsThemeTimer);
+  EGG.wingsThemeTimer=setTimeout(()=>{EGG.wingsThemeActive=false;r(false);},30000);
+  r(false);
+}
+function eggHandleLogoTap(){
+  EGG.logoTapCount++;
+  if(EGG.logoTapTimer) clearTimeout(EGG.logoTapTimer);
+  if(EGG.logoTapCount>=5){
+    EGG.logoTapCount=0;
+    eggActivateWingsTheme();
+    return;
+  }
+  EGG.logoTapTimer=setTimeout(()=>{EGG.logoTapCount=0;},2000);
+}
+
+// EGG 11 — Flash Wings logo on wrong answer (1 in 10)
+function eggMaybeFlashWingsLogo(){
+  if(Math.random()<(1/10)){
+    EGG.flashVisible=true;
+    r(false);
+    if(EGG.flashTimer) clearTimeout(EGG.flashTimer);
+    EGG.flashTimer=setTimeout(()=>{EGG.flashVisible=false;r(false);},2500);
+  }
+}
+
+function renderFeedback(){
+  const fb=S.fb;
+
+  // SUCCESS STATE
+  if(fb.sent){
+    return"<div class='wrap' style='text-align:center;padding-top:40px'>"
+    // Confetti-style decorative row
+    +"<div style='font-size:28px;letter-spacing:6px;margin-bottom:18px;opacity:0.85'>🏒🌟💙❤️🌟🏒</div>"
+    // Big hero graphic
+    +"<div style='background:linear-gradient(135deg,#c4a35a,#004C54);border-radius:24px;padding:32px 24px;margin-bottom:20px;box-shadow:0 12px 40px rgba(0,0,0,0.4);position:relative;overflow:hidden'>"
+    +"<div style='position:absolute;top:-20px;right:-20px;font-size:80px;opacity:0.08'>🏆</div>"
+    +"<div style='font-size:64px;margin-bottom:14px'>💌</div>"
+    +"<h1 style='font-size:30px;color:#fff;font-family:Oswald,sans-serif;letter-spacing:0.06em;margin-bottom:10px;text-transform:uppercase'>Message Received!</h1>"
+    +"<div style='width:50px;height:3px;background:rgba(255,255,255,0.5);border-radius:2px;margin:0 auto 16px'></div>"
+    +"<p style='color:rgba(255,255,255,0.95);font-size:17px;line-height:1.9;margin:0;font-family:Lora,Georgia,serif'>"
+    +"Thank you, <strong>Kenzie</strong>! 🎉<br>"
+    +"Your feedback just made this app a little bit better<br>and the world a whole lot brighter. ✨"
+    +"</p>"
+    +"</div>"
+    // Personal thank-you card
+    +"<div style='background:rgba(255,255,255,0.97);border-radius:18px;padding:22px 20px;margin-bottom:16px;box-shadow:0 6px 24px rgba(0,0,0,0.2);border-top:4px solid #c4a35a;text-align:left'>"
+    +"<div style='font-size:22px;margin-bottom:10px'>🥰</div>"
+    +"<p style='font-size:15px;color:#333;line-height:1.9;margin:0 0 12px'>"
+    +"Seriously — every single piece of feedback you send helps make sure this app is <em>exactly</em> what you need to crush that ServSafe exam."
+    +"</p>"
+    +"<p style='font-size:15px;color:#333;line-height:1.9;margin:0 0 12px'>"
+    +"You're not just a great student — you're someone who makes everything around her better just by showing up. 💙"
+    +"</p>"
+    +"<p style='font-size:14px;color:#888;font-style:italic;margin:0'>Now go ace that exam. The food safety world needs you! 🍽️</p>"
+    +"</div>"
+    // Ranger pride badge
+    +"<div style='background:rgba(0,0,0,0.3);border-radius:13px;padding:13px 16px;margin-bottom:20px;border:1px solid rgba(255,255,255,0.15)'>"
+    +"<p style='color:rgba(255,255,255,0.9);margin:0;font-size:13px;font-family:Oswald,sans-serif;letter-spacing:0.1em;font-weight:600'>🏒 LET'S GO RANGERS — AND LET'S GO KENZIE! 🏒</p>"
+    +"</div>"
+    +"<button class='big-btn' style='background:linear-gradient(135deg,#c4a35a,#004C54)' data-action='goHome'>🏠 Back Home</button>"
+    +"</div>";
+  }
+
+  // SENDING STATE
+  if(fb.sending){
+    return"<div class='wrap' style='text-align:center;padding-top:100px'>"
+    +"<div class='fb-sending'><div class='fb-spinner'></div> Sending your message...</div>"
+    +"</div>";
+  }
+
+  const moodEmojis=["😕","😐","🙂","😄","🤩"];
+  const moodLabels=["Frustrated","Meh","Pretty Good","Happy","Love it!"];
+  const stars=moodEmojis.map((e,i)=>"<span class='fb-star"+(fb.mood>=i+1?" lit":"")+"' data-action='fbMood' data-i='"+(i+1)+"' title='"+moodLabels[i]+"'>"+e+"</span>").join("");
+
+  const feedbackTypes=[
+    {val:"bug",icon:"🐛",label:"Something's broken"},
+    {val:"confusing",icon:"🤔",label:"This was confusing"},
+    {val:"idea",icon:"💡",label:"I have an idea"},
+    {val:"question",icon:"❓",label:"I have a question"},
+    {val:"praise",icon:"⭐",label:"I love something!"},
+    {val:"content",icon:"📚",label:"Question/content issue"}
+  ];
+  const typeCards=feedbackTypes.map(t=>"<button class='fb-tag"+(fb.type===t.val?" active":"")+"' data-action='fbType' data-val='"+t.val+"'>"+t.icon+" "+t.label+"</button>").join("");
+
+  const topicTags=["Food Safety","Temperature","Hygiene","Cleaning","Pest Control","Practice Exams","Quick Practice","Progress Report","App in general"].map(tag=>"<button class='fb-tag"+(fb.tags.includes(tag)?" active":"")+"' data-action='fbTag' data-val='"+escHtml(tag)+"'>"+escHtml(tag)+"</button>").join("");
+
+
+  const canSend=fb.message.trim().length>=3;
+
+  return"<div class='wrap'>"
+  // TOP BAR
+  +"<div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goHome'>← Home</button><div><div style='font-size:15px;font-weight:bold;color:#fff;font-family:Oswald,sans-serif;letter-spacing:0.04em'>💬 SEND FEEDBACK</div><div style='font-size:12px;color:rgba(255,255,255,0.7);margin-top:1px'>Your voice shapes this app!</div></div></div>"
+
+  // INTRO CARD
+  +"<div class='card' style='border-left:4px solid #c4a35a;margin-bottom:14px'>"
+  +"<p style='font-size:14px;color:#333;line-height:1.8;margin:0'>Hi! 👋 Use this to let me know if something's broken, confusing, or if you have an idea to make studying easier. Your feedback helps make this app better every day!</p>"
+  +"</div>"
+
+  // MOOD
+  +"<div class='card'>"
+  +"<label class='fb-label'>How are you feeling about the app right now?</label>"
+  +"<div class='fb-stars'>"+stars+"</div>"
+  +(fb.mood>0?"<div style='font-size:13px;color:#004C54;margin-top:4px;font-style:italic'>"+moodLabels[fb.mood-1]+"</div>":"")
+  +"</div>"
+
+  // TYPE
+  +"<div class='card'>"
+  +"<label class='fb-label'>What kind of feedback is this?</label>"
+  +"<div>"+typeCards+"</div>"
+  +"</div>"
+
+  // TOPIC
+  +"<div class='card'>"
+  +"<label class='fb-label'>Which area does this relate to? <span style='font-weight:normal;color:#999;font-size:11px;text-transform:none'>(tap all that apply)</span></label>"
+  +"<div>"+topicTags+"</div>"
+  +"</div>"
+
+  // MESSAGE
+  +"<div class='card'>"
+  +"<label class='fb-label'>Tell me more <span style='color:#c4a35a'>*</span></label>"
+  +"<textarea id='fbMessage' class='fb-textarea' rows='5' placeholder='Type your message here... Be as detailed as you like! For example: &quot;The question about cooling time felt confusing because...&quot; or &quot;I wish I could...&quot;'>"+escHtml(fb.message)+"</textarea>"
+  +"<div style='font-size:11px;color:#aaa;margin-top:5px;text-align:right' id='fbCharCount'>"+fb.message.length+" characters</div>"
+  +"</div>"
+
+  // SCREENSHOT
+  
+
+  // SEND BUTTON
+  +"<button class='big-btn' style='background:"+(canSend?"linear-gradient(135deg,#c4a35a,#004C54)":"#ccc")+";cursor:"+(canSend?"pointer":"not-allowed")+"' data-action='fbSend'"+(canSend?"":" disabled")+">📤 Send Feedback</button>"
+  +(fb.error?"<div style='background:#FFEBEE;border-radius:11px;padding:12px;color:#C62828;font-size:13px;text-align:center;margin-bottom:9px'>⚠️ "+escHtml(fb.error)+"</div>":"")
+  +"<button class='big-btn' style='background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2)' data-action='goHome'>← Cancel</button>"
+  +"</div>";
+}
+
+async function submitFeedback(){
+  const msgEl=document.getElementById("fbMessage");
+  if(msgEl) S.fb.message=msgEl.value.trim();
+  if(!S.fb.message){S.fb.error="Please write a message before sending!";r(false);return;}
+  S.fb.sending=true;S.fb.error="";r(false);
+
+  // Build stats snapshot to include in email
+  const examsTaken=S.examHistory.length;
+  const topicsDone=ssTopics.filter(t=>S.topicDone[t.id]).length;
+  const bestScore=examsTaken?Math.max(...S.examHistory.map(e=>e.pct))+"%":"None yet";
+  const currentScreen=S.screen;
+
+  const templateParams={
+    feedback_type: S.fb.type||"(not specified)",
+    mood_rating: S.fb.mood>0?["😕 Frustrated","😐 Meh","🙂 Pretty Good","😄 Happy","🤩 Love it!"][S.fb.mood-1]:"(not rated)",
+    topics_affected: S.fb.tags.length?S.fb.tags.join(", "):"(none selected)",
+    message: S.fb.message,
+    app_stats: "Topics completed: "+topicsDone+"/5 | Exams taken: "+examsTaken+" | Best score: "+bestScore,
+    sent_at: new Date().toLocaleString()
+  };
+
+  try{
+    await emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, templateParams);
+    S.fb={type:"",mood:0,tags:[],message:"",sending:false,sent:true,error:""};
+  }catch(e){
+    S.fb.sending=false;
+    S.fb.error="Hmm, something went wrong sending the email. Check your connection and try again! ("+e.text+")";
+  }
+  r(false);
+}
+
+// ═══════════════════════════════════════════
+// PIN ENTRY SCREEN
+// ═══════════════════════════════════════════
+// ═══════════════════════════════════════════
+// PIN GAME DATA
+// ═══════════════════════════════════════════
+const PIN_CLUES = [
+  {n:1,  emoji:"🔒", text:"There is something special hiding behind here."},
+  {n:2,  emoji:"🎬", text:"Clue #1: Somewhere out there, a man was standing on the bow of a very large ship, screaming that he was the king of the world. What were you watching that winter? (And no Googling — that's cheating! 😏)"},
+  {n:3,  emoji:"🐑", text:"Clue #2: Scientists shocked the world by creating something that had never existed before — a perfect copy of a sheep named Dolly. One of a kind... except she wasn't."},
+  {n:4,  emoji:"👂", text:"Clue #3: In a Las Vegas boxing ring, a man made the most infamous snack choice in sports history. Evander Holyfield's ear was never quite the same."},
+  {n:5,  emoji:"🌹", text:"Clue #4: England wept. The whole world stopped. A princess was lost on a Paris road, and nothing was ever quite the same again."},
+  {n:6,  emoji:"🍎", text:"Clue #5: A man in a black turtleneck walked back through the doors of a fruit company he had once been kicked out of. The tech world would never be the same. Still not Googling, right? 😏"},
+  {n:7,  emoji:"📚", text:"Clue #6: A young boy with round glasses and a lightning bolt scar appeared on bookshelves for the very first time. A billion children's childhoods began."},
+  {n:8,  emoji:"⛳", text:"Clue #7: A young man in a red shirt walked Augusta National like he owned it. He dominated the Masters by 12 strokes. Nobody had seen anything like it."},
+  {n:9,  emoji:"🎵", text:"Clue #8: Two words. Spice Girls. That's the clue. Think about when they were absolutely everywhere — radio, TV, magazines, your friends' bedrooms. That moment."},
+  {n:10, emoji:"🏒", text:"Clue #9: Steve Yzerman had been waiting 13 long, painful years for one perfect moment. He finally got it. Captain. Detroit. June. The whole city cried."},
+  {n:11, emoji:"🚀", text:"Clue #10: NASA landed something on Mars and sent back photos. The whole world was glued to the images. The mission was called Pathfinder. Connect the dots — and please, no Googling. You've come this far! 🙏"}
+];
+
+function pinGetClue(){
+  const w = S.pin.wrongCount;
+  if(w === 0) return PIN_CLUES[0]; // first visit
+  const idx = Math.min(w, PIN_CLUES.length - 1);
+  return PIN_CLUES[idx];
+}
+
+function pinStartLockout(){
+  S.pin.locked = true;
+  S.pin.lockSecondsLeft = 15;
+  // Pick random stats, no repeats in this batch
+  const pool = (S.hockeyStats && S.hockeyStats.length ? S.hockeyStats : [
+    "🏒 Gordie Howe played in 5 different decades.", "🏆 Detroit has won 11 Stanley Cups.", "🎯 Steve Yzerman captained Detroit for 20 seasons."
+  ]).slice().sort(()=>Math.random()-0.5);
+  S.pin.lockStats = pool.slice(0, 6);
+  S.pin.statIdx = 0;
+  r(false);
+  // Rotate stat every 3 seconds
+  S.pin.statInterval = setInterval(()=>{
+    S.pin.statIdx = (S.pin.statIdx + 1) % S.pin.lockStats.length;
+    r(false);
+  }, 3000);
+  // Count down seconds
+  S.pin.lockCountdown = setInterval(()=>{
+    S.pin.lockSecondsLeft--;
+    if(S.pin.lockSecondsLeft <= 0){
+      clearInterval(S.pin.statInterval);
+      clearInterval(S.pin.lockCountdown);
+      S.pin.locked = false;
+      S.pin.entry = "";
+      S.pin.error = "";
+      r(false);
+    } else {
+      r(false);
+    }
+  }, 1000);
+}
+
+// ═══════════════════════════════════════════
+// PIN SCREEN RENDER
+// ═══════════════════════════════════════════
+function renderPin(){
+  // LOCKOUT STATE
+  if(S.pin.locked){
+    const stat = S.pin.lockStats ? S.pin.lockStats[S.pin.statIdx % S.pin.lockStats.length] : "🏒 Did you know? Detroit Red Wings: 11 Stanley Cups.";
+    const barPct = Math.round(((15 - S.pin.lockSecondsLeft) / 15) * 100);
+    return"<div class='wrap' style='text-align:center;padding-top:60px'>"
+    +"<div style='font-size:52px;margin-bottom:14px'>🔒</div>"
+    +"<h2 style='color:#fff;font-family:Oswald,sans-serif;font-size:22px;letter-spacing:0.08em;margin-bottom:8px'>VAULT LOCKED</h2>"
+    +"<p style='color:rgba(255,255,255,0.6);font-size:13px;margin-bottom:24px'>Too many wrong attempts. Try again in <strong style='color:#FFCC00;font-size:16px'>"+S.pin.lockSecondsLeft+"s</strong></p>"
+    +"<div style='background:rgba(255,255,255,0.1);border-radius:99px;height:6px;max-width:260px;margin:0 auto 28px;overflow:hidden'>"
+    +"<div style='height:100%;border-radius:99px;background:linear-gradient(90deg,#C8102E,#FFCC00);transition:width 0.9s ease;width:"+barPct+"%'></div>"
+    +"</div>"
+    +"<div style='background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-left:4px solid #C8102E;border-radius:14px;padding:18px 18px;max-width:340px;margin:0 auto;min-height:80px;display:flex;align-items:center;justify-content:center'>"
+    +"<p style='color:rgba(255,255,255,0.9);font-size:14px;line-height:1.8;margin:0;font-style:italic'>"+stat+"</p>"
+    +"</div>"
+    +"<p style='color:rgba(255,255,255,0.3);font-size:11px;margin-top:16px;font-family:Oswald,sans-serif;letter-spacing:0.08em'>WHILE YOU WAIT — HOCKEY FACTS 🏒</p>"
+    +"</div>";
+  }
+
+  // NORMAL PIN ENTRY STATE
+  const clue = pinGetClue();
+  const dots = "●".repeat(S.pin.entry.length) + "○".repeat(4 - S.pin.entry.length);
+  const keys = ["1","2","3","4","5","6","7","8","9","","0","⌫"];
+  const keyBtns = keys.map(k=>{
+    if(k==="") return"<div></div>";
+    return"<button data-action='pinKey' data-val='"+k+"' style='background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:16px;padding:18px 10px;font-size:22px;font-weight:bold;color:#fff;font-family:Oswald,sans-serif;cursor:pointer;transition:all 0.1s;active:transform:scale(0.95)'>"+k+"</button>";
+  }).join("");
+
+  const wrongBadge = S.pin.wrongCount > 0
+    ? "<div style='background:rgba(200,16,46,0.2);border-radius:99px;padding:4px 12px;display:inline-block;margin-bottom:14px'><span style='font-size:11px;color:#FF8A80;font-family:Oswald,sans-serif;letter-spacing:0.06em'>"+S.pin.wrongCount+" wrong attempt"+(S.pin.wrongCount!==1?"s":"")+" · next lockout at "+(Math.ceil(S.pin.wrongCount/5)*5)+"</span></div>"
+    : "";
+
+  return"<div class='wrap' style='text-align:center;padding-top:36px'>"
+  +"<img src='https://raw.githubusercontent.com/webgenerations77/kenzie/main/Logo.png' style='height:60px;width:auto;object-fit:contain;margin-bottom:14px'>"
+  +"<h2 style='color:#fff;font-family:Oswald,sans-serif;font-size:20px;letter-spacing:0.1em;margin-bottom:4px'>SECRET VAULT</h2>"
+  +"<p style='color:rgba(255,255,255,0.4);font-size:11px;font-family:Oswald,sans-serif;letter-spacing:0.08em;margin-bottom:20px'>4-DIGIT PIN REQUIRED</p>"
+  // Clue — inline, no box on first visit; subtle card on subsequent clues
+  +(S.pin.wrongCount === 0
+    ? "<p style='color:rgba(255,255,255,0.55);font-size:13px;font-style:italic;margin-bottom:20px'>"+clue.emoji+" "+clue.text+"</p>"
+    : "<div style='background:rgba(255,204,0,0.07);border-left:3px solid #FFCC00;border-radius:0 10px 10px 0;padding:10px 14px;margin-bottom:16px;text-align:left'>"
+      +"<p style='font-size:13px;color:rgba(255,255,255,0.85);line-height:1.75;margin:0'>"+clue.emoji+" "+clue.text+"</p>"
+      +"</div>")
+  +wrongBadge
+  // Dots
+  +"<div style='font-size:32px;letter-spacing:14px;color:#fff;margin-bottom:6px;font-family:Oswald,sans-serif'>"+dots+"</div>"
+  // Error message
+  +(S.pin.error ? "<div style='color:#FF6B6B;font-size:13px;margin-bottom:10px;animation:popIn 0.2s ease'>"+S.pin.error+"</div>" : "<div style='margin-bottom:16px'></div>")
+  // Numpad
+  +"<div style='display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:260px;margin:0 auto 20px'>"+keyBtns+"</div>"
+  +"<button class='big-btn' style='background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);max-width:260px;margin:0 auto;font-size:13px' data-action='goHome'>← Cancel</button>"
+  +"</div>";
+}
+
+// ═══════════════════════════════════════════
+// PIN VICTORY SCREEN
+// ═══════════════════════════════════════════
+function renderPinVictory(){
+  return"<div class='wrap' style='text-align:center;padding-top:30px'>"
+  // Fireworks row
+  +"<div style='font-size:32px;letter-spacing:4px;margin-bottom:16px'>🎉🏒🏆🔴🏆🏒🎉</div>"
+  // Hero banner
+  +"<div style='background:linear-gradient(135deg,#C8102E,#8B0000);border-radius:22px;padding:28px 22px;margin-bottom:18px;box-shadow:0 12px 40px rgba(0,0,0,0.5);position:relative;overflow:hidden'>"
+  +"<div style='position:absolute;top:-15px;right:-15px;font-size:90px;opacity:0.07'>🏆</div>"
+  +"<img src='"+RW_LOGO+"' style='width:70px;height:70px;object-fit:contain;margin-bottom:12px'>"
+  +"<h1 style='font-size:28px;color:#fff;font-family:Oswald,sans-serif;letter-spacing:0.06em;margin-bottom:8px;text-transform:uppercase'>YOU CRACKED IT!</h1>"
+  +"<div style='font-size:52px;font-weight:bold;color:#FFCC00;font-family:Oswald,sans-serif;letter-spacing:0.1em;margin-bottom:8px'>1 9 9 7</div>"
+  +"<div style='width:50px;height:3px;background:rgba(255,255,255,0.4);border-radius:2px;margin:0 auto 14px'></div>"
+  +"<p style='color:rgba(255,255,255,0.95);font-size:15px;line-height:1.9;margin:0;font-family:Lora,Georgia,serif'>"
+  +"The PIN is <strong>1997</strong> — the year the Detroit Red Wings won the Stanley Cup."
+  +"</p>"
+  +"</div>"
+  // Story card
+  +"<div style='background:rgba(255,255,255,0.97);border-radius:18px;padding:22px 20px;margin-bottom:14px;box-shadow:0 6px 24px rgba(0,0,0,0.25);border-top:4px solid #C8102E;text-align:left'>"
+  +"<div style='font-size:20px;margin-bottom:10px'>🏆 The 1997 Stanley Cup</div>"
+  +"<p style='font-size:14px;color:#333;line-height:1.9;margin:0 0 12px'>"
+  +"On June 7, 1997, Steve Yzerman lifted the Stanley Cup after <strong>13 years</strong> as Detroit's captain without a championship. The Red Wings swept the Philadelphia Flyers <strong>4-0</strong> — the most dominant Finals performance in decades. Brendan Shanahan, Sergei Fedorov, Nicklas Lidstrom, and Dominik Hasek were all at the peak of their powers. It was a dynasty."
+  +"</p>"
+  +"<p style='font-size:14px;color:#333;line-height:1.9;margin:0 0 12px'>"
+  +"Just six days after the victory parade, limousine driver Richard Gnida fell asleep at the wheel. Vladimir Konstantinov — who had just been named to the All-Star team — was critically injured and never played again. The Wings dedicated their <strong>1998</strong> Cup title to him, carrying him onto the ice in his wheelchair. It remains one of the most emotional moments in hockey history."
+  +"</p>"
+  +"<div style='background:#FFF3F3;border-radius:11px;padding:12px 14px;border-left:3px solid #C8102E'>"
+  +"<p style='font-size:13px;color:#8B0000;line-height:1.7;margin:0'>"
+  +"<strong>🗽 Meanwhile, in New York...</strong> The Rangers finished the 1996-97 season with a record of <strong>38 wins, 34 losses, and 10 ties</strong> — good enough for 86 points, which sounds fine until you realize it wasn't enough to make the playoffs. While Detroit was hoisting the Cup, the Rangers were watching from their couches. The gap between these two franchises in 1997? Enormous."
+  +"</p>"
+  +"</div>"
+  +"</div>"
+  // Clue connection card
+  +"<div style='background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:14px;padding:16px 18px;margin-bottom:16px;text-align:left'>"
+  +"<p style='font-size:13px;font-weight:bold;color:#FFCC00;font-family:Oswald,sans-serif;letter-spacing:0.06em;margin-bottom:10px'>🥚 THE CLUES — ALL FROM 1997</p>"
+  +"<div style='font-size:12px;color:rgba(255,255,255,0.75);line-height:2'>"
+  +"🎬 Titanic released (Dec 1997)<br>"
+  +"🐑 Dolly the sheep cloned (Feb 1997)<br>"
+  +"👂 Tyson bites Holyfield's ear (June 1997)<br>"
+  +"🌹 Princess Diana dies (Aug 1997)<br>"
+  +"🍎 Steve Jobs returns to Apple (Sep 1997)<br>"
+  +"📚 Harry Potter published (June 1997)<br>"
+  +"⛳ Tiger Woods wins Masters (Apr 1997)<br>"
+  +"🎵 Spice Girls at peak Spice Mania (1997)<br>"
+  +"🏒 Steve Yzerman wins the Cup (June 1997)<br>"
+  +"🚀 Mars Pathfinder lands (July 1997)"
+  +"</div>"
+  +"</div>"
+  +"<button class='big-btn' style='background:linear-gradient(135deg,#C8102E,#8B0000)' data-action='goEggList'>🥚 View All Easter Eggs</button>"
+  +"<button class='big-btn' style='background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2)' data-action='goHome'>🏠 Back Home</button>"
+  +"</div>";
+}
+
+// ═══════════════════════════════════════════
+// EASTER EGG LIST SCREEN
+// ═══════════════════════════════════════════
+function renderEggList(){
+  const eggs=[
+    {
+      num:1, trigger:"Every Tuesday",
+      icon:"🗓️",
+      title:"Wings Day Tuesday",
+      desc:"Every Tuesday the Rangers logo on the home screen is quietly replaced by the Red Wings logo and the tagline turns gold.",
+      why:"The Detroit Red Wings have won the Stanley Cup 11 times. The Rangers? 4. Every Tuesday is a reminder of that gap. 😇"
+    },
+    {
+      num:2, trigger:"1st day of every month",
+      icon:"📅",
+      title:"Monthly Fact Drop",
+      desc:"On the 1st of each month, the slogan under the tagline reads: 'Red Wings are better (it's the 1st — fact of the month!)'",
+      why:"Some facts just need to be repeated monthly to sink in."
+    },
+    {
+      num:3, trigger:"Tap the home logo 5 times fast",
+      icon:"👆",
+      title:"Konami Tap Code",
+      desc:"Tap the team logo on the home screen 5 times within 2 seconds. The entire app switches to Red Wings theme for 30 seconds, then snaps back.",
+      why:"Named after the classic Konami Code cheat code. Five taps, thirty seconds of truth. Try it! 🔴"
+    },
+    {
+      num:4, trigger:"Wrong answer — 1-in-12 chance",
+      icon:"❌",
+      title:"The Wrong Answer Taunt",
+      desc:"When you get a practice exam question wrong, there's a 1-in-12 chance a Red Wings fact appears inline below the answer explanation.",
+      why:"Rotating facts include Gordie Howe's 801 goals, Steve Yzerman's 20-year captaincy, and the Wings' 9 retired numbers. Precision matters!"
+    },
+    {
+      num:5, trigger:"Wrong answer — 1-in-10 chance",
+      icon:"🔴",
+      title:"The Corner Flash",
+      desc:"On a wrong answer, there's also a separate 1-in-10 chance a small Red Wings badge flashes in the bottom-right corner for 2.5 seconds.",
+      why:"Just a gentle, silent reminder. 'Red Wings still better 🔴'"
+    },
+    {
+      num:6, trigger:"Score exactly 71% on any exam",
+      icon:"7️⃣1️⃣",
+      title:"The Gordie Howe 71",
+      desc:"Score exactly 71% and a Red Wings card appears on your results screen with the full story.",
+      why:"In 1971, Gordie Howe — hockey's greatest player and the greatest Red Wing — came out of retirement at age 45 to play professional hockey alongside his two sons, Mark and Marty. He wore #9 his entire career. The Wings retired his number in 1972. 71 is his year. Try to beat it!"
+    },
+    {
+      num:7, trigger:"Score exactly 75% on any exam",
+      icon:"7️⃣5️⃣",
+      title:"The Barely There",
+      desc:"Score exactly 75% (the minimum passing score) and a Wings card appears with a very specific historical parallel.",
+      why:"The Detroit Red Wings finished the 1985-86 season at exactly .500 — and still made the playoffs. Sometimes the bare minimum is still enough to be a winner. Just like 75%."
+    },
+    {
+      num:8, trigger:"Score exactly 100% on any exam",
+      icon:"💯",
+      title:"Perfect Score Invasion",
+      desc:"Ace an exam with 100% and the Wings take over your results screen with a full tribute card.",
+      why:"The Red Wings scored 100+ points in a season 13 times between 1994 and 2016. A perfect score is Detroit energy. We can't help but celebrate it."
+    },
+    {
+      num:9, trigger:"Your all-time best score is 71%",
+      icon:"📊",
+      title:"Best Score Easter Egg",
+      desc:"If your personal best exam score ever is 71%, a Wings card appears at the top of your Progress Report.",
+      why:"#71 was worn by several Red Wings greats over the years. Also: the Wings franchise was founded in 1926, and by 1971 they already had 3 Stanley Cups. Details matter."
+    },
+    {
+      num:10, trigger:"You take your 8th exam",
+      icon:"8️⃣",
+      title:"Eight Legends",
+      desc:"On the exam you take after completing your 8th total exam, a Wings card appears on your Progress Report listing all 8 retired Wings jersey numbers.",
+      why:"The Red Wings have retired 8 numbers: #1 Terry Sawchuk, #6 Larry Aurie, #7 Ted Lindsay, #9 Gordie Howe, #10 Alex Delvecchio, #12 Sid Abel, #16 Vladimir Konstantinov, and #19 Steve Yzerman. Eight legends. Like your eight exams."
+    },
+    {
+      num:11, trigger:"Complete all 5 study topics",
+      icon:"✅",
+      title:"Five Legends, Five Topics",
+      desc:"Once all 5 topic lessons are marked complete, a Wings card appears on the home screen.",
+      why:"Five Red Wings players were named to the NHL's official Top 100 Players of All Time list: Gordie Howe, Ted Lindsay, Terry Sawchuk, Alex Delvecchio, and Steve Yzerman. Five legends. Five topics. You're in elite company."
+    },
+    {
+      num:12, trigger:"App syncs to cloud — 1-in-15 chance",
+      icon:"☁️",
+      title:"The Sneaky Sync Message",
+      desc:"Every time your progress saves to the cloud, there's a 1-in-15 chance the '☁️ Synced just now' message becomes something a little different.",
+      why:"Messages include: 'Synced (Red Wings still better btw)', 'Saved! 🔴 11 Cups > 4 Cups. Just syncing facts.', and 'Progress saved! Wings have been Cup contenders since 1926 🔴'. The sneakiest egg — you may never even notice it."
+    }
+  ];
+
+  const cards=eggs.map(e=>"<div style='background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-left:4px solid #C8102E;border-radius:14px;padding:15px 15px;margin-bottom:12px;text-align:left'>"
+    +"<div style='display:flex;align-items:center;gap:10px;margin-bottom:8px'>"
+    +"<span style='font-size:24px'>"+e.icon+"</span>"
+    +"<div>"
+    +"<div style='font-size:14px;font-weight:bold;color:#fff;font-family:Oswald,sans-serif;letter-spacing:0.04em'>#"+e.num+" — "+e.title+"</div>"
+    +"<div style='font-size:11px;color:#FFCC00;font-family:Oswald,sans-serif;letter-spacing:0.06em;margin-top:2px'>TRIGGER: "+e.trigger+"</div>"
+    +"</div>"
+    +"</div>"
+    +"<p style='font-size:13px;color:rgba(255,255,255,0.85);line-height:1.7;margin:0 0 7px'>"+e.desc+"</p>"
+    +"<div style='background:rgba(200,16,46,0.2);border-radius:9px;padding:8px 11px'>"
+    +"<p style='font-size:12px;color:#FFCC00;line-height:1.6;margin:0'><strong>Why?</strong> "+e.why+"</p>"
+    +"</div>"
+    +"</div>"
+  ).join("");
+
+  return"<div class='wrap'>"
+  +"<div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.5)' data-action='goHome'>← Home</button>"
+  +"<div><div style='font-size:15px;font-weight:bold;color:#fff;font-family:Oswald,sans-serif;letter-spacing:0.04em'>🥚 EASTER EGG VAULT</div>"
+  +"<div style='font-size:12px;color:rgba(255,255,255,0.6);margin-top:1px'>All 12 hidden secrets</div></div></div>"
+  +"<div style='background:linear-gradient(135deg,#C8102E,#8B0000);border-radius:16px;padding:16px 18px;margin-bottom:16px;display:flex;align-items:center;gap:14px'>"
+  +"<img src='"+RW_LOGO+"' style='width:52px;height:52px;object-fit:contain;flex-shrink:0'>"
+  +"<div>"
+  +"<div style='font-size:16px;font-weight:bold;color:#fff;font-family:Oswald,sans-serif;letter-spacing:0.05em;margin-bottom:3px'>The Red Wings Are Better</div>"
+  +"<div style='font-size:12px;color:rgba(255,255,255,0.8);line-height:1.6'>12 Easter eggs hidden throughout this app — all pointing to one undeniable truth. 🏒</div>"
+  +"</div>"
+  +"</div>"
+  +cards
+  +"<button class='big-btn' style='background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.25)' data-action='goHome'>🏠 Back Home</button>"
+  +"</div>";
+}
+
+// ═══════════════════════════════════════════
+// EVENT BINDING
+// ═══════════════════════════════════════════
+function bindEvents(){
+  document.querySelectorAll("[data-action]").forEach(el=>{
+    el.addEventListener("click",()=>{
+      const a=el.dataset.action;
+      if(a==="goHome"){S.screen="home";stopSpeech();r();}
+      else if(a==="goServSafe"){S.screen="servsafe";r();}
+      else if(a==="goSelectExam"){S.screen="selectExam";r();}
+      else if(a==="goSelectShortExam"){S.screen="selectShortExam";r();}
+      else if(a==="goReports"){S.screen="reports";r();}
+      else if(a==="openLinks"){S.screen="links";r();}
+      else if(a==="clearHistory"){if(confirm("Clear all exam history? This cannot be undone.")){S.examHistory=[];saveHist();r();}}
+      else if(a==="resetAllProgress"){if(confirm("Reset ALL progress? This will wipe exam history AND all completed topics. Cannot be undone.")){S.examHistory=[];S.topicDone={};saveHist();r();}}
+      else if(a==="openTopic"){const t=ssTopics.find(x=>x.id===el.dataset.id);S.topic=t;S.lessonPage=0;S.quizIdx=0;S.quizSel=null;S.quizAnswers=[];S.screen="servsafeLesson";stopSpeech();r();}
+      else if(a==="lessonNext"){if(S.lessonPage+1>=S.topic.lesson.length){S.screen="quiz";S.quizIdx=0;S.quizSel=null;S.quizAnswers=[];stopSpeech();r();}else{stopSpeech();S.lessonPage++;r();}}
+      else if(a==="lessonBack"){if(S.lessonPage>0){stopSpeech();S.lessonPage--;r();}}
+      else if(a==="readLesson"){speak(S.topic.lesson[S.lessonPage].t);}
+      else if(a==="selectQuiz"){if(S.quizSel===null){S.quizSel=parseInt(el.dataset.i);r(false);}}
+      else if(a==="quizNext"){const newA=[...S.quizAnswers,S.quizSel];if(S.quizIdx+1>=S.topic.questions.length){S.quizAnswers=newA;const sc=newA.filter((a,i)=>a===S.topic.questions[i].ans).length;if(sc/S.topic.questions.length>=0.6){S.topicDone[S.topic.id]=true;}scheduleSave();S.screen="quizResult";r();}else{S.quizAnswers=newA;S.quizIdx++;S.quizSel=null;r();}}
+      else if(a==="retryQuiz"){S.quizIdx=0;S.quizSel=null;S.quizAnswers=[];S.screen="quiz";r();}
+      else if(a==="reviewLesson"){S.lessonPage=0;S.screen="servsafeLesson";r();}
+      else if(a==="startExam"){
+        S.examVersion=el.dataset.ver;
+        S.examType=el.dataset.type||"full";
+        S.examQs=buildExam(S.examVersion,S.examType);
+        S.examIdx=0;S.examSel=null;S.examAnswers=[];
+        S.screen="practiceExam";stopSpeech();r();
+      }
+      else if(a==="selectExam"){if(S.examSel===null){S.examSel=parseInt(el.dataset.i);const q=S.examQs[S.examIdx];const isWrong=S.examSel!==q.ans;S.eggTaunt=isWrong?eggWrongAnswerTaunt():null;if(isWrong)eggMaybeFlashWingsLogo();r(false);}}
+      else if(a==="tapLogo"){eggHandleLogoTap();}
+      else if(a==="examNext"){const newA=[...S.examAnswers,S.examSel];S.eggTaunt=null;if(S.examIdx+1>=S.examQs.length){S.examAnswers=newA;S.screen="examResult";saveHist();r();}else{S.examAnswers=newA;S.examIdx++;S.examSel=null;r();}}
+      else if(a==="retryExam"){
+        S.examQs=buildExam(S.examVersion,S.examType);
+        S.examIdx=0;S.examSel=null;S.examAnswers=[];
+        S.screen="practiceExam";r();
+      }
+      else if(a==="goFeedback"){S.fb={type:"",mood:0,tags:[],message:"",sending:false,sent:false,error:""};S.screen="feedback";r();}
+      else if(a==="goPin"){
+        // Clear any running timers from previous visit
+        if(S.pin.statInterval) clearInterval(S.pin.statInterval);
+        if(S.pin.lockCountdown) clearInterval(S.pin.lockCountdown);
+        S.pin={entry:"",error:"",wrongCount:S.pin.wrongCount||0,locked:false,lockTimer:null,lockSecondsLeft:0,statIdx:0,statInterval:null,lockCountdown:null,lockStats:[]};
+        S.screen="pin";r();
+      }
+      else if(a==="goEggList"){S.screen="eggList";r();}
+      else if(a==="pinKey"){
+        if(S.pin.locked) return;
+        const v=el.dataset.val;
+        if(v==="⌫"){S.pin.entry=S.pin.entry.slice(0,-1);S.pin.error="";}
+        else if(S.pin.entry.length<4){S.pin.entry+=v;}
+        // Auto-submit when 4 digits entered
+        if(S.pin.entry.length===4){
+          if(S.pin.entry===S.cloudPin){
+            // 🎉 CORRECT!
+            if(S.pin.statInterval) clearInterval(S.pin.statInterval);
+            if(S.pin.lockCountdown) clearInterval(S.pin.lockCountdown);
+            S.pin.wrongCount=0;
+            S.screen="pinVictory";r();
+          } else {
+            // ❌ Wrong
+            S.pin.wrongCount++;
+            S.pin.entry="";
+            const nextLockAt = Math.ceil(S.pin.wrongCount/5)*5;
+            const untilLock = nextLockAt - S.pin.wrongCount;
+            if(S.pin.wrongCount % 5 === 0){
+              // Trigger lockout
+              S.pin.error="";
+              pinStartLockout();
+            } else {
+              S.pin.error="Wrong PIN. "+untilLock+" attempt"+(untilLock!==1?"s":"")+" before lockout. 🔒";
+            }
+          }
+        }
+        r(false);
+      }
+      else if(a==="fbMood"){S.fb.mood=parseInt(el.dataset.i);r(false);}
+      else if(a==="fbType"){S.fb.type=el.dataset.val;r(false);}
+      else if(a==="fbTag"){const v=el.dataset.val;const idx=S.fb.tags.indexOf(v);if(idx>-1)S.fb.tags.splice(idx,1);else S.fb.tags.push(v);r(false);}
+      else if(a==="fbSend"){submitFeedback();}
+      else if(a==="openTech"){const l=techLessons.find(x=>x.id===el.dataset.id);S.lesson=l;S.step=0;S.techComplete=false;S.screen="techLesson";stopSpeech();r();}
+      else if(a==="techNext"){if(S.step+1>=S.lesson.steps.length){S.techDone[S.lesson.id]=true;S.techComplete=true;stopSpeech(); scheduleSave();r();}else{const msg=cheers[Math.floor(Math.random()*cheers.length)];S.showCheer=true;S.cheerMsg=msg;speak(msg);r(false);setTimeout(()=>{S.showCheer=false;S.step++;r(false);},2000);}}
+      else if(a==="techBack"){if(S.step>0){stopSpeech();S.step--;r();}}
+      else if(a==="techRepeat"){S.step=0;S.techComplete=false;r();}
+      else if(a==="readStep"){const s=S.lesson.steps[S.step];speak("Step "+(S.step+1)+". "+s.title+". "+s.text+". Tip: "+s.tip.replace(/\u{1F4A1}/gu,""));}
+      else if(a==="goAskAI"){S.screen="askAI";stopSpeech();r();}
+      else if(a==="submitAI"){const inp=document.getElementById("aiInput");const val=inp?inp.value.trim():"";if(!val){alert("Please type what you need help with first!");return;}S.aiRequest=val;fetchAILesson(val);}
+      else if(a==="retryAI"){fetchAILesson(S.aiRequest);}
+      else if(a==="aiNext"){if(S.aiLesson&&S.aiStep+1>=S.aiLesson.steps.length){S.aiComplete=true;stopSpeech();r();}else{const msg=cheers[Math.floor(Math.random()*cheers.length)];S.showCheer=true;S.cheerMsg=msg;speak(msg);r(false);setTimeout(()=>{S.showCheer=false;S.aiStep++;r(false);},2000);}}
+      else if(a==="aiBack"){if(S.aiStep>0){stopSpeech();S.aiStep--;r();}}
+      else if(a==="aiRepeat"){S.aiStep=0;S.aiComplete=false;r();}
+      else if(a==="readAIStep"){if(S.aiLesson&&S.aiLesson.steps){const s=S.aiLesson.steps[S.aiStep];speak("Step "+(S.aiStep+1)+". "+s.title+". "+s.text+(s.tip?". Tip: "+s.tip.replace(/💡/g,""):""));}}
+      else if(a==="loadGuide"){const i=parseInt(el.dataset.i);const g=S.savedGuides[i];if(g){S.aiRequest=g.request;S.aiLesson=g.lesson;S.aiStep=0;S.aiComplete=false;S.aiLoading=false;S.aiError=false;S.screen="aiLesson";r();}}
+    });
+  });
+
+  // Live char count for feedback textarea
+  const fbMsg=document.getElementById("fbMessage");
+  const fbCount=document.getElementById("fbCharCount");
+  if(fbMsg&&fbCount){
+    fbMsg.addEventListener("input",()=>{
+      S.fb.message=fbMsg.value;
+      fbCount.textContent=fbMsg.value.length+" characters";
+      // update send button state live
+      const btn=document.querySelector("[data-action='fbSend']");
+      if(btn){
+        const ok=fbMsg.value.trim().length>=3;
+        btn.style.background=ok?"linear-gradient(135deg,#c4a35a,#004C54)":"#ccc";
+        btn.style.cursor=ok?"pointer":"not-allowed";
+        btn.disabled=!ok;
+      }
+    });
+  }
+
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+
+function bindFeedbackHandlers(){
+  var fbMsg=document.getElementById("fbMessage");
+  var fbCount=document.getElementById("fbCharCount");
+  if(fbMsg&&fbCount){
+    fbMsg.addEventListener("input",function(){S.fb.message=fbMsg.value;fbCount.textContent=fbMsg.value.length+" characters";});
+  }
+}
+
+function bindFeedbackHandlers(){
+  var fbMsg=document.getElementById("fbMessage");
+  var fbCount=document.getElementById("fbCharCount");
+  if(fbMsg&&fbCount){
+    fbMsg.addEventListener("input",function(){S.fb.message=fbMsg.value;fbCount.textContent=fbMsg.value.length+" characters";});
+  }
+}
+window.addEventListener("load", async function() {
+  history.replaceState({screen:"home"},"ServSafe Study","#home");
+  r(false);
+  await loadFromCloud();
+  r(false);
+});
+
 function renderExam(){
   if(!S.examQs.length)return renderSelectExam();
   const q=S.examQs[S.examIdx];
   const pct=(S.examIdx/S.examQs.length)*100;
   const tn=TOPICS[q.topicIdx]||"General";
-  const opts=q.opts.map((o,i)=>{let cls="opt-btn";if(S.examSel!==null){if(i===q.ans)cls+=" opt-correct";else if(i===S.examSel&&i!==q.ans)cls+=" opt-wrong";}return"<button class='"+cls+"' data-action='selectExam' data-i='"+i+"'"+(S.examSel!==null?" style='cursor:default'":"")+">ABCD"[i]+". "+o+"</button>";}).join("");
+  const opts=q.opts.map((o,i)=>{let cls="opt-btn";if(S.examSel!==null){if(i===q.ans)cls+=" opt-correct";else if(i===S.examSel&&i!==q.ans)cls+=" opt-wrong";}return"<button class='"+cls+"' data-action='selectExam' data-i='"+i+"'"+(S.examSel!==null?" style='cursor:default'":"")+">"+"ABCD"[i]+". "+o+"</button>";}).join("");
   const explain=S.examSel!==null?"<div style='margin-top:11px;padding:12px 14px;border-radius:12px;background:"+(S.examSel===q.ans?"#E8F5E9":"#FFF3E0")+";font-size:14px;color:#444;line-height:1.6'>"+(S.examSel===q.ans?"Correct! ":"Not quite. ")+q.ex+"</div>":"";
   const nb=S.examSel!==null?"<button class='big-btn' style='background:linear-gradient(135deg,#333,#004C54)' data-action='examNext'>"+(S.examIdx+1>=S.examQs.length?"See My Results":"Next Question")+"</button>":"<p style='text-align:center;color:rgba(255,255,255,0.7);font-size:13px;font-style:italic;margin-top:8px'>Tap an answer to continue \u{1F49B}</p>";
   const vn=S.examVersion?S.examVersion.replace("v",""):"";
-  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goHome'>← Home</button><div><div style='font-size:14px;font-weight:bold;color:#fff'>Version "+vn+" · Q "+(S.examIdx+1)+"/90</div><div style='font-size:12px;color:rgba(255,255,255,0.7);margin-top:1px'>"+tn+"</div></div></div><div class='prog-wrap'><div class='prog-bar' style='width:"+pct+"%;background:linear-gradient(90deg,#90A4AE,#546E7A)'></div></div><div class='card'><p style='font-size:16px;color:#333;font-weight:bold;line-height:1.6;margin:0 0 14px'>"+q.q+"</p>"+opts+explain+"</div>"+nb+"</div>";
+  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goHome'>← Home</button><div><div style='font-size:14px;font-weight:bold;color:#fff'>"+(S.examType==="short"?"Quick · Q":"Version "+vn+" · Q")+" "+(S.examIdx+1)+"/"+S.examQs.length+"</div><div style='font-size:12px;color:rgba(255,255,255,0.7);margin-top:1px'>"+tn+"</div></div></div><div class='prog-wrap'><div class='prog-bar' style='width:"+pct+"%;background:linear-gradient(90deg,#90A4AE,#546E7A)'></div></div><div class='card'><p style='font-size:16px;color:#333;font-weight:bold;line-height:1.6;margin:0 0 14px'>"+q.q+"</p>"+opts+explain+"</div>"+nb+"</div>";
 }
 function renderExamResult(){
   const total=S.examQs.length,score=S.examAnswers.filter((a,i)=>a===S.examQs[i].ans).length,pct=Math.round((score/total)*100),pass=pct>=75;
@@ -786,12 +1642,17 @@ function renderReports(){
 function renderSSLesson(){
   if(!S.topic)return renderHome();
   const pg=S.topic.lesson[S.lessonPage],pct=(S.lessonPage/S.topic.lesson.length)*100,isLast=S.lessonPage+1>=S.topic.lesson.length;
-  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:"+S.topic.accent+"' data-action='goHome'>← Home</button><div><div style='font-size:14px;font-weight:bold;color:#333'>"+S.topic.icon+" "+S.topic.title+"</div><div style='font-size:12px;color:#999;margin-top:1px'>Reading "+(S.lessonPage+1)+" of "+S.topic.lesson.length+"</div></div></div><div class='prog-wrap'><div class='prog-bar' style='width:"+pct+"%;background:linear-gradient(90deg,"+S.topic.light+","+S.topic.accent+")'></div></div><div class='card' style='border-left:5px solid "+S.topic.accent+"'><h2 style='font-size:17px;color:"+S.topic.accent+";margin:0 0 11px'>"+pg.h+"</h2><p style='font-size:16px;color:#333;line-height:1.8;margin:0'>"+pg.t+"</p></div><button class='big-btn' style='background:"+S.topic.accent+"' data-action='readLesson'>\u{1F50A} Read This Aloud</button><div style='display:flex;gap:9px'><button style='flex:1;padding:14px;border-radius:15px;background:"+(S.lessonPage===0?"#e0e0e0":"#f5f5f5")+";color:"+(S.lessonPage===0?"#bbb":"#555")+";font-size:14px;font-weight:bold;border:none;font-family:Georgia,serif;cursor:"+(S.lessonPage===0?"not-allowed":"pointer")+"' data-action='lessonBack'"+(S.lessonPage===0?" disabled":"")+">← Back</button><button style='flex:2;padding:14px;border-radius:15px;background:linear-gradient(135deg,"+S.topic.light+","+S.topic.accent+");color:#fff;font-size:16px;font-weight:bold;border:none;font-family:Georgia,serif;cursor:pointer' data-action='lessonNext'>"+(isLast?"Take the Quiz!":"Next →")+"</button></div></div>";
+  const bullets=pg.bullets?"<ul style='margin:12px 0 0 4px;padding:0;list-style:none'>"+pg.bullets.map(b=>"<li style='font-size:14px;color:#444;line-height:1.75;padding:4px 0 4px 20px;position:relative;border-bottom:1px solid #f0f0f0'><span style='position:absolute;left:0;color:"+S.topic.accent+"'>▸</span>"+b+"</li>").join("")+"</ul>":"";
+  const exBox=pg.example?"<div style='background:#f9f9f9;border-radius:11px;padding:12px 14px;margin-top:12px;border-left:4px solid "+S.topic.accent+"'><div style='font-size:11px;font-weight:bold;color:"+S.topic.accent+";font-family:Oswald,sans-serif;letter-spacing:0.08em;margin-bottom:5px'>📖 REAL EXAMPLE</div><p style='font-size:13px;color:#444;line-height:1.75;margin:0;white-space:pre-line'>"+pg.example+"</p></div>":"";
+  const whyBox=pg.why?"<div style='background:"+S.topic.color+";border-radius:11px;padding:12px 14px;margin-top:13px;border-left:4px solid "+S.topic.accent+"'><div style='font-size:11px;font-weight:bold;color:"+S.topic.accent+";font-family:Oswald,sans-serif;letter-spacing:0.08em;margin-bottom:5px'>💡 WHY THIS MATTERS</div><p style='font-size:13px;color:#444;line-height:1.75;margin:0'>"+pg.why+"</p></div>":"";
+  const memBox=pg.memory?"<div style='background:#fff8e1;border-radius:11px;padding:10px 13px;margin-top:10px;border-left:4px solid #f9a825'><p style='font-size:13px;color:#555;line-height:1.7;margin:0'>"+pg.memory+"</p></div>":"";
+  const tipBox=pg.tip?"<div style='background:#FFF8E1;border-radius:11px;padding:10px 13px;margin-top:10px;border-left:4px solid #F57F17'><div style='font-size:11px;font-weight:bold;color:#E65100;font-family:Oswald,sans-serif;letter-spacing:0.08em;margin-bottom:4px'>📝 EXAM TIP</div><p style='font-size:13px;color:#555;line-height:1.7;margin:0'>"+pg.tip+"</p></div>":"";
+  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:"+S.topic.accent+"' data-action='goHome'>← Home</button><div><div style='font-size:14px;font-weight:bold;color:#333'>"+S.topic.icon+" "+S.topic.title+"</div><div style='font-size:12px;color:#999;margin-top:1px'>Reading "+(S.lessonPage+1)+" of "+S.topic.lesson.length+"</div></div></div><div class='prog-wrap'><div class='prog-bar' style='width:"+pct+"%;background:linear-gradient(90deg,"+S.topic.light+","+S.topic.accent+")'></div></div><div class='card' style='border-left:5px solid "+S.topic.accent+"'><h2 style='font-size:17px;color:"+S.topic.accent+";margin:0 0 11px'>"+pg.h+"</h2><p style='font-size:15px;color:#333;line-height:1.85;margin:0'>"+pg.t+"</p>"+bullets+exBox+whyBox+memBox+tipBox+"</div><button class='big-btn' style='background:"+S.topic.accent+"' data-action='readLesson'>🔊 Read This Aloud</button><div style='display:flex;gap:9px'><button style='flex:1;padding:14px;border-radius:15px;background:"+(S.lessonPage===0?"#e0e0e0":"#f5f5f5")+";color:"+(S.lessonPage===0?"#bbb":"#555")+";font-size:14px;font-weight:bold;border:none;font-family:Georgia,serif;cursor:"+(S.lessonPage===0?"not-allowed":"pointer")+"' data-action='lessonBack'"+(S.lessonPage===0?" disabled":"")+">← Back</button><button style='flex:2;padding:14px;border-radius:15px;background:linear-gradient(135deg,"+S.topic.light+","+S.topic.accent+");color:#fff;font-size:16px;font-weight:bold;border:none;font-family:Georgia,serif;cursor:pointer' data-action='lessonNext'>"+(isLast?"Take the Quiz!":"Next →")+"</button></div></div>";
 }
 function renderQuiz(){
   if(!S.topic)return renderHome();
   const q=S.topic.questions[S.quizIdx],pct=(S.quizIdx/S.topic.questions.length)*100;
-  const opts=q.opts.map((o,i)=>{let cls="opt-btn";if(S.quizSel!==null){if(i===q.ans)cls+=" opt-correct";else if(i===S.quizSel&&i!==q.ans)cls+=" opt-wrong";}return"<button class='"+cls+"' data-action='selectQuiz' data-i='"+i+"'"+(S.quizSel!==null?" style='cursor:default'":"")+">ABCD"[i]+". "+o+"</button>";}).join("");
+  const opts=q.opts.map((o,i)=>{let cls="opt-btn";if(S.quizSel!==null){if(i===q.ans)cls+=" opt-correct";else if(i===S.quizSel&&i!==q.ans)cls+=" opt-wrong";}return"<button class='"+cls+"' data-action='selectQuiz' data-i='"+i+"'"+(S.quizSel!==null?" style='cursor:default'":"")+">"+"ABCD"[i]+". "+o+"</button>";}).join("");
   const explain=S.quizSel!==null?"<div style='margin-top:11px;padding:12px 14px;border-radius:12px;background:"+(S.quizSel===q.ans?"#E8F5E9":"#FFF3E0")+";font-size:14px;color:#444;line-height:1.6'>"+(S.quizSel===q.ans?"Correct! ":"Not quite. ")+q.ex+"</div>":"";
   const nb=S.quizSel!==null?"<button class='big-btn' style='background:linear-gradient(135deg,"+S.topic.light+","+S.topic.accent+")' data-action='quizNext'>"+(S.quizIdx+1>=S.topic.questions.length?"See Results":"Next Question")+"</button>":"<p style='text-align:center;color:#aaa;font-size:13px;font-style:italic;margin-top:8px'>Tap an answer to continue \u{1F49B}</p>";
   return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:"+S.topic.accent+"' data-action='goHome'>← Home</button><div><div style='font-size:14px;font-weight:bold;color:#333'>\u{1F4DD} "+S.topic.title+" Quiz</div><div style='font-size:12px;color:#999;margin-top:1px'>Question "+(S.quizIdx+1)+" of "+S.topic.questions.length+"</div></div></div><div class='prog-wrap'><div class='prog-bar' style='width:"+pct+"%;background:linear-gradient(90deg,"+S.topic.light+","+S.topic.accent+")'></div></div><div class='card'><p style='font-size:16px;color:#333;font-weight:bold;line-height:1.6;margin:0 0 14px'>"+q.q+"</p>"+opts+explain+"</div>"+nb+"</div>";
@@ -933,43 +1794,14 @@ function renderLinks(){
   const cards=pretestLinks.map(l=>"<div class='link-card'><a href='"+l.url+"' target='_blank' rel='noopener noreferrer'>"+l.name+"</a><p>"+l.desc+"</p></div>").join("");
   return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goHome'>← Home</button><div style='color:#fff;font-size:15px;font-weight:bold'>\u{1F517} Official Pretest Resources</div></div><div style='background:rgba(255,255,255,0.15);border-radius:13px;padding:11px 15px;margin-bottom:14px;color:#fff;font-size:13px;line-height:1.7'>\u{1F4A1} These are real, free resources. Tap any link to open it in your browser!</div>"+cards+"<div style='background:rgba(255,255,255,0.12);border-radius:13px;padding:12px 15px;margin-top:5px;color:#fff;font-size:13px;line-height:1.7'>\u{1F3C6} The real ServSafe exam is 90 questions. Passing score is <strong>75%</strong>. The online proctored version can be taken from home with a webcam. You have got this!</div></div>";
 }
-function bindEvents(){
-  document.querySelectorAll("[data-action]").forEach(el=>{
-    el.addEventListener("click",()=>{
-      const a=el.dataset.action;
-      if(a==="goHome"){S.screen="home";stopSpeech();r();}
-      else if(a==="goServSafe"){S.screen="servsafe";r();}
-      else if(a==="goSelectExam"){S.screen="selectExam";r();}
-      else if(a==="goReports"){S.screen="reports";r();}
-      else if(a==="openLinks"){S.screen="links";r();}
-      else if(a==="clearHistory"){if(confirm("Clear all exam history? This cannot be undone.")){S.examHistory=[];saveHist();r();}}
-      else if(a==="openTech"){const l=techLessons.find(x=>x.id===el.dataset.id);S.lesson=l;S.step=0;S.techComplete=false;S.screen="techLesson";stopSpeech();r();}
-      else if(a==="techNext"){if(S.step+1>=S.lesson.steps.length){S.techDone[S.lesson.id]=true;S.techComplete=true;stopSpeech();try{localStorage.setItem("pp_techDone",JSON.stringify(S.techDone));}catch(e){} scheduleSave();r();}else{const msg=cheers[Math.floor(Math.random()*cheers.length)];S.showCheer=true;S.cheerMsg=msg;speak(msg);r(false);setTimeout(()=>{S.showCheer=false;S.step++;r(false);},2000);}}
-      else if(a==="techBack"){if(S.step>0){stopSpeech();S.step--;r();}}
-      else if(a==="techRepeat"){S.step=0;S.techComplete=false;r();}
-      else if(a==="readStep"){const s=S.lesson.steps[S.step];speak("Step "+(S.step+1)+". "+s.title+". "+s.text+". Tip: "+s.tip.replace(/\u{1F4A1}/gu,""));}
-      else if(a==="openTopic"){const t=ssTopics.find(x=>x.id===el.dataset.id);S.topic=t;S.lessonPage=0;S.quizIdx=0;S.quizSel=null;S.quizAnswers=[];S.screen="servsafeLesson";stopSpeech();r();}
-      else if(a==="lessonNext"){if(S.lessonPage+1>=S.topic.lesson.length){S.screen="quiz";S.quizIdx=0;S.quizSel=null;S.quizAnswers=[];stopSpeech();r();}else{stopSpeech();S.lessonPage++;r();}}
-      else if(a==="lessonBack"){if(S.lessonPage>0){stopSpeech();S.lessonPage--;r();}}
-      else if(a==="readLesson"){speak(S.topic.lesson[S.lessonPage].t);}
-      else if(a==="selectQuiz"){if(S.quizSel===null){S.quizSel=parseInt(el.dataset.i);r(false);}}
-      else if(a==="quizNext"){const newA=[...S.quizAnswers,S.quizSel];if(S.quizIdx+1>=S.topic.questions.length){S.quizAnswers=newA;const sc=newA.filter((a,i)=>a===S.topic.questions[i].ans).length;if(sc/S.topic.questions.length>=0.6){S.topicDone[S.topic.id]=true;try{localStorage.setItem("pp_topicDone",JSON.stringify(S.topicDone));}catch(e){} scheduleSave();}S.screen="quizResult";r();}else{S.quizAnswers=newA;S.quizIdx++;S.quizSel=null;r();}}
-      else if(a==="retryQuiz"){S.quizIdx=0;S.quizSel=null;S.quizAnswers=[];S.screen="quiz";r();}
-      else if(a==="reviewLesson"){S.lessonPage=0;S.screen="servsafeLesson";r();}
-      else if(a==="startExam"){S.examVersion=el.dataset.ver;S.examQs=buildExam(S.examVersion);S.examIdx=0;S.examSel=null;S.examAnswers=[];S.screen="practiceExam";stopSpeech();r();}
-      else if(a==="selectExam"){if(S.examSel===null){S.examSel=parseInt(el.dataset.i);r(false);}}
-      else if(a==="examNext"){const newA=[...S.examAnswers,S.examSel];if(S.examIdx+1>=S.examQs.length){S.examAnswers=newA;S.screen="examResult";r();}else{S.examAnswers=newA;S.examIdx++;S.examSel=null;r();}}
-      else if(a==="retryExam"){S.examQs=buildExam(S.examVersion);S.examIdx=0;S.examSel=null;S.examAnswers=[];S.screen="practiceExam";r();}
-      else if(a==="goAskAI"){S.screen="askAI";stopSpeech();r();}
-      else if(a==="submitAI"){const inp=document.getElementById("aiInput");const val=inp?inp.value.trim():"";if(!val){alert("Please type what you need help with first!");return;}S.aiRequest=val;fetchAILesson(val);}
-      else if(a==="retryAI"){fetchAILesson(S.aiRequest);}
-      else if(a==="aiNext"){if(S.aiLesson&&S.aiStep+1>=S.aiLesson.steps.length){S.aiComplete=true;stopSpeech();r();}else{const msg=cheers[Math.floor(Math.random()*cheers.length)];S.showCheer=true;S.cheerMsg=msg;speak(msg);r(false);setTimeout(()=>{S.showCheer=false;S.aiStep++;r(false);},2000);}}
-      else if(a==="aiBack"){if(S.aiStep>0){stopSpeech();S.aiStep--;r();}}
-      else if(a==="aiRepeat"){S.aiStep=0;S.aiComplete=false;r();}
-      else if(a==="readAIStep"){if(S.aiLesson&&S.aiLesson.steps){const s=S.aiLesson.steps[S.aiStep];speak("Step "+(S.aiStep+1)+". "+s.title+". "+s.text+(s.tip?". Tip: "+s.tip.replace(/💡/g,""):""));}}
-      else if(a==="loadGuide"){const i=parseInt(el.dataset.i);const g=S.savedGuides[i];if(g){S.aiRequest=g.request;S.aiLesson=g.lesson;S.aiStep=0;S.aiComplete=false;S.aiLoading=false;S.aiError=false;S.screen="aiLesson";r();}}
-    });
-  });
+
+
+function bindFeedbackHandlers(){
+  var fbMsg=document.getElementById("fbMessage");
+  var fbCount=document.getElementById("fbCharCount");
+  if(fbMsg&&fbCount){
+    fbMsg.addEventListener("input",function(){S.fb.message=fbMsg.value;fbCount.textContent=fbMsg.value.length+" characters";});
+  }
 }
 window.addEventListener("load", async function() {
   // Seed the initial history entry for the home screen
@@ -978,4 +1810,6 @@ window.addEventListener("load", async function() {
   await loadFromCloud(); // then pull latest from cloud
   r(false); // re-render with cloud data (same screen, no push)
 });
-</script></body></html>
+
+</script>
+</body></html>
