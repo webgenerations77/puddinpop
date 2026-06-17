@@ -82,6 +82,7 @@ textarea:focus{border-color:var(--green)}
 <script>
 const EMAILJS_SERVICE="service_wicmvh8";
 const EMAILJS_TEMPLATE="template_gdfz5op";
+(function(){emailjs.init({publicKey:"Gekp4bAXEDvqr4H5v"});})();
 
 const TOPICS=["Food Safety & Contamination","Time & Temperature","Personal Hygiene","Cleaning & Sanitizing","Pest Control & Facilities"];
 function q(question,opts,ans,ex){return{q:question,opts:opts,ans:ans,ex:ex};}
@@ -619,7 +620,7 @@ async function saveToCloud() {
     lastSyncedData = payloadStr;
     console.log("Saved to cloud ✓");
     const el=document.getElementById("syncStatus");
-    if(el){el.textContent="☁️ Synced just now";setTimeout(()=>{if(el)el.textContent="";},3000);}
+    if(el){el.textContent=eggSyncMessage("☁️ Synced just now");setTimeout(()=>{if(el)el.textContent="";},3000);}
   } catch(e) {
     console.warn("Cloud save failed, data kept locally:", e.message);
   }
@@ -661,7 +662,7 @@ const techLessons=[
   ]}
 ];
 
-const pretestLinks=[{name:"ServSafe Official",url:"https://www.servsafe.com/servsafe-manager",desc:"The official ServSafe site for 2026 exam registration and materials."},{name:"Union Test Prep",url:"https://uniontestprep.com/servsafe/practice-test",desc:"Free 2026 practice tests. No sign-up."},{name:"Practice Tester",url:"https://www.practicetester.com/servsafe/test",desc:"Free scored practice tests with instant feedback."},{name:"Easy Prep",url:"https://easy-prep.org/servsafe-practice-test",desc:"Free full-length practice exams. Updated 2026."},{name:"Practice Test Geeks",url:"https://practicetestgeeks.com/servsafe-practice-test-exam/",desc:"Free questions covering all five ServSafe topics."}];
+const pretestLinks=[{name:"ServSafe Official — Manager Certification",url:"https://www.servsafe.com/servsafe-manager",desc:"The official ServSafe site. Register for the real exam, access the 9th Edition (2026) study materials, and find a proctor near you."},{name:"Union Test Prep — Free ServSafe Practice Tests",url:"https://uniontestprep.com/servsafe/practice-test",desc:"Free practice tests updated for 2026 covering all ServSafe Manager topics with answer explanations. No sign-up required."},{name:"Practice Tester — ServSafe Manager Exam",url:"https://www.practicetester.com/servsafe/test",desc:"Free scored practice tests with instant feedback. Covers Food Handler and Manager exams — 40 to 90 questions each."},{name:"Easy Prep — Full ServSafe Practice Test",url:"https://easy-prep.org/servsafe-practice-test",desc:"Free full-length ServSafe practice exams with topic-focused quizzes. No account needed. Updated March 2026."},{name:"Practice Test Geeks — ServSafe 2026",url:"https://practicetestgeeks.com/servsafe-practice-test-exam/",desc:"Free ServSafe practice questions covering Foodborne Illness, Personal Hygiene, Cross-Contamination, Temperature, and Allergens."}];
 
 const ssTopics=[
   {id:"contamination",title:"Food Safety & Contamination",icon:"\u{1F9A0}",accent:"#C62828",light:"#EF9A9A",color:"#FCE4EC",
@@ -745,62 +746,12 @@ function r(pushState){
   }
 }
 
-function renderHome(){
-  const tc=techLessons.map(l=>"<button class='home-card' data-action='openTech' data-id='"+l.id+"'><span style='font-size:32px'>"+l.icon+"</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>"+l.title+"</div><div style='font-size:12px;color:#555'>"+l.steps.length+" easy steps</div></div>"+(S.techDone[l.id]?"<span style='font-size:18px'>✅</span>":"")+"<span style='font-size:16px;color:#aaa'>›</span></button>").join("");
-  const topicsDone=ssTopics.filter(t=>S.topicDone[t.id]).length;
-  const passedExams=S.examHistory.filter(e=>e.pct>=75).length;
-  const ssProgress=topicsDone+" of "+ssTopics.length+" lessons done · "+S.examHistory.length+" exam"+(S.examHistory.length!==1?"s":"")+" taken";
-  return"<div class='wrap'>"
-  +"<div class='eagles-header' style='padding:16px 18px'>"
-  +"<div style='display:flex;align-items:center;gap:18px'>"
-  +"<img src='https://upload.wikimedia.org/wikipedia/en/thumb/8/8e/Philadelphia_Eagles_logo.svg/1280px-Philadelphia_Eagles_logo.svg.png' alt='Philadelphia Eagles' style='width:33vw;max-width:160px;min-width:110px;height:auto;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 3px 12px rgba(0,0,0,0.7))'>"
-  +"<div style='text-align:left;flex:1'>"
-  +"<h1 style='font-size:34px;color:#fff;margin:0 0 4px;letter-spacing:0.05em;font-family:Oswald,sans-serif;line-height:1'>Puddin POP</h1>"
-  +"<div style='width:44px;height:3px;background:#A5ACAF;margin:8px 0;border-radius:2px'></div>"
-  +"<p style='color:rgba(255,255,255,0.9);font-size:14px;font-style:italic;margin:0 0 5px'>Your friendly helper 💛</p>"
-  +"<p style='color:#A5ACAF;font-size:13px;margin:0;font-family:Oswald,sans-serif;letter-spacing:0.1em;font-weight:600'>FLY EAGLES FLY!</p>"
-  +"</div>"
-  +"</div>"
-  +"<div id='syncStatus' style='font-size:11px;color:rgba(255,255,255,0.45);margin-top:8px;text-align:center'></div>"
-  +"</div>"
-  +"<div class='sec-label'>🤖 Ask for Help with Anything</div>"
-  +"<button class='home-card' style='border-left-color:#c4a35a' data-action='goAskAI'><span style='font-size:32px'>💬</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Build Me a How-To Guide</div><div style='font-size:12px;color:#555'>Type what you need help with and I will make a step-by-step guide!</div></div><span style='font-size:16px;color:#aaa'>›</span></button>"
-  +"<div class='sec-label' style='margin-top:14px'>🍽️ ServSafe Study</div>"
-  +"<button class='home-card' style='border-left-color:#004C54' data-action='goServSafe'><span style='font-size:32px'>🍽️</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>ServSafe Certification Prep</div><div style='font-size:12px;color:#555'>"+ssProgress+"</div></div>"+(topicsDone===ssTopics.length&&passedExams>0?"<span style='font-size:18px'>🏆</span>":"")+"<span style='font-size:16px;color:#aaa'>›</span></button>"
-  +"<div class='sec-label' style='margin-top:14px'>💻 Tech Help</div>"+tc
-  +"<div style='background:rgba(0,0,0,0.25);border-radius:13px;padding:12px 16px;text-align:center;margin-top:11px;border:1px solid rgba(255,255,255,0.1)'><p style='color:rgba(255,255,255,0.85);margin:0;font-size:13px;line-height:1.7'>💚 No timer. No score pressure. Fly Eagles Fly! 💚</p></div>"+"<button class='big-btn' style='background:linear-gradient(135deg,#c4a35a,#8a6f2e);margin-top:10px' data-action='goFeedback'>💬 Send Feedback</button>"
-  +"</div>";
-}
-function renderServSafe(){
-  const sc=ssTopics.map(t=>"<button class='home-card' data-action='openTopic' data-id='"+t.id+"'><span style='font-size:32px'>"+t.icon+"</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>"+t.title+"</div><div style='font-size:12px;color:#555'>Lesson + Pop Quiz</div></div>"+(S.topicDone[t.id]?"<span style='font-size:18px'>✅</span>":"")+"<span style='font-size:16px;color:#ccc'>›</span></button>").join("");
-  const passedCount=S.examHistory.filter(e=>e.pct>=75).length;
-  return"<div class='wrap'>"
-  +"<div class='top-bar'><button class='home-btn' data-action='goHome'>← Home</button><div><div style='font-size:15px;font-weight:bold;color:#fff;font-family:Oswald,sans-serif;letter-spacing:0.04em'>SERVSAFE PREP</div><div style='font-size:12px;color:rgba(255,255,255,0.7);margin-top:1px'>Lessons, quizzes & practice exams</div></div></div>"
-  +"<div class='sec-label'>📖 Study by Topic</div>"
-  +sc
-  +"<div class='sec-label' style='margin-top:14px'>📝 Practice Exams</div>"
-  +"<button class='home-card' data-action='goSelectExam'><span style='font-size:32px'>📝</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Full 90-Question Practice Exam</div><div style='font-size:12px;color:#555'>5 unique versions · Just like the real test!</div></div><span style='font-size:16px;color:#ccc'>›</span></button>"
-  +"<button class='home-card' style='border-left-color:#c4a35a' data-action='goSelectShortExam'><span style='font-size:32px'>⚡</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Quick Practice · 20 Questions</div><div style='font-size:12px;color:#555'>Fast focused review from all 5 topics!</div></div><span style='font-size:16px;color:#ccc'>›</span></button>"
-  +"<button class='home-card' data-action='goReports'><span style='font-size:32px'>📊</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>My Progress Report</div><div style='font-size:12px;color:#555'>"+S.examHistory.length+" exam"+(S.examHistory.length!==1?"s":"")+" taken · "+passedCount+" passed</div></div><span style='font-size:16px;color:#ccc'>›</span></button>"
-  +"<button class='home-card' data-action='openLinks'><span style='font-size:32px'>🔗</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Official Pretest Resources</div><div style='font-size:12px;color:#555'>Free practice from trusted sites</div></div><span style='font-size:16px;color:#ccc'>›</span></button>"
-  +"</div>";
-}
-function renderSelectExam(){
-  const versions=[{ver:"v1",num:1,icon:"\u{1F331}",desc:"The foundation. All 5 topics with core ServSafe concepts."},{ver:"v2",num:2,icon:"\u{1F4D8}",desc:"Deeper dive. Pathogens, advanced temperature, and cleaning."},{ver:"v3",num:3,icon:"\u{1F525}",desc:"Challenging scenarios. Real-world situations and decision-making."},{ver:"v4",num:4,icon:"\u{1F49C}",desc:"Management focus. HACCP, policies, and food handler responsibilities."},{ver:"v5",num:5,icon:"\u{1F3C6}",desc:"Exam-ready. The toughest version, closest to the real ServSafe exam."}];
-  const cards=versions.map(v=>{const hist=S.examHistory.filter(e=>e.version===v.ver);const best=hist.length?Math.max(...hist.map(e=>e.pct)):null;const passed=best!==null&&best>=75;return"<button class='ver-btn"+(passed?" done":"")+"' data-action='startExam' data-ver='"+v.ver+"' data-type='full'><span style='font-size:32px'>"+v.icon+"</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Version "+v.num+(passed?" ✅":"")+"</div><div style='font-size:13px;color:#666;margin-bottom:5px'>"+v.desc+"</div>"+(hist.length?"<div style='font-size:12px;color:#555'>Best: <strong style='color:"+(passed?"#2E7D32":"#E65100")+"'>"+best+"%</strong> · Taken "+hist.length+" time"+(hist.length!==1?"s":"")+"</div>":"<div style='font-size:12px;color:#aaa'>Not taken yet</div>")+"</div><span style='font-size:16px;color:#ccc'>›</span></button>";}).join("");
-  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goHome'>← Home</button><div><div style='font-size:15px;font-weight:bold;color:#fff'>\u{1F4DD} Choose a Practice Exam</div><div style='font-size:12px;color:rgba(255,255,255,0.75);margin-top:1px'>90 questions · All 5 ServSafe topics</div></div></div><div style='background:rgba(255,255,255,0.12);border-radius:13px;padding:11px 15px;margin-bottom:15px;color:#fff;font-size:13px;line-height:1.6'>\u{1F4A1} Each version has 90 unique questions. The real ServSafe exam requires <strong>75% to pass</strong>. Take all 5 for the best preparation!</div>"+cards+"</div>";
-}
-function renderSelectShortExam(){
-  const versions=[{ver:"v1",num:1,icon:"🌱",desc:"Core fundamentals from all 5 topics."},{ver:"v2",num:2,icon:"📘",desc:"Pathogens, temperature, and cleaning highlights."},{ver:"v3",num:3,icon:"🔥",desc:"Real-world scenarios and decision-making."},{ver:"v4",num:4,icon:"💙",desc:"Management and HACCP essentials."},{ver:"v5",num:5,icon:"🏆",desc:"Hardest questions from all topics."}];
-  const cards=versions.map(v=>{const hist=S.examHistory.filter(e=>e.version===v.ver&&e.examType==="short");const best=hist.length?Math.max(...hist.map(e=>e.pct)):null;const passed=best!==null&&best>=75;return"<button class='ver-btn"+(passed?" done":"")+"' data-action='startExam' data-ver='"+v.ver+"' data-type='short'><span style='font-size:32px'>"+v.icon+"</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Quick Version "+v.num+(passed?" ✅":"")+"</div><div style='font-size:13px;color:#666;margin-bottom:5px'>"+v.desc+"</div>"+(hist.length?"<div style='font-size:12px;color:#555'>Best: <strong style='color:"+(passed?"#2E7D32":"#E65100")+"'>"+best+"%</strong> · Taken "+hist.length+" time"+(hist.length!==1?"s":"")+"</div>":"<div style='font-size:12px;color:#aaa'>Not taken yet</div>")+"</div><span style='font-size:16px;color:#ccc'>›</span></button>";}).join("");
-  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goServSafe'>← Back</button><div><div style='font-size:15px;font-weight:bold;color:#fff'>⚡ Quick Practice · 20 Questions</div><div style='font-size:12px;color:rgba(255,255,255,0.75);margin-top:1px'>4 questions per topic · Randomly selected</div></div></div><div style='background:rgba(255,255,255,0.12);border-radius:13px;padding:11px 15px;margin-bottom:15px;color:#fff;font-size:13px;line-height:1.6'>⚡ Each Quick Exam picks 20 random questions — 4 from each topic. Great for a fast focused review anytime!</div>"+cards+"</div>";
-}
-
 // ═══════════════════════════════════════════
 // PRACTICE EXAM
 // ═══════════════════════════════════════════
 const RW_LOGO="https://upload.wikimedia.org/wikipedia/en/thumb/e/e0/Detroit_Red_Wings_logo.svg/500px-Detroit_Red_Wings_logo.svg.png";
 const NYR_LOGO="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/New_York_Rangers.svg/500px-New_York_Rangers.svg.png";
+const EAGLES_LOGO="https://upload.wikimedia.org/wikipedia/en/thumb/8/8e/Philadelphia_Eagles_logo.svg/1280px-Philadelphia_Eagles_logo.svg.png";
 
 // Egg state — persists for the session
 const EGG={
@@ -829,8 +780,8 @@ function eggGetHomeLogoAndTagline(){
   // First day of month: tagline swap only
   if(date===1){
     return{
-      logo:NYR_LOGO,
-      tagline:"<p style='color:rgba(255,255,255,0.9);font-size:14px;font-style:italic;margin:0 0 5px'>Turning food safety into a superpower 🦸‍♀️</p>",
+      logo:EAGLES_LOGO,
+      tagline:"<p style='color:rgba(255,255,255,0.9);font-size:14px;font-style:italic;margin:0 0 5px'>Your friendly helper 💛</p>",
       slogan:"<p style='color:#c4a35a;font-size:12px;margin:0;font-family:Oswald,sans-serif;letter-spacing:0.08em;font-weight:600'>🔴 Red Wings are better (it's the 1st — fact of the month!)</p>"
     };
   }
@@ -843,9 +794,9 @@ function eggGetHomeLogoAndTagline(){
     };
   }
   return{
-    logo:NYR_LOGO,
-    tagline:"<p style='color:rgba(255,255,255,0.9);font-size:14px;font-style:italic;margin:0 0 5px'>Turning food safety into a superpower 🦸‍♀️</p>",
-    slogan:"<p style='color:#A5ACAF;font-size:13px;margin:0;font-family:Oswald,sans-serif;letter-spacing:0.1em;font-weight:600'>LET'S GO RANGERS!</p>"
+    logo:EAGLES_LOGO,
+    tagline:"<p style='color:rgba(255,255,255,0.9);font-size:14px;font-style:italic;margin:0 0 5px'>Your friendly helper 💛</p>",
+    slogan:"<p style='color:#A5ACAF;font-size:13px;margin:0;font-family:Oswald,sans-serif;letter-spacing:0.1em;font-weight:600'>FLY EAGLES FLY!</p>"
   };
 }
 
@@ -983,6 +934,7 @@ function eggMaybeFlashWingsLogo(){
 // HOME
 // ═══════════════════════════════════════════
 function renderHome(){
+  const tc=techLessons.map(l=>"<button class='home-card' data-action='openTech' data-id='"+l.id+"'><span style='font-size:32px'>"+l.icon+"</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>"+l.title+"</div><div style='font-size:12px;color:#555'>"+l.steps.length+" easy steps</div></div>"+(S.techDone[l.id]?"<span style='font-size:18px'>✅</span>":"")+"<span style='font-size:16px;color:#aaa'>›</span></button>").join("");
   const topicsDone=ssTopics.filter(t=>S.topicDone[t.id]).length;
   const passedExams=S.examHistory.filter(e=>e.pct>=75).length;
   const ssProgress=topicsDone+" of "+ssTopics.length+" lessons done · "+S.examHistory.length+" exam"+(S.examHistory.length!==1?"s":"")+" taken";
@@ -993,8 +945,8 @@ function renderHome(){
   +"<div style='display:flex;align-items:center;gap:18px'>"
   +"<img src='"+egg.logo+"' id='homeLogo' alt='Team Logo' style='width:33vw;max-width:160px;min-width:110px;height:auto;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 3px 12px rgba(0,0,0,0.7));cursor:pointer' data-action='tapLogo'>"
   +"<div style='text-align:left;flex:1'>"
-  +"<h1 style='font-size:34px;color:#fff;margin:0 0 4px;letter-spacing:0.05em;font-family:Oswald,sans-serif;line-height:1'>Kenzie's ServSafe Journey</h1>"
-  +"<div style='width:44px;height:3px;background:#c4a35a;margin:7px 0;border-radius:2px'></div>"
+  +"<h1 style='font-size:34px;color:#fff;margin:0 0 4px;letter-spacing:0.05em;font-family:Oswald,sans-serif;line-height:1'>Puddin POP</h1>"
+  +"<div style='width:44px;height:3px;background:#A5ACAF;margin:8px 0;border-radius:2px'></div>"
   +egg.tagline
   +egg.slogan
   +"</div>"
@@ -1002,10 +954,13 @@ function renderHome(){
   +"<div id='syncStatus' style='font-size:11px;color:rgba(255,255,255,0.45);margin-top:8px;text-align:center'></div>"
   +"</div>"
   +allTopicsEgg
-  +"<div class='sec-label'>🍽️ ServSafe Certification Prep</div>"
+  +"<div class='sec-label'>🤖 Ask for Help with Anything</div>"
+  +"<button class='home-card' style='border-left-color:#c4a35a' data-action='goAskAI'><span style='font-size:32px'>💬</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Build Me a How-To Guide</div><div style='font-size:12px;color:#555'>Type what you need help with and I will make a step-by-step guide!</div></div><span style='font-size:16px;color:#aaa'>›</span></button>"
+  +"<div class='sec-label' style='margin-top:14px'>🍽️ ServSafe Study</div>"
   +"<button class='home-card' style='border-left-color:#004C54' data-action='goServSafe'><span style='font-size:32px'>🍽️</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>ServSafe Study Hub</div><div style='font-size:12px;color:#555'>"+ssProgress+"</div></div>"+(topicsDone===ssTopics.length&&passedExams>0?"<span style='font-size:18px'>🏆</span>":"")+"<span style='font-size:16px;color:#aaa'>›</span></button>"
-  +"<div style='background:rgba(0,0,0,0.25);border-radius:13px;padding:12px 16px;text-align:center;margin-top:11px;border:1px solid rgba(255,255,255,0.1)'><p style='color:rgba(255,255,255,0.85);margin:0;font-size:13px;line-height:1.7'>🏒 No timer. No pressure. You've got this! 🏒</p></div>"
-  +"<button class='big-btn' style='background:linear-gradient(135deg,#c4a35a,#8b0018);margin-top:10px' data-action='goFeedback'>💬 Send Feedback</button>"
+  +"<div class='sec-label' style='margin-top:14px'>💻 Tech Help</div>"+tc
+  +"<div style='background:rgba(0,0,0,0.25);border-radius:13px;padding:12px 16px;text-align:center;margin-top:11px;border:1px solid rgba(255,255,255,0.1)'><p style='color:rgba(255,255,255,0.85);margin:0;font-size:13px;line-height:1.7'>💚 No timer. No score pressure. Fly Eagles Fly! 💚</p></div>"
+  +"<button class='big-btn' style='background:linear-gradient(135deg,#c4a35a,#8a6f2e);margin-top:10px' data-action='goFeedback'>💬 Send Feedback</button>"
   +"</div>";
 }
 
@@ -1016,7 +971,7 @@ function renderServSafe(){
   const sc=ssTopics.map(t=>"<button class='home-card' data-action='openTopic' data-id='"+t.id+"'><span style='font-size:32px'>"+t.icon+"</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>"+t.title+"</div><div style='font-size:12px;color:#555'>Lesson + Pop Quiz</div></div>"+(S.topicDone[t.id]?"<span style='font-size:18px'>✅</span>":"")+"<span style='font-size:16px;color:#ccc'>›</span></button>").join("");
   const passedCount=S.examHistory.filter(e=>e.pct>=75).length;
   return"<div class='wrap'>"
-  +"<div class='top-bar'><button class='home-btn' data-action='goHome'>← Home</button><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#fff;font-family:Oswald,sans-serif;letter-spacing:0.04em'>SERVSAFE PREP</div><div style='font-size:12px;color:rgba(255,255,255,0.7);margin-top:1px'>Lessons, quizzes & practice exams</div></div><img src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/New_York_Rangers.svg/500px-New_York_Rangers.svg.png' alt='NYR' style='height:clamp(36px,10vw,50px);width:auto;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.5))'></div>"
+  +"<div class='top-bar'><button class='home-btn' data-action='goHome'>← Home</button><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#fff;font-family:Oswald,sans-serif;letter-spacing:0.04em'>SERVSAFE PREP</div><div style='font-size:12px;color:rgba(255,255,255,0.7);margin-top:1px'>Lessons, quizzes & practice exams</div></div></div>"
   +"<div class='sec-label'>📖 Study by Topic</div>"
   +sc
   +"<div class='sec-label' style='margin-top:14px'>📝 Practice Exams</div>"
@@ -1155,9 +1110,9 @@ function renderFeedback(){
     +"</p>"
     +"<p style='font-size:14px;color:#888;font-style:italic;margin:0'>Now go ace that exam. The food safety world needs you! 🍽️</p>"
     +"</div>"
-    // Ranger pride badge
+    // Eagles pride badge
     +"<div style='background:rgba(0,0,0,0.3);border-radius:13px;padding:13px 16px;margin-bottom:20px;border:1px solid rgba(255,255,255,0.15)'>"
-    +"<p style='color:rgba(255,255,255,0.9);margin:0;font-size:13px;font-family:Oswald,sans-serif;letter-spacing:0.1em;font-weight:600'>🏒 LET'S GO RANGERS — AND LET'S GO KENZIE! 🏒</p>"
+    +"<p style='color:rgba(255,255,255,0.9);margin:0;font-size:13px;font-family:Oswald,sans-serif;letter-spacing:0.1em;font-weight:600'>💚 FLY EAGLES FLY! 💚</p>"
     +"</div>"
     +"<button class='big-btn' style='background:linear-gradient(135deg,#c4a35a,#004C54)' data-action='goHome'>🏠 Back Home</button>"
     +"</div>";
@@ -1556,6 +1511,116 @@ function renderEggList(){
 }
 
 // ═══════════════════════════════════════════
+// UTILITY
+// ═══════════════════════════════════════════
+function escHtml(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+
+// ═══════════════════════════════════════════
+// SPEECH
+// ═══════════════════════════════════════════
+let _synth=window.speechSynthesis||null;
+function speak(text){
+  if(!_synth)return;
+  stopSpeech();
+  const u=new SpeechSynthesisUtterance(text);
+  u.rate=0.92;u.pitch=1.05;
+  _synth.speak(u);
+}
+function stopSpeech(){if(_synth)_synth.cancel();}
+
+// ═══════════════════════════════════════════
+// TECH LESSON SCREEN
+// ═══════════════════════════════════════════
+function renderTechLesson(){
+  if(!S.lesson)return renderHome();
+  const l=S.lesson,step=l.steps[S.step],pct=Math.round((S.step/l.steps.length)*100),isLast=S.step+1>=l.steps.length;
+  return"<div class='wrap'>"
+  +"<div class='top-bar'><button class='home-btn' style='background:"+l.accent+"' data-action='goHome'>← Home</button>"
+  +"<div><div style='font-size:14px;font-weight:bold;color:#fff'>"+l.icon+" "+l.title+"</div>"
+  +"<div style='font-size:12px;color:rgba(255,255,255,0.7);margin-top:1px'>Step "+(S.step+1)+" of "+l.steps.length+"</div></div></div>"
+  +"<div class='prog-wrap'><div class='prog-bar' style='width:"+pct+"%;background:linear-gradient(90deg,"+l.light+","+l.accent+")'></div></div>"
+  +"<div class='step-card'>"
+  +"<div style='font-size:40px;text-align:center;margin-bottom:12px'>"+step.img+"</div>"
+  +"<h2 style='font-size:18px;color:"+l.accent+";margin:0 0 10px;text-align:center'>"+step.title+"</h2>"
+  +"<p style='font-size:15px;color:#333;line-height:1.85;margin:0 0 13px'>"+step.text+"</p>"
+  +"<div style='background:"+l.color+";border-radius:11px;padding:10px 13px;border-left:4px solid "+l.light+"'>"
+  +"<p style='font-size:13px;color:#444;line-height:1.7;margin:0'>"+step.tip+"</p>"
+  +"</div></div>"
+  +(isLast?"<button class='big-btn' style='background:linear-gradient(135deg,"+l.light+","+l.accent+")' data-action='techDone'>🎉 All Done! Mark Complete</button>":"")
+  +"<div style='display:flex;gap:9px'>"
+  +"<button style='flex:1;padding:14px;border-radius:15px;background:"+(S.step===0?"#e0e0e0":"#f5f5f5")+";color:"+(S.step===0?"#bbb":"#555")+";font-size:14px;font-weight:bold;border:none;font-family:Georgia,serif;cursor:"+(S.step===0?"not-allowed":"pointer")+"' data-action='techBack'"+(S.step===0?" disabled":"")+">← Back</button>"
+  +(isLast?"":"<button style='flex:2;padding:14px;border-radius:15px;background:linear-gradient(135deg,"+l.light+","+l.accent+");color:#fff;font-size:16px;font-weight:bold;border:none;font-family:Georgia,serif;cursor:pointer' data-action='techNext'>Next →</button>")
+  +"</div>"
+  +"</div>";
+}
+
+// ═══════════════════════════════════════════
+// AI HOW-TO GUIDE BUILDER
+// ═══════════════════════════════════════════
+async function submitAI(){
+  const inp=document.getElementById("aiInput");
+  if(inp)S.aiRequest=inp.value.trim();
+  if(!S.aiRequest){return;}
+  S.aiLoading=true;S.aiError=false;S.aiLesson=null;r(false);
+  try{
+    const resp=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        model:"claude-sonnet-4-6",
+        max_tokens:1000,
+        messages:[{role:"user",content:"Create a friendly step-by-step how-to guide for: "+S.aiRequest+"\n\nRespond in JSON only, no markdown, no preamble. Format: {\"title\":\"...\",\"steps\":[{\"num\":1,\"title\":\"...\",\"text\":\"...\",\"tip\":\"...\"}]} with 4-7 steps. Keep language simple and encouraging for older adults."}]
+      })
+    });
+    const data=await resp.json();
+    const txt=data.content.filter(b=>b.type==="text").map(b=>b.text).join("");
+    const clean=txt.replace(/```json|```/g,"").trim();
+    const parsed=JSON.parse(clean);
+    S.aiLesson=parsed;S.aiStep=0;S.aiComplete=false;
+    S.aiLoading=false;
+    S.savedGuides.push({title:parsed.title,steps:parsed.steps,date:new Date().toLocaleDateString()});
+    if(S.savedGuides.length>20)S.savedGuides=S.savedGuides.slice(0,20);
+    saveGuides();
+    S.screen="aiLesson";r();
+  }catch(e){
+    S.aiLoading=false;S.aiError=true;r(false);
+  }
+}
+function renderAskAI(){
+  const guides=S.savedGuides.slice().reverse().slice(0,3);
+  const gl=guides.length?"<div class='sec-label' style='margin-top:16px'>📚 Recent Guides</div>"+guides.map((g,i)=>"<button class='home-card' style='border-left-color:#004C54' data-action='openSavedGuide' data-i='"+i+"'><span style='font-size:28px'>📄</span><div style='flex:1'><div style='font-size:14px;font-weight:bold;color:#222'>"+escHtml(g.title)+"</div><div style='font-size:12px;color:#999'>"+g.date+" · "+g.steps.length+" steps</div></div><span style='font-size:16px;color:#aaa'>›</span></button>").join(""):"";
+  return"<div class='wrap'>"
+  +"<div class='top-bar'><button class='home-btn' data-action='goHome'>← Home</button>"
+  +"<div><div style='font-size:15px;font-weight:bold;color:#fff'>🤖 Build a How-To Guide</div>"
+  +"<div style='font-size:12px;color:rgba(255,255,255,0.7);margin-top:1px'>Ask me anything!</div></div></div>"
+  +"<div class='card'>"
+  +"<p style='font-size:14px;color:#555;line-height:1.7;margin:0 0 13px'>Type what you need help with and I will make a simple step-by-step guide just for you! For example: <em>How do I video call my daughter?</em></p>"
+  +(S.aiError?"<div style='background:#FFEBEE;border-radius:11px;padding:12px;color:#C62828;font-size:13px;margin-bottom:10px'>⚠️ Oops! Something went wrong. Check your connection and try again.</div>":"")
+  +(S.aiLoading?"<div class='ai-thinking'><div class='dot'></div><div class='dot'></div><div class='dot'></div></div><p style='color:#fff;font-size:13px;text-align:center;margin-top:6px'>Building your guide...</p>":"<textarea id='aiInput' placeholder='What do you need help with? (e.g. How do I print from my computer?)' rows='4' style='width:100%;border:2px solid #ddd;border-radius:12px;padding:13px 14px;font-size:15px;font-family:Lora,Georgia,serif;resize:none;outline:none;line-height:1.6;color:#222;transition:border-color 0.2s'>"+escHtml(S.aiRequest)+"</textarea><button class='big-btn' style='background:linear-gradient(135deg,#c4a35a,#004C54);margin-top:10px' data-action='submitAI'>🤖 Build My Guide!</button>")
+  +"</div>"
+  +gl
+  +"</div>";
+}
+function renderAILesson(){
+  if(!S.aiLesson)return renderAskAI();
+  const lesson=S.aiLesson,step=lesson.steps[S.aiStep],isLast=S.aiStep+1>=lesson.steps.length,pct=Math.round((S.aiStep/lesson.steps.length)*100);
+  return"<div class='wrap'>"
+  +"<div class='top-bar'><button class='home-btn' style='background:#004C54' data-action='goAskAI'>← Back</button>"
+  +"<div><div style='font-size:14px;font-weight:bold;color:#fff'>📖 "+escHtml(lesson.title)+"</div>"
+  +"<div style='font-size:12px;color:rgba(255,255,255,0.7);margin-top:1px'>Step "+(S.aiStep+1)+" of "+lesson.steps.length+"</div></div></div>"
+  +"<div class='prog-wrap'><div class='prog-bar' style='width:"+pct+"%;background:linear-gradient(90deg,#c4a35a,#004C54)'></div></div>"
+  +"<div class='ai-bubble'>"+escHtml(step.text)+"</div>"
+  +(step.tip?"<div style='background:rgba(255,255,255,0.12);border-radius:12px;padding:11px 14px;margin-bottom:12px;border-left:4px solid #c4a35a'><p style='color:#fff;font-size:13px;line-height:1.7;margin:0'>💡 "+escHtml(step.tip)+"</p></div>":"")
+  +(isLast&&S.aiComplete?"<div style='background:linear-gradient(135deg,#004C54,#002f35);border-radius:16px;padding:20px;text-align:center;margin-bottom:12px'><div style='font-size:48px'>🎉</div><h2 style='color:#fff;font-family:Oswald,sans-serif;font-size:20px;margin:8px 0'>Guide Complete!</h2><p style='color:rgba(255,255,255,0.85);font-size:14px;margin:0'>Great job following along! 💛 Fly Eagles Fly!</p></div>":"")
+  +"<div style='display:flex;gap:9px'>"
+  +"<button style='flex:1;padding:14px;border-radius:15px;background:"+(S.aiStep===0?"#e0e0e0":"#f5f5f5")+";color:"+(S.aiStep===0?"#bbb":"#555")+";font-size:14px;font-weight:bold;border:none;font-family:Georgia,serif;cursor:"+(S.aiStep===0?"not-allowed":"pointer")+"' data-action='aiBack'"+(S.aiStep===0?" disabled":"")+">← Back</button>"
+  +"<button style='flex:2;padding:14px;border-radius:15px;background:linear-gradient(135deg,#c4a35a,#004C54);color:#fff;font-size:16px;font-weight:bold;border:none;font-family:Georgia,serif;cursor:pointer' data-action='aiNext'>"+(isLast?"🎉 Done!":"Next Step →")+"</button>"
+  +"</div>"
+  +"</div>";
+}
+
+
+// ═══════════════════════════════════════════
 // EVENT BINDING
 // ═══════════════════════════════════════════
 function bindEvents(){
@@ -1563,6 +1628,15 @@ function bindEvents(){
     el.addEventListener("click",()=>{
       const a=el.dataset.action;
       if(a==="goHome"){S.screen="home";stopSpeech();r();}
+      else if(a==="goAskAI"){S.aiRequest="";S.aiLesson=null;S.aiError=false;S.aiLoading=false;S.screen="askAI";r();}
+      else if(a==="submitAI"){submitAI();}
+      else if(a==="openTech"){const l=techLessons.find(x=>x.id===el.dataset.id);if(l){S.lesson=l;S.step=0;S.screen="techLesson";r();}}
+      else if(a==="techNext"){if(S.step+1<S.lesson.steps.length){S.step++;r();}}
+      else if(a==="techBack"){if(S.step>0){S.step--;r();}}
+      else if(a==="techDone"){S.techDone[S.lesson.id]=true;scheduleSave();S.screen="home";r();}
+      else if(a==="openSavedGuide"){const idx=parseInt(el.dataset.i);const g=S.savedGuides.slice().reverse()[idx];if(g){S.aiLesson=g;S.aiStep=0;S.aiComplete=false;S.screen="aiLesson";r();}}
+      else if(a==="aiNext"){if(S.aiStep+1>=S.aiLesson.steps.length){S.aiComplete=true;r(false);}else{S.aiStep++;r();}}
+      else if(a==="aiBack"){if(S.aiStep>0){S.aiStep--;r(false);}}
       else if(a==="goServSafe"){S.screen="servsafe";r();}
       else if(a==="goSelectExam"){S.screen="selectExam";r();}
       else if(a==="goSelectShortExam"){S.screen="selectShortExam";r();}
