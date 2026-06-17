@@ -77,15 +77,12 @@ textarea:focus{border-color:var(--green)}
 </style>
 </head>
 <body>
-<div id="dbg" style="position:fixed;top:0;left:0;right:0;background:red;color:white;z-index:9999;font-size:18px;padding:8px;text-align:center;font-family:monospace">Loading...</div>
 <div id="app"></div>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
-// PuddinPOP v2.1 - 2026-06-17 01:56
-
-(function(){emailjs.init({publicKey:"Gekp4bAXEDvqr4H5v"});})();
 const EMAILJS_SERVICE="service_wicmvh8";
 const EMAILJS_TEMPLATE="template_gdfz5op";
+
 const TOPICS=["Food Safety & Contamination","Time & Temperature","Personal Hygiene","Cleaning & Sanitizing","Pest Control & Facilities"];
 function q(question,opts,ans,ex){return{q:question,opts:opts,ans:ans,ex:ex};}
 const BANK={v1:[
@@ -579,19 +576,7 @@ async function loadFromCloud() {
     if (record.topicDone) S.topicDone = record.topicDone;
     if (record.eggPin) S.cloudPin = record.eggPin;
     if (record.hockeyStats) S.hockeyStats = record.hockeyStats;
-    // Load rich lessons from GitHub
-    try {
-      const ghResp = await fetch("https://raw.githubusercontent.com/webgenerations77/kenzie/main/lessons.json");
-      if (ghResp.ok) {
-        const ghData = await ghResp.json();
-        if (ghData.topics) {
-          ghData.topics.forEach(lc => {
-            const topic = ssTopics.find(t => t.id === lc.id);
-            if (topic && lc.lesson && lc.lesson.length > 0) topic.lesson = lc.lesson;
-          });
-        }
-      }
-    } catch(e) { console.warn("GitHub lessons failed:", e.message); }
+    try{const ghR=await fetch("https://raw.githubusercontent.com/webgenerations77/kenzie/main/lessons.json");if(ghR.ok){const ghD=await ghR.json();if(ghD.topics){ghD.topics.forEach(lc=>{const t=ssTopics.find(t=>t.id===lc.id);if(t&&lc.lesson&&lc.lesson.length>0)t.lesson=lc.lesson;});}}}catch(e){}
     lastSyncedData = JSON.stringify(buildSyncPayload());
     console.log("Loaded from cloud ✓");
     const el=document.getElementById("syncStatus");
@@ -602,32 +587,17 @@ async function loadFromCloud() {
 }
 
 function buildSyncPayload() {
-  const examsTaken = S.examHistory.length;
-  const passed = S.examHistory.filter(e=>e.pct>=75).length;
-  const avg = examsTaken ? Math.round(S.examHistory.reduce((s,e)=>s+e.pct,0)/examsTaken) : 0;
-  const best = examsTaken ? Math.max(...S.examHistory.map(e=>e.pct)) : 0;
-  const topicsDone = ssTopics ? ssTopics.filter(t=>S.topicDone[t.id]).length : 0;
-  const versionBests = {};
-  ["v1","v2","v3","v4","v5"].forEach(ver=>{
-    const h = S.examHistory.filter(e=>e.version===ver);
-    if(h.length) versionBests[ver] = Math.max(...h.map(e=>e.pct));
-  });
-  const topicAverages = {};
-  if(typeof TOPICS !== "undefined") {
-    TOPICS.forEach((name,ti)=>{
-      const all = S.examHistory.filter(e=>e.topicBreakdown).map(e=>e.topicBreakdown[ti]).filter(b=>b&&b.tot>0);
-      if(all.length) topicAverages[name] = Math.round(all.reduce((s,b)=>s+b.tp,0)/all.length);
-    });
-  }
+  const examsTaken=S.examHistory.length;
+  const passed=S.examHistory.filter(e=>e.pct>=75).length;
+  const avg=examsTaken?Math.round(S.examHistory.reduce((s,e)=>s+e.pct,0)/examsTaken):0;
+  const best=examsTaken?Math.max(...S.examHistory.map(e=>e.pct)):0;
+  const versionBests={};
+  ["v1","v2","v3","v4","v5"].forEach(ver=>{const h=S.examHistory.filter(e=>e.version===ver);if(h.length)versionBests[ver]=Math.max(...h.map(e=>e.pct));});
   return {
-    examHistory: S.examHistory,
-    savedGuides: S.savedGuides,
-    techDone: S.techDone,
-    topicDone: S.topicDone,
-    stats: { examsTaken, examsPassed:passed, averageScore:avg, bestScore:best, topicsCompleted:topicsDone, lastUpdated:new Date().toISOString() },
-    versionBests, topicAverages,
-    eggPin: "1997",
-    hockeyStats: ["The Red Wings have 11 Stanley Cups. The Flyers are still waiting for their second.","Steve Yzerman captained Detroit for 20 seasons — the longest captaincy in NHL history.","Detroit swept the Flyers 4-0 in the 1997 Stanley Cup Finals. The Eagles went 6-9-1 that year.","Gordie Howe played in FIVE different decades: the 40s, 50s, 60s, 70s, and 80s.","The Red Wings retired 9 jersey numbers. Nine legends in one franchise.","Dominik Hasek won back-to-back Hart Trophies (97 & 98) — the only goalie ever to do so.","The Red Wings won the Cup in 1997, 1998, 2002, and 2008. Four titles in 11 years.","Nicklas Lidstrom won the Norris Trophy 7 times as the NHL's best defenseman.","A hockey puck can travel at 108 mph. Fast enough to outrun any Eagles comeback.","The Red Wings franchise was founded in 1926 — seven years before the Eagles existed.","In 1997, while Detroit was winning the Cup, the Eagles finished 6-9-1. Just saying.","Joe Louis Arena held 20,058 fans. All of them louder than anything in Philly.","The Red Wings have won more playoff games than any franchise in NHL history outside Montreal.","Brendan Shanahan scored 656 career goals and won three Stanley Cups.","The octopus tradition in Detroit started in 1952 — eight arms for eight playoff wins.","Patrick Roy won three Conn Smythe Trophies. Three.","Steve Yzerman finally lifted the Cup in 1997 after 13 years as captain. Pure dedication.","Vladimir Konstantinov was named to the All-Star team in 1997. Six days later, tragedy struck.","The Red Wings dedicated their 1998 Cup to Konstantinov. They carried him on the ice in his wheelchair.","Detroit has the third-most Stanley Cups of any franchise. The Eagles have zero Cups — different sport, same energy.","Sergei Fedorov won the Hart Trophy in 1994. A center winning MVP is rare. Detroit does rare.","Hockey players lose 5-8 pounds per game from sweat and effort. Eagles linemen lose that in warmups.","The Stanley Cup weighs 34.5 pounds. It is very heavy. Detroit has lifted it 11 times.","Gordie Howe scored 801 regular-season goals. A number that stood for decades.","Wayne Gretzky has more assists than any other player has total points. Context: Detroit played him in the playoffs.","Mario Lemieux scored 5 goals 5 different ways in one game. A standard Detroit fans expect.","The Stanley Cup has been used as a cereal bowl, a baptismal font, and once left roadside. Legends.","Eleven Cups. Four decades of dominance. One great truth: Detroit hockey is different. Good luck on your exam.","The real ServSafe exam is 90 questions. You have taken practice versions of every single one. You are ready.","Passing ServSafe requires a 75% score. Your practice tests show you can do far better. Keep going.","One more stat: zero Eagles fans have ever out-argued a Red Wings fan about hockey. Study hard anyway.","Fun fact: this app was built with love and a deep appreciation for the Detroit Red Wings and the Philadelphia Eagles — in that order."]
+    examHistory:S.examHistory,savedGuides:S.savedGuides,techDone:S.techDone,topicDone:S.topicDone,
+    stats:{examsTaken,examsPassed:passed,averageScore:avg,bestScore:best,lastUpdated:new Date().toISOString()},
+    versionBests,eggPin:"1997",
+    hockeyStats:["The Red Wings have 11 Stanley Cups. The Flyers are still waiting for their second.","Detroit swept the Flyers 4-0 in the 1997 Stanley Cup Finals. The Eagles went 6-9-1 that year.","Steve Yzerman captained Detroit for 20 seasons.","Nicklas Lidstrom won the Norris Trophy 7 times.","The Red Wings won the Cup in 1997, 1998, 2002, and 2008.","Gordie Howe played in five different decades.","The Red Wings retired 9 jersey numbers.","Dominik Hasek won back-to-back Hart Trophies in 1997 and 1998.","A hockey puck travels at 108 mph. That is faster than most Eagles comebacks.","The Red Wings franchise was founded in 1926, seven years before the Eagles.","In 1997 the Eagles finished 6-9-1. The Wings won the Stanley Cup. Just saying.","The Stanley Cup weighs 34.5 pounds. Detroit has lifted it 11 times.","Brendan Shanahan scored 656 career goals and won three Stanley Cups.","The octopus tradition started in 1952 — eight arms for eight playoff wins.","Patrick Roy won the Conn Smythe Trophy three times.","Steve Yzerman finally lifted the Cup in 1997 after 13 years as captain.","The 1998 Red Wings carried Konstantinov onto the ice in a wheelchair to celebrate.","Hockey players lose 5-8 pounds per game from effort.","Joe Louis Arena was one of the loudest buildings in sports history.","Eleven Cups. Four decades of dominance. Detroit hockey is legendary.","The real ServSafe exam is 90 questions. You have practiced every one. You are ready.","Passing ServSafe requires 75 percent. Your practice tests show you can do better.","Remember: the PIN is four digits from a year that matters. Think about the clues.","Green is a beautiful color. Detroit just uses red better. Fly Eagles Fly.","The Stanley Cup is 35 inches tall. Detroit has lifted it 11 times.","Mario Lemieux scored 5 goals 5 different ways in one game.","Zero Eagles fans have ever out-argued a Red Wings fan about hockey. Different sport.","The lockout exists because you need to think harder about that PIN. You know it.","Sergei Fedorov won the Hart Trophy in 1994, the last Red Wing to win league MVP.","The Cup has been used as a cereal bowl, a baptismal font, and left roadside once.","Fun fact: this app was built with love and appreciation for the Detroit Red Wings.","You got this. Four digits. A year that matters. Think about the clues. Go study."]
   };
 }
 
@@ -691,13 +661,7 @@ const techLessons=[
   ]}
 ];
 
-const pretestLinks=[
-  {name:"ServSafe Official — Manager Certification",url:"https://www.servsafe.com/servsafe-manager",desc:"The official ServSafe site. Register for the real exam, access 9th Edition (2026) materials, and find a proctor near you."},
-  {name:"Union Test Prep — Free ServSafe Practice Tests",url:"https://uniontestprep.com/servsafe/practice-test",desc:"Free practice tests updated for 2026 covering all ServSafe Manager topics with answer explanations. No sign-up required."},
-  {name:"Practice Tester — ServSafe Manager Exam",url:"https://www.practicetester.com/servsafe/test",desc:"Free scored practice tests with instant feedback. Covers Food Handler and Manager exams."},
-  {name:"Easy Prep — Full ServSafe Practice Test",url:"https://easy-prep.org/servsafe-practice-test",desc:"Free full-length ServSafe practice exams with topic-focused quizzes. No account needed. Updated 2026."},
-  {name:"Practice Test Geeks — ServSafe 2026",url:"https://practicetestgeeks.com/servsafe-practice-test-exam/",desc:"Free practice questions covering Foodborne Illness, Personal Hygiene, Cross-Contamination, Temperature, and Allergens."}
-];
+const pretestLinks=[{name:"ServSafe Official",url:"https://www.servsafe.com/servsafe-manager",desc:"The official ServSafe site for 2026 exam registration and materials."},{name:"Union Test Prep",url:"https://uniontestprep.com/servsafe/practice-test",desc:"Free 2026 practice tests. No sign-up."},{name:"Practice Tester",url:"https://www.practicetester.com/servsafe/test",desc:"Free scored practice tests with instant feedback."},{name:"Easy Prep",url:"https://easy-prep.org/servsafe-practice-test",desc:"Free full-length practice exams. Updated 2026."},{name:"Practice Test Geeks",url:"https://practicetestgeeks.com/servsafe-practice-test-exam/",desc:"Free questions covering all five ServSafe topics."}];
 
 const ssTopics=[
   {id:"contamination",title:"Food Safety & Contamination",icon:"\u{1F9A0}",accent:"#C62828",light:"#EF9A9A",color:"#FCE4EC",
@@ -754,56 +718,11 @@ window.addEventListener("popstate",function(e){
     r(false);
   }
 });
-function stopSpeech(){try{if(window.speechSynthesis)window.speechSynthesis.cancel();}catch(e){}}
-function speak(txt){stopSpeech();if(!window.speechSynthesis)return;try{const u=new SpeechSynthesisUtterance(txt);u.rate=0.88;u.pitch=1.05;u.volume=1;const voices=window.speechSynthesis.getVoices();const v=voices.find(v=>v.name.includes("Samantha")||v.name.includes("Karen")||(v.lang&&v.lang.startsWith("en")&&v.localService));if(v)u.voice=v;window.speechSynthesis.speak(u);}catch(e){}}
-function r(pushState){
-  try {
-    const html = render();
-    document.getElementById("app").innerHTML = html;
-    const dbg=document.getElementById("dbg");if(dbg)dbg.textContent="r():screen="+S.screen+":"+html.length+"chars";
-  } catch(e) {
-    const dbg=document.getElementById("dbg");if(dbg)dbg.textContent="CRASH:"+e.message;
-    document.getElementById("app").innerHTML="<div style='color:red;padding:20px;font-size:16px'>ERROR: "+e.message+"</div>";
-    return;
-  }
-  bindEvents();
-  if(typeof bindFeedbackHandlers==="function")bindFeedbackHandlers();
-  if(pushState!==false){
-    // Push a history entry whenever the screen changes
-    const state={screen:S.screen};
-    const title="Puddin POP";
-    if(history.state===null||history.state.screen!==S.screen){
-      history.pushState(state,title,"#"+S.screen);
-    }
-  }
-}
-
-// Handle browser back/forward button
-window.addEventListener("popstate",function(e){
-  if(e.state&&e.state.screen){
-    const prev=e.state.screen;
-    // Restore screen without pushing another history entry
-    S.screen=prev;
-    // Clear transient states that don't make sense to restore mid-flow
-    if(prev==="home"){S.showCheer=false;stopSpeech();}
-    if(prev==="servsafe"){S.showCheer=false;}
-    if(prev==="askAI"){S.aiLoading=false;}
-    r(false);
-  } else {
-    // No state means we're at the very start — go home
-    S.screen="home";
-    S.showCheer=false;
-    stopSpeech();
-    r(false);
-  }
-});
-
 function render(){
   const bgMap={home:"linear-gradient(160deg,#004C54 0%,#002f35 100%)",techLesson:"linear-gradient(160deg,#004C54 0%,#002f35 100%)",servsafeLesson:"linear-gradient(160deg,#002f35 0%,#004C54 100%)",quiz:"linear-gradient(160deg,#002f35 0%,#004C54 100%)",quizResult:"linear-gradient(160deg,#002f35 0%,#004C54 100%)",selectExam:"linear-gradient(160deg,#002f35 0%,#004C54 100%)",practiceExam:"linear-gradient(160deg,#001a0f 0%,#002f35 100%)",examResult:"linear-gradient(160deg,#001a0f 0%,#002f35 100%)",reports:"linear-gradient(160deg,#001a0f 0%,#004C54 100%)",links:"linear-gradient(160deg,#002f35 0%,#004C54 100%)",servsafe:"linear-gradient(160deg,#004C54 0%,#002f35 100%)",askAI:"linear-gradient(160deg,#002f35 0%,#004C54 100%)",aiLesson:"linear-gradient(160deg,#002f35 0%,#004C54 100%)",selectShortExam:"linear-gradient(160deg,#002f35 0%,#c4a35a 100%)",feedback:"linear-gradient(160deg,#002f35 0%,#004C54 100%)",pin:"linear-gradient(160deg,#0a1a0a 0%,#003020 50%,#001810 100%)",pinVictory:"linear-gradient(160deg,#0a1a0a 0%,#003020 50%,#c4a35a 100%)",eggList:"linear-gradient(160deg,#0a1a0a 0%,#003020 50%,#001810 100%)"}; 
   document.body.style.background=bgMap[S.screen]||"#f5f5f5";
   const screens={home:renderHome,servsafe:renderServSafe,techLesson:renderTechLesson,servsafeLesson:renderSSLesson,quiz:renderQuiz,quizResult:renderQuizResult,selectExam:renderSelectExam,practiceExam:renderExam,examResult:renderExamResult,reports:renderReports,links:renderLinks,askAI:renderAskAI,aiLesson:renderAILesson,selectShortExam:renderSelectShortExam,feedback:renderFeedback,pin:renderPin,pinVictory:renderPinVictory,eggList:renderEggList};
   const content=(screens[S.screen]||renderHome)();
-
   const footer="<div style='text-align:center;padding:18px 14px 28px;opacity:0.85;display:flex;align-items:center;justify-content:center;gap:10px'>"
     +"<span style='font-size:16px;color:#fff;font-family:Oswald,sans-serif;letter-spacing:0.12em;text-transform:uppercase;font-weight:400'>Powered by</span>"
     +"<img src='https://raw.githubusercontent.com/webgenerations77/kenzie/main/Logo.png' alt='Web Generations' style='height:88px;width:auto;object-fit:contain;cursor:pointer' data-action='goPin' title='Secret area...'>"
@@ -811,6 +730,21 @@ function render(){
   const cheer=S.showCheer?"<div class='overlay'><div class='overlay-box'><div style='font-size:60px;margin-bottom:12px'>\u{1F31F}</div><div style='font-size:22px;font-weight:bold;color:#333'>"+S.cheerMsg+"</div></div></div>":"";
   return content+footer+cheer;
 }
+function r(pushState){
+  document.getElementById("app").innerHTML=render();
+  bindEvents();
+  if(typeof bindFeedbackHandlers==="function")bindFeedbackHandlers();
+  if(pushState!==false){
+    try{
+      const state={screen:S.screen};
+      const title="Puddin POP";
+      if(history.state===null||history.state.screen!==S.screen){
+        history.pushState(state,title,"#"+S.screen);
+      }
+    }catch(e){}
+  }
+}
+
 function renderHome(){
   const tc=techLessons.map(l=>"<button class='home-card' data-action='openTech' data-id='"+l.id+"'><span style='font-size:32px'>"+l.icon+"</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>"+l.title+"</div><div style='font-size:12px;color:#555'>"+l.steps.length+" easy steps</div></div>"+(S.techDone[l.id]?"<span style='font-size:18px'>✅</span>":"")+"<span style='font-size:16px;color:#aaa'>›</span></button>").join("");
   const topicsDone=ssTopics.filter(t=>S.topicDone[t.id]).length;
@@ -853,128 +787,9 @@ function renderServSafe(){
 }
 function renderSelectExam(){
   const versions=[{ver:"v1",num:1,icon:"\u{1F331}",desc:"The foundation. All 5 topics with core ServSafe concepts."},{ver:"v2",num:2,icon:"\u{1F4D8}",desc:"Deeper dive. Pathogens, advanced temperature, and cleaning."},{ver:"v3",num:3,icon:"\u{1F525}",desc:"Challenging scenarios. Real-world situations and decision-making."},{ver:"v4",num:4,icon:"\u{1F49C}",desc:"Management focus. HACCP, policies, and food handler responsibilities."},{ver:"v5",num:5,icon:"\u{1F3C6}",desc:"Exam-ready. The toughest version, closest to the real ServSafe exam."}];
-  const cards=versions.map(v=>{const hist=S.examHistory.filter(e=>e.version===v.ver&&e.examType!=="short");const best=hist.length?Math.max(...hist.map(e=>e.pct)):null;const passed=best!==null&&best>=75;return"<button class='ver-btn"+(passed?" done":"")+"' data-action='startExam' data-ver='"+v.ver+"' data-type='full'><span style='font-size:32px'>"+v.icon+"</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Version "+v.num+(passed?" ✅":"")+"</div><div style='font-size:13px;color:#666;margin-bottom:5px'>"+v.desc+"</div>"+(hist.length?"<div style='font-size:12px;color:#555'>Best: <strong style='color:"+(passed?"#2E7D32":"#E65100")+"'>"+best+"%</strong> · Taken "+hist.length+" time"+(hist.length!==1?"s":"")+"</div>":"<div style='font-size:12px;color:#aaa'>Not taken yet</div>")+"</div><span style='font-size:16px;color:#ccc'>›</span></button>";}).join("");
+  const cards=versions.map(v=>{const hist=S.examHistory.filter(e=>e.version===v.ver);const best=hist.length?Math.max(...hist.map(e=>e.pct)):null;const passed=best!==null&&best>=75;return"<button class='ver-btn"+(passed?" done":"")+"' data-action='startExam' data-ver='"+v.ver+"' data-type='full'><span style='font-size:32px'>"+v.icon+"</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Version "+v.num+(passed?" ✅":"")+"</div><div style='font-size:13px;color:#666;margin-bottom:5px'>"+v.desc+"</div>"+(hist.length?"<div style='font-size:12px;color:#555'>Best: <strong style='color:"+(passed?"#2E7D32":"#E65100")+"'>"+best+"%</strong> · Taken "+hist.length+" time"+(hist.length!==1?"s":"")+"</div>":"<div style='font-size:12px;color:#aaa'>Not taken yet</div>")+"</div><span style='font-size:16px;color:#ccc'>›</span></button>";}).join("");
   return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goHome'>← Home</button><div><div style='font-size:15px;font-weight:bold;color:#fff'>\u{1F4DD} Choose a Practice Exam</div><div style='font-size:12px;color:rgba(255,255,255,0.75);margin-top:1px'>90 questions · All 5 ServSafe topics</div></div></div><div style='background:rgba(255,255,255,0.12);border-radius:13px;padding:11px 15px;margin-bottom:15px;color:#fff;font-size:13px;line-height:1.6'>\u{1F4A1} Each version has 90 unique questions. The real ServSafe exam requires <strong>75% to pass</strong>. Take all 5 for the best preparation!</div>"+cards+"</div>";
 }
-function renderEggList(){
-  const eggs=[
-    {
-      num:1, trigger:"Every Tuesday",
-      icon:"🗓️",
-      title:"Wings Day Tuesday",
-      desc:"Every Tuesday the Rangers logo on the home screen is quietly replaced by the Red Wings logo and the tagline turns gold.",
-      why:"The Detroit Red Wings have won the Stanley Cup 11 times. The Rangers? 4. Every Tuesday is a reminder of that gap. 😇"
-    },
-    {
-      num:2, trigger:"1st day of every month",
-      icon:"📅",
-      title:"Monthly Fact Drop",
-      desc:"On the 1st of each month, the slogan under the tagline reads: 'Red Wings are better (it's the 1st — fact of the month!)'",
-      why:"Some facts just need to be repeated monthly to sink in."
-    },
-    {
-      num:3, trigger:"Tap the home logo 5 times fast",
-      icon:"👆",
-      title:"Konami Tap Code",
-      desc:"Tap the team logo on the home screen 5 times within 2 seconds. The entire app switches to Red Wings theme for 30 seconds, then snaps back.",
-      why:"Named after the classic Konami Code cheat code. Five taps, thirty seconds of truth. Try it! 🔴"
-    },
-    {
-      num:4, trigger:"Wrong answer — 1-in-12 chance",
-      icon:"❌",
-      title:"The Wrong Answer Taunt",
-      desc:"When you get a practice exam question wrong, there's a 1-in-12 chance a Red Wings fact appears inline below the answer explanation.",
-      why:"Rotating facts include Gordie Howe's 801 goals, Steve Yzerman's 20-year captaincy, and the Wings' 9 retired numbers. Precision matters!"
-    },
-    {
-      num:5, trigger:"Wrong answer — 1-in-10 chance",
-      icon:"🔴",
-      title:"The Corner Flash",
-      desc:"On a wrong answer, there's also a separate 1-in-10 chance a small Red Wings badge flashes in the bottom-right corner for 2.5 seconds.",
-      why:"Just a gentle, silent reminder. 'Red Wings still better 🔴'"
-    },
-    {
-      num:6, trigger:"Score exactly 71% on any exam",
-      icon:"7️⃣1️⃣",
-      title:"The Gordie Howe 71",
-      desc:"Score exactly 71% and a Red Wings card appears on your results screen with the full story.",
-      why:"In 1971, Gordie Howe — hockey's greatest player and the greatest Red Wing — came out of retirement at age 45 to play professional hockey alongside his two sons, Mark and Marty. He wore #9 his entire career. The Wings retired his number in 1972. 71 is his year. Try to beat it!"
-    },
-    {
-      num:7, trigger:"Score exactly 75% on any exam",
-      icon:"7️⃣5️⃣",
-      title:"The Barely There",
-      desc:"Score exactly 75% (the minimum passing score) and a Wings card appears with a very specific historical parallel.",
-      why:"The Detroit Red Wings finished the 1985-86 season at exactly .500 — and still made the playoffs. Sometimes the bare minimum is still enough to be a winner. Just like 75%."
-    },
-    {
-      num:8, trigger:"Score exactly 100% on any exam",
-      icon:"💯",
-      title:"Perfect Score Invasion",
-      desc:"Ace an exam with 100% and the Wings take over your results screen with a full tribute card.",
-      why:"The Red Wings scored 100+ points in a season 13 times between 1994 and 2016. A perfect score is Detroit energy. We can't help but celebrate it."
-    },
-    {
-      num:9, trigger:"Your all-time best score is 71%",
-      icon:"📊",
-      title:"Best Score Easter Egg",
-      desc:"If your personal best exam score ever is 71%, a Wings card appears at the top of your Progress Report.",
-      why:"#71 was worn by several Red Wings greats over the years. Also: the Wings franchise was founded in 1926, and by 1971 they already had 3 Stanley Cups. Details matter."
-    },
-    {
-      num:10, trigger:"You take your 8th exam",
-      icon:"8️⃣",
-      title:"Eight Legends",
-      desc:"On the exam you take after completing your 8th total exam, a Wings card appears on your Progress Report listing all 8 retired Wings jersey numbers.",
-      why:"The Red Wings have retired 8 numbers: #1 Terry Sawchuk, #6 Larry Aurie, #7 Ted Lindsay, #9 Gordie Howe, #10 Alex Delvecchio, #12 Sid Abel, #16 Vladimir Konstantinov, and #19 Steve Yzerman. Eight legends. Like your eight exams."
-    },
-    {
-      num:11, trigger:"Complete all 5 study topics",
-      icon:"✅",
-      title:"Five Legends, Five Topics",
-      desc:"Once all 5 topic lessons are marked complete, a Wings card appears on the home screen.",
-      why:"Five Red Wings players were named to the NHL's official Top 100 Players of All Time list: Gordie Howe, Ted Lindsay, Terry Sawchuk, Alex Delvecchio, and Steve Yzerman. Five legends. Five topics. You're in elite company."
-    },
-    {
-      num:12, trigger:"App syncs to cloud — 1-in-15 chance",
-      icon:"☁️",
-      title:"The Sneaky Sync Message",
-      desc:"Every time your progress saves to the cloud, there's a 1-in-15 chance the '☁️ Synced just now' message becomes something a little different.",
-      why:"Messages include: 'Synced (Red Wings still better btw)', 'Saved! 🔴 11 Cups > 4 Cups. Just syncing facts.', and 'Progress saved! Wings have been Cup contenders since 1926 🔴'. The sneakiest egg — you may never even notice it."
-    }
-  ];
-
-  const cards=eggs.map(e=>"<div style='background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-left:4px solid #004C54;border-radius:14px;padding:15px 15px;margin-bottom:12px;text-align:left'>"
-    +"<div style='display:flex;align-items:center;gap:10px;margin-bottom:8px'>"
-    +"<span style='font-size:24px'>"+e.icon+"</span>"
-    +"<div>"
-    +"<div style='font-size:14px;font-weight:bold;color:#fff;font-family:Oswald,sans-serif;letter-spacing:0.04em'>#"+e.num+" — "+e.title+"</div>"
-    +"<div style='font-size:11px;color:#c4a35a;font-family:Oswald,sans-serif;letter-spacing:0.06em;margin-top:2px'>TRIGGER: "+e.trigger+"</div>"
-    +"</div>"
-    +"</div>"
-    +"<p style='font-size:13px;color:rgba(255,255,255,0.85);line-height:1.7;margin:0 0 7px'>"+e.desc+"</p>"
-    +"<div style='background:rgba(200,16,46,0.2);border-radius:9px;padding:8px 11px'>"
-    +"<p style='font-size:12px;color:#c4a35a;line-height:1.6;margin:0'><strong>Why?</strong> "+e.why+"</p>"
-    +"</div>"
-    +"</div>"
-  ).join("");
-
-  return"<div class='wrap'>"
-  +"<div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.5)' data-action='goHome'>← Home</button>"
-  +"<div><div style='font-size:15px;font-weight:bold;color:#fff;font-family:Oswald,sans-serif;letter-spacing:0.04em'>🥚 EASTER EGG VAULT</div>"
-  +"<div style='font-size:12px;color:rgba(255,255,255,0.6);margin-top:1px'>All 12 hidden secrets</div></div></div>"
-  +"<div style='background:linear-gradient(135deg,#004C54,#002f35);border-radius:16px;padding:16px 18px;margin-bottom:16px;display:flex;align-items:center;gap:14px'>"
-  +"<img src='"+RW_LOGO+"' style='width:52px;height:52px;object-fit:contain;flex-shrink:0'>"
-  +"<div>"
-  +"<div style='font-size:16px;font-weight:bold;color:#fff;font-family:Oswald,sans-serif;letter-spacing:0.05em;margin-bottom:3px'>The Red Wings Are Better</div>"
-  +"<div style='font-size:12px;color:rgba(255,255,255,0.8);line-height:1.6'>12 Easter eggs hidden throughout this app — all pointing to one undeniable truth. 🏒</div>"
-  +"</div>"
-  +"</div>"
-  +cards
-  +"<button class='big-btn' style='background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.25)' data-action='goHome'>🏠 Back Home</button>"
-  +"</div>";
-}
-
 function renderSelectShortExam(){
   const versions=[{ver:"v1",num:1,icon:"🌱",desc:"Core fundamentals from all 5 topics."},{ver:"v2",num:2,icon:"📘",desc:"Pathogens, temperature, and cleaning highlights."},{ver:"v3",num:3,icon:"🔥",desc:"Real-world scenarios and decision-making."},{ver:"v4",num:4,icon:"💙",desc:"Management and HACCP essentials."},{ver:"v5",num:5,icon:"🏆",desc:"Hardest questions from all topics."}];
   const cards=versions.map(v=>{const hist=S.examHistory.filter(e=>e.version===v.ver&&e.examType==="short");const best=hist.length?Math.max(...hist.map(e=>e.pct)):null;const passed=best!==null&&best>=75;return"<button class='ver-btn"+(passed?" done":"")+"' data-action='startExam' data-ver='"+v.ver+"' data-type='short'><span style='font-size:32px'>"+v.icon+"</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Quick Version "+v.num+(passed?" ✅":"")+"</div><div style='font-size:13px;color:#666;margin-bottom:5px'>"+v.desc+"</div>"+(hist.length?"<div style='font-size:12px;color:#555'>Best: <strong style='color:"+(passed?"#2E7D32":"#E65100")+"'>"+best+"%</strong> · Taken "+hist.length+" time"+(hist.length!==1?"s":"")+"</div>":"<div style='font-size:12px;color:#aaa'>Not taken yet</div>")+"</div><span style='font-size:16px;color:#ccc'>›</span></button>";}).join("");
@@ -985,7 +800,7 @@ function renderSelectShortExam(){
 // PRACTICE EXAM
 // ═══════════════════════════════════════════
 const RW_LOGO="https://upload.wikimedia.org/wikipedia/en/thumb/e/e0/Detroit_Red_Wings_logo.svg/500px-Detroit_Red_Wings_logo.svg.png";
-const NYR_LOGO="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Philadelphia_Eagles.svg/500px-Philadelphia_Eagles.svg.png";
+const NYR_LOGO="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/New_York_Rangers.svg/500px-New_York_Rangers.svg.png";
 
 // Egg state — persists for the session
 const EGG={
@@ -1007,8 +822,8 @@ function eggGetHomeLogoAndTagline(){
   if(day===2){
     return{
       logo:RW_LOGO,
-      tagline:"<p style='color:#FFCC00;font-size:12px;margin:0 0 3px;font-style:italic'>🪄 It's Tuesday — Wings Day! Every Tuesday the Red Wings take over. Why? Because they've won the Stanley Cup 11 times to the Rangers' 4. Just saying. 😇</p>",
-      slogan:"<p style='color:#FFCC00;font-size:13px;margin:0;font-family:Oswald,sans-serif;letter-spacing:0.1em;font-weight:600'>LET'S GO RED WINGS! 🔴</p>"
+      tagline:"<p style='color:#c4a35a;font-size:12px;margin:0 0 3px;font-style:italic'>🪄 It's Tuesday — Wings Day! Every Tuesday the Red Wings take over. Why? Because they've won the Stanley Cup 11 times to the Rangers' 4. Just saying. 😇</p>",
+      slogan:"<p style='color:#c4a35a;font-size:13px;margin:0;font-family:Oswald,sans-serif;letter-spacing:0.1em;font-weight:600'>LET'S GO RED WINGS! 🔴</p>"
     };
   }
   // First day of month: tagline swap only
@@ -1016,21 +831,21 @@ function eggGetHomeLogoAndTagline(){
     return{
       logo:NYR_LOGO,
       tagline:"<p style='color:rgba(255,255,255,0.9);font-size:14px;font-style:italic;margin:0 0 5px'>Turning food safety into a superpower 🦸‍♀️</p>",
-      slogan:"<p style='color:#FFCC00;font-size:12px;margin:0;font-family:Oswald,sans-serif;letter-spacing:0.08em;font-weight:600'>🔴 Red Wings are better (it's the 1st — fact of the month!)</p>"
+      slogan:"<p style='color:#c4a35a;font-size:12px;margin:0;font-family:Oswald,sans-serif;letter-spacing:0.08em;font-weight:600'>🔴 Red Wings are better (it's the 1st — fact of the month!)</p>"
     };
   }
   // Konami/tap override active
   if(EGG.wingsThemeActive){
     return{
       logo:RW_LOGO,
-      tagline:"<p style='color:#FFCC00;font-size:12px;margin:0 0 3px;font-style:italic'>🥚 Easter Egg activated! You tapped the logo 5 times. The Red Wings theme is yours for 30 seconds — enjoy it while it lasts! 😄</p>",
-      slogan:"<p style='color:#FFCC00;font-size:13px;margin:0;font-family:Oswald,sans-serif;letter-spacing:0.1em;font-weight:600'>LET'S GO RED WINGS! 🔴</p>"
+      tagline:"<p style='color:#c4a35a;font-size:12px;margin:0 0 3px;font-style:italic'>🥚 Easter Egg activated! You tapped the logo 5 times. The Red Wings theme is yours for 30 seconds — enjoy it while it lasts! 😄</p>",
+      slogan:"<p style='color:#c4a35a;font-size:13px;margin:0;font-family:Oswald,sans-serif;letter-spacing:0.1em;font-weight:600'>LET'S GO RED WINGS! 🔴</p>"
     };
   }
   return{
     logo:NYR_LOGO,
     tagline:"<p style='color:rgba(255,255,255,0.9);font-size:14px;font-style:italic;margin:0 0 5px'>Turning food safety into a superpower 🦸‍♀️</p>",
-    slogan:"<p style='color:#A2AAAD;font-size:13px;margin:0;font-family:Oswald,sans-serif;letter-spacing:0.1em;font-weight:600'>LET'S GO RANGERS!</p>"
+    slogan:"<p style='color:#A5ACAF;font-size:13px;margin:0;font-family:Oswald,sans-serif;letter-spacing:0.1em;font-weight:600'>LET'S GO RANGERS!</p>"
   };
 }
 
@@ -1067,7 +882,7 @@ function eggSyncMessage(normal){
 // EGG 4 — Score 71% easter egg (Gordie Howe's #71 / 1971)
 function eggCheck71(pct){
   if(pct===71){
-    return"<div style='background:linear-gradient(135deg,#C8102E,#002f35);border-radius:13px;padding:12px 15px;margin-top:10px;display:flex;gap:12px;align-items:center'>"
+    return"<div style='background:linear-gradient(135deg,#004C54,#002f35);border-radius:13px;padding:12px 15px;margin-top:10px;display:flex;gap:12px;align-items:center'>"
     +"<img src='"+RW_LOGO+"' style='width:40px;height:40px;object-fit:contain;flex-shrink:0'>"
     +"<div style='font-size:12px;color:#fff;line-height:1.7'>"
     +"🥚 <strong>Easter Egg!</strong> You scored 71%! In 1971, Gordie Howe — the greatest Red Wing ever — came out of retirement at age 45 to play with his sons. He wore #9 his whole career but his legacy is #1. The Red Wings retired his number in 1972. Try again and beat 71 like Gordie beat Father Time! 🔴"
@@ -1079,7 +894,7 @@ function eggCheck71(pct){
 // EGG 5 — Perfect score (100%) Wings invasion
 function eggPerfectScore(pct){
   if(pct===100){
-    return"<div style='background:linear-gradient(135deg,#C8102E,#002f35);border-radius:13px;padding:14px 16px;margin-top:10px;text-align:center'>"
+    return"<div style='background:linear-gradient(135deg,#004C54,#002f35);border-radius:13px;padding:14px 16px;margin-top:10px;text-align:center'>"
     +"<img src='"+RW_LOGO+"' style='width:55px;height:55px;object-fit:contain;margin-bottom:8px'>"
     +"<div style='font-size:13px;color:#fff;line-height:1.7'>"
     +"🥚 <strong>Easter Egg!</strong> A PERFECT SCORE! Even we have to admit that's impressive — and we're Red Wings fans. For context: the Wings have scored 100+ points in a season 13 times. You just matched that energy. Perfection belongs to Detroit... but today, it belongs to you too. 🔴🏆"
@@ -1103,7 +918,7 @@ function eggBarely75(pct){
 // EGG 7 — Best score on progress report is 71
 function eggReportBest71(best){
   if(best===71){
-    return"<div style='background:linear-gradient(135deg,#C8102E,#002f35);border-radius:13px;padding:12px 15px;margin-bottom:13px;display:flex;gap:12px;align-items:center'>"
+    return"<div style='background:linear-gradient(135deg,#004C54,#002f35);border-radius:13px;padding:12px 15px;margin-bottom:13px;display:flex;gap:12px;align-items:center'>"
     +"<img src='"+RW_LOGO+"' style='width:38px;height:38px;object-fit:contain;flex-shrink:0'>"
     +"<div style='font-size:12px;color:#fff;line-height:1.7'>"
     +"🥚 <strong>Easter Egg!</strong> Your best score is 71%! #71 is a legendary number in Detroit — it was worn by several Wings greats. But more importantly: the Red Wings franchise was founded in 1926, and by 1971 they already had 3 Stanley Cups. The Rangers? Also 3 at that point. They've been tied ever since... except Detroit kept winning. 😇 Keep studying!"
@@ -1127,7 +942,7 @@ function eggEighthExam(total){
 // EGG 9 — All 5 topics completed
 function eggAllTopicsDone(topicsDone){
   if(topicsDone===5){
-    return"<div style='background:linear-gradient(135deg,#C8102E,#002f35);border-radius:13px;padding:12px 15px;margin-bottom:10px;display:flex;gap:12px;align-items:center'>"
+    return"<div style='background:linear-gradient(135deg,#004C54,#002f35);border-radius:13px;padding:12px 15px;margin-bottom:10px;display:flex;gap:12px;align-items:center'>"
     +"<img src='"+RW_LOGO+"' style='width:40px;height:40px;object-fit:contain;flex-shrink:0'>"
     +"<div style='font-size:12px;color:#fff;line-height:1.7'>"
     +"🥚 <strong>Easter Egg!</strong> All 5 topics mastered! The Detroit Red Wings have 5 retired numbers from players who were also named to the NHL's Top 100 Players of All Time list — Gordie Howe, Ted Lindsay, Terry Sawchuk, Alex Delvecchio, and Steve Yzerman. Five legends. Five topics. You're in good company. 🔴🏆"
@@ -1164,6 +979,152 @@ function eggMaybeFlashWingsLogo(){
   }
 }
 
+// ═══════════════════════════════════════════
+// HOME
+// ═══════════════════════════════════════════
+function renderHome(){
+  const topicsDone=ssTopics.filter(t=>S.topicDone[t.id]).length;
+  const passedExams=S.examHistory.filter(e=>e.pct>=75).length;
+  const ssProgress=topicsDone+" of "+ssTopics.length+" lessons done · "+S.examHistory.length+" exam"+(S.examHistory.length!==1?"s":"")+" taken";
+  const egg=eggGetHomeLogoAndTagline();
+  const allTopicsEgg=eggAllTopicsDone(topicsDone);
+  return"<div class='wrap'>"
+  +"<div class='eagles-header' style='padding:16px 18px'>"
+  +"<div style='display:flex;align-items:center;gap:18px'>"
+  +"<img src='"+egg.logo+"' id='homeLogo' alt='Team Logo' style='width:33vw;max-width:160px;min-width:110px;height:auto;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 3px 12px rgba(0,0,0,0.7));cursor:pointer' data-action='tapLogo'>"
+  +"<div style='text-align:left;flex:1'>"
+  +"<h1 style='font-size:34px;color:#fff;margin:0 0 4px;letter-spacing:0.05em;font-family:Oswald,sans-serif;line-height:1'>Kenzie's ServSafe Journey</h1>"
+  +"<div style='width:44px;height:3px;background:#c4a35a;margin:7px 0;border-radius:2px'></div>"
+  +egg.tagline
+  +egg.slogan
+  +"</div>"
+  +"</div>"
+  +"<div id='syncStatus' style='font-size:11px;color:rgba(255,255,255,0.45);margin-top:8px;text-align:center'></div>"
+  +"</div>"
+  +allTopicsEgg
+  +"<div class='sec-label'>🍽️ ServSafe Certification Prep</div>"
+  +"<button class='home-card' style='border-left-color:#004C54' data-action='goServSafe'><span style='font-size:32px'>🍽️</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>ServSafe Study Hub</div><div style='font-size:12px;color:#555'>"+ssProgress+"</div></div>"+(topicsDone===ssTopics.length&&passedExams>0?"<span style='font-size:18px'>🏆</span>":"")+"<span style='font-size:16px;color:#aaa'>›</span></button>"
+  +"<div style='background:rgba(0,0,0,0.25);border-radius:13px;padding:12px 16px;text-align:center;margin-top:11px;border:1px solid rgba(255,255,255,0.1)'><p style='color:rgba(255,255,255,0.85);margin:0;font-size:13px;line-height:1.7'>🏒 No timer. No pressure. You've got this! 🏒</p></div>"
+  +"<button class='big-btn' style='background:linear-gradient(135deg,#c4a35a,#8b0018);margin-top:10px' data-action='goFeedback'>💬 Send Feedback</button>"
+  +"</div>";
+}
+
+// ═══════════════════════════════════════════
+// SERVSAFE HUB
+// ═══════════════════════════════════════════
+function renderServSafe(){
+  const sc=ssTopics.map(t=>"<button class='home-card' data-action='openTopic' data-id='"+t.id+"'><span style='font-size:32px'>"+t.icon+"</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>"+t.title+"</div><div style='font-size:12px;color:#555'>Lesson + Pop Quiz</div></div>"+(S.topicDone[t.id]?"<span style='font-size:18px'>✅</span>":"")+"<span style='font-size:16px;color:#ccc'>›</span></button>").join("");
+  const passedCount=S.examHistory.filter(e=>e.pct>=75).length;
+  return"<div class='wrap'>"
+  +"<div class='top-bar'><button class='home-btn' data-action='goHome'>← Home</button><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#fff;font-family:Oswald,sans-serif;letter-spacing:0.04em'>SERVSAFE PREP</div><div style='font-size:12px;color:rgba(255,255,255,0.7);margin-top:1px'>Lessons, quizzes & practice exams</div></div><img src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/New_York_Rangers.svg/500px-New_York_Rangers.svg.png' alt='NYR' style='height:clamp(36px,10vw,50px);width:auto;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.5))'></div>"
+  +"<div class='sec-label'>📖 Study by Topic</div>"
+  +sc
+  +"<div class='sec-label' style='margin-top:14px'>📝 Practice Exams</div>"
+  +"<button class='home-card' style='border-left-color:#004C54' data-action='goSelectExam'><span style='font-size:28px'>📝</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Full 90-Question Exam</div><div style='font-size:12px;color:#555'>5 unique versions · Just like the real test!</div></div><span style='font-size:16px;color:#ccc'>›</span></button>"
+  +"<button class='home-card' style='border-left-color:#c4a35a' data-action='goSelectShortExam'><span style='font-size:28px'>⚡</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Quick Practice · 20 Questions</div><div style='font-size:12px;color:#555'>5 versions · Fast focused review!</div></div><span style='font-size:16px;color:#ccc'>›</span></button>"
+  +"<button class='home-card' style='border-left-color:#A5ACAF' data-action='goReports'><span style='font-size:28px'>📊</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>My Progress Report</div><div style='font-size:12px;color:#555'>"+S.examHistory.length+" exam"+(S.examHistory.length!==1?"s":"")+" taken · "+passedCount+" passed</div></div><span style='font-size:16px;color:#ccc'>›</span></button>"
+  +"<button class='home-card' style='border-left-color:#A5ACAF' data-action='openLinks'><span style='font-size:28px'>🔗</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Official Pretest Resources</div><div style='font-size:12px;color:#555'>Free practice from trusted sites</div></div><span style='font-size:16px;color:#ccc'>›</span></button>"
+  +"</div>";
+}
+
+// ═══════════════════════════════════════════
+// TOPIC LESSON
+// ═══════════════════════════════════════════
+function renderSSLesson(){
+  if(!S.topic)return renderHome();
+  const pg=S.topic.lesson[S.lessonPage],pct=(S.lessonPage/S.topic.lesson.length)*100,isLast=S.lessonPage+1>=S.topic.lesson.length;
+  const bullets=pg.bullets?"<ul style='margin:12px 0 0 4px;padding:0;list-style:none'>"+pg.bullets.map(b=>"<li style='font-size:14px;color:#444;line-height:1.75;padding:4px 0 4px 20px;position:relative;border-bottom:1px solid #f0f0f0'><span style='position:absolute;left:0;color:"+S.topic.accent+"'>▸</span>"+b+"</li>").join("")+"</ul>":"";
+  const whyBox=pg.why?"<div style='background:"+S.topic.color+";border-radius:11px;padding:12px 14px;margin-top:13px;border-left:4px solid "+S.topic.accent+"'><div style='font-size:11px;font-weight:bold;color:"+S.topic.accent+";font-family:Oswald,sans-serif;letter-spacing:0.08em;margin-bottom:5px'>💡 WHY THIS MATTERS</div><p style='font-size:13px;color:#444;line-height:1.75;margin:0'>"+pg.why+"</p></div>":"";
+  const examTip=pg.tip?"<div style='background:#FFF8E1;border-radius:11px;padding:10px 13px;margin-top:10px;border-left:4px solid #F57F17'><div style='font-size:11px;font-weight:bold;color:#E65100;font-family:Oswald,sans-serif;letter-spacing:0.08em;margin-bottom:4px'>📝 EXAM TIP</div><p style='font-size:13px;color:#555;line-height:1.7;margin:0'>"+pg.tip+"</p></div>":"";
+  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:"+S.topic.accent+"' data-action='goHome'>← Home</button><div><div style='font-size:14px;font-weight:bold;color:#fff'>"+S.topic.icon+" "+S.topic.title+"</div><div style='font-size:12px;color:rgba(255,255,255,0.7);margin-top:1px'>Reading "+(S.lessonPage+1)+" of "+S.topic.lesson.length+"</div></div></div><div class='prog-wrap'><div class='prog-bar' style='width:"+pct+"%;background:linear-gradient(90deg,"+S.topic.light+","+S.topic.accent+")'></div></div><div class='card' style='border-left:5px solid "+S.topic.accent+"'><h2 style='font-size:17px;color:"+S.topic.accent+";margin:0 0 11px'>"+pg.h+"</h2><p style='font-size:15px;color:#333;line-height:1.85;margin:0'>"+pg.t+"</p>"+bullets+whyBox+examTip+"</div><button class='big-btn' style='background:"+S.topic.accent+"' data-action='readLesson'>🔊 Read This Aloud</button><div style='display:flex;gap:9px'><button style='flex:1;padding:14px;border-radius:15px;background:"+(S.lessonPage===0?"#e0e0e0":"#f5f5f5")+";color:"+(S.lessonPage===0?"#bbb":"#555")+";font-size:14px;font-weight:bold;border:none;font-family:Georgia,serif;cursor:"+(S.lessonPage===0?"not-allowed":"pointer")+"' data-action='lessonBack'"+(S.lessonPage===0?" disabled":"")+">← Back</button><button style='flex:2;padding:14px;border-radius:15px;background:linear-gradient(135deg,"+S.topic.light+","+S.topic.accent+");color:#fff;font-size:16px;font-weight:bold;border:none;font-family:Georgia,serif;cursor:pointer' data-action='lessonNext'>"+(isLast?"Take the Quiz!":"Next →")+"</button></div></div>";
+}
+
+// ═══════════════════════════════════════════
+// TOPIC QUIZ
+// ═══════════════════════════════════════════
+function renderQuiz(){
+  if(!S.topic)return renderHome();
+  const q=S.topic.questions[S.quizIdx],pct=(S.quizIdx/S.topic.questions.length)*100;
+  const opts=q.opts.map((o,i)=>{let cls="opt-btn";if(S.quizSel!==null){if(i===q.ans)cls+=" opt-correct";else if(i===S.quizSel&&i!==q.ans)cls+=" opt-wrong";}return"<button class='"+cls+"' data-action='selectQuiz' data-i='"+i+"'"+(S.quizSel!==null?" style='cursor:default'":"")+">"+"ABCD"[i]+". "+o+"</button>";}).join("");
+  const explain=S.quizSel!==null?"<div style='margin-top:11px;padding:12px 14px;border-radius:12px;background:"+(S.quizSel===q.ans?"#E8EAF6":"#FFF3E0")+";font-size:14px;color:#444;line-height:1.6'>"+(S.quizSel===q.ans?"Correct! ":"Not quite. ")+q.ex+"</div>":"";
+  const nb=S.quizSel!==null?"<button class='big-btn' style='background:linear-gradient(135deg,"+S.topic.light+","+S.topic.accent+")' data-action='quizNext'>"+(S.quizIdx+1>=S.topic.questions.length?"See Results":"Next Question")+"</button>":"<p style='text-align:center;color:#aaa;font-size:13px;font-style:italic;margin-top:8px'>Tap an answer to continue 💙</p>";
+  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:"+S.topic.accent+"' data-action='goHome'>← Home</button><div><div style='font-size:14px;font-weight:bold;color:#333'>📝 "+S.topic.title+" Quiz</div><div style='font-size:12px;color:#999;margin-top:1px'>Question "+(S.quizIdx+1)+" of "+S.topic.questions.length+"</div></div></div><div class='prog-wrap'><div class='prog-bar' style='width:"+pct+"%;background:linear-gradient(90deg,"+S.topic.light+","+S.topic.accent+")'></div></div><div class='card'><p style='font-size:16px;color:#333;font-weight:bold;line-height:1.6;margin:0 0 14px'>"+q.q+"</p>"+opts+explain+"</div>"+nb+"</div>";
+}
+function renderQuizResult(){
+  const qs=S.topic.questions,score=S.quizAnswers.filter((a,i)=>a===qs[i].ans).length,pct=Math.round((score/qs.length)*100),pass=pct>=60;
+  return"<div class='wrap' style='text-align:center;padding-top:30px'><div style='font-size:60px;margin-bottom:9px'>"+(pass?"🏆":"💪")+"</div><h1 style='font-size:24px;color:"+(pass?S.topic.accent:"#E65100")+";margin-bottom:12px'>"+(pass?"Great Job!":"Keep Practicing!")+"</h1><div class='card'><div style='font-size:40px;font-weight:bold;color:"+S.topic.accent+"'>"+score+"/"+qs.length+"</div><div style='font-size:15px;color:#666;margin-top:2px'>"+pct+"% correct</div><p style='color:#555;margin-top:9px;line-height:1.7;font-size:14px'>"+(pass?"You passed this topic! You're building real knowledge.":"You got "+score+" right. That's a great start! Review the lesson and try again.")+"</p></div><button class='big-btn' style='background:linear-gradient(135deg,"+S.topic.light+","+S.topic.accent+")' data-action='retryQuiz'>🔁 Retake Quiz</button><button class='big-btn' style='background:white;color:"+S.topic.accent+";border:2px solid "+S.topic.accent+"' data-action='reviewLesson'>📖 Review the Lesson</button><button class='big-btn' style='background:rgba(0,0,0,0.1);border:2px solid rgba(0,0,0,0.2);color:#555' data-action='goHome'>🏠 Back to Home</button></div>";
+}
+
+// ═══════════════════════════════════════════
+// SELECT EXAM (FULL & SHORT)
+// ═══════════════════════════════════════════
+function renderSelectExam(){
+  const versions=[{ver:"v1",num:1,icon:"🌱",desc:"The foundation. All 5 topics with core ServSafe concepts."},{ver:"v2",num:2,icon:"📘",desc:"Deeper dive. Pathogens, advanced temperature, and cleaning."},{ver:"v3",num:3,icon:"🔥",desc:"Challenging scenarios. Real-world situations and decision-making."},{ver:"v4",num:4,icon:"💙",desc:"Management focus. HACCP, policies, and food handler responsibilities."},{ver:"v5",num:5,icon:"🏆",desc:"Exam-ready. The toughest version, closest to the real ServSafe exam."}];
+  const cards=versions.map(v=>{const hist=S.examHistory.filter(e=>e.version===v.ver&&e.examType==="full");const best=hist.length?Math.max(...hist.map(e=>e.pct)):null;const passed=best!==null&&best>=75;return"<button class='ver-btn"+(passed?" done":"")+"' data-action='startExam' data-ver='"+v.ver+"' data-type='full'><span style='font-size:32px'>"+v.icon+"</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Version "+v.num+(passed?" ✅":"")+"</div><div style='font-size:13px;color:#666;margin-bottom:5px'>"+v.desc+"</div>"+(hist.length?"<div style='font-size:12px;color:#555'>Best: <strong style='color:"+(passed?"#2E7D32":"#E65100")+"'>"+best+"%</strong> · Taken "+hist.length+" time"+(hist.length!==1?"s":"")+"</div>":"<div style='font-size:12px;color:#aaa'>Not taken yet</div>")+"</div><span style='font-size:16px;color:#ccc'>›</span></button>";}).join("");
+  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goServSafe'>← Back</button><div><div style='font-size:15px;font-weight:bold;color:#fff'>📝 Full Practice Exam</div><div style='font-size:12px;color:rgba(255,255,255,0.75);margin-top:1px'>90 questions · All 5 ServSafe topics</div></div></div><div style='background:rgba(255,255,255,0.12);border-radius:13px;padding:11px 15px;margin-bottom:15px;color:#fff;font-size:13px;line-height:1.6'>💡 Each version has 90 unique questions. The real ServSafe exam requires <strong>75% to pass</strong>. Take all 5 for the best preparation!</div>"+cards+"</div>";
+}
+function renderSelectShortExam(){
+  const versions=[{ver:"v1",num:1,icon:"🌱",desc:"Core fundamentals from all 5 topics."},{ver:"v2",num:2,icon:"📘",desc:"Pathogens, temperature, and cleaning highlights."},{ver:"v3",num:3,icon:"🔥",desc:"Real-world scenarios and decision-making."},{ver:"v4",num:4,icon:"💙",desc:"Management and HACCP essentials."},{ver:"v5",num:5,icon:"🏆",desc:"Hardest questions from all topics."}];
+  const cards=versions.map(v=>{const hist=S.examHistory.filter(e=>e.version===v.ver&&e.examType==="short");const best=hist.length?Math.max(...hist.map(e=>e.pct)):null;const passed=best!==null&&best>=75;return"<button class='ver-btn"+(passed?" done":"")+"' data-action='startExam' data-ver='"+v.ver+"' data-type='short'><span style='font-size:32px'>"+v.icon+"</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Quick Version "+v.num+(passed?" ✅":"")+"</div><div style='font-size:13px;color:#666;margin-bottom:5px'>"+v.desc+"</div>"+(hist.length?"<div style='font-size:12px;color:#555'>Best: <strong style='color:"+(passed?"#2E7D32":"#E65100")+"'>"+best+"%</strong> · Taken "+hist.length+" time"+(hist.length!==1?"s":"")+"</div>":"<div style='font-size:12px;color:#aaa'>Not taken yet</div>")+"</div><span style='font-size:16px;color:#ccc'>›</span></button>";}).join("");
+  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goServSafe'>← Back</button><div><div style='font-size:15px;font-weight:bold;color:#fff'>⚡ Quick Practice · 20 Questions</div><div style='font-size:12px;color:rgba(255,255,255,0.75);margin-top:1px'>4 questions per topic · Randomly selected</div></div></div><div style='background:rgba(255,255,255,0.12);border-radius:13px;padding:11px 15px;margin-bottom:15px;color:#fff;font-size:13px;line-height:1.6'>⚡ Each Quick Exam picks 20 random questions — 4 from each topic. Great for a fast focused review anytime!</div>"+cards+"</div>";
+}
+
+// ═══════════════════════════════════════════
+// PRACTICE EXAM
+// ═══════════════════════════════════════════
+function renderExam(){
+  if(!S.examQs.length)return renderSelectExam();
+  const q=S.examQs[S.examIdx];
+  const pct=(S.examIdx/S.examQs.length)*100;
+  const tn=TOPICS[q.topicIdx]||"General";
+  const opts=q.opts.map((o,i)=>{let cls="opt-btn";if(S.examSel!==null){if(i===q.ans)cls+=" opt-correct";else if(i===S.examSel&&i!==q.ans)cls+=" opt-wrong";}return"<button class='"+cls+"' data-action='selectExam' data-i='"+i+"'"+(S.examSel!==null?" style='cursor:default'":"")+">"+"ABCD"[i]+". "+o+"</button>";}).join("");
+  const explain=S.examSel!==null?"<div style='margin-top:11px;padding:12px 14px;border-radius:12px;background:"+(S.examSel===q.ans?"#E8EAF6":"#FFF3E0")+";font-size:14px;color:#444;line-height:1.6'>"+(S.examSel===q.ans?"Correct! ":"Not quite. ")+q.ex+(S.examSel!==null&&S.examSel!==q.ans&&S.eggTaunt?("<br><span style='font-size:12px;color:#004C54;display:flex;align-items:center;gap:5px;margin-top:6px'><img src='"+RW_LOGO+"' style='width:16px;height:16px;object-fit:contain'>"+escHtml(S.eggTaunt)+"</span>"):"")+"</div>":"";
+  const nb=S.examSel!==null?"<button class='big-btn' style='background:linear-gradient(135deg,#c4a35a,#004C54)' data-action='examNext'>"+(S.examIdx+1>=S.examQs.length?"See My Results":"Next Question")+"</button>":"<p style='text-align:center;color:rgba(255,255,255,0.7);font-size:13px;font-style:italic;margin-top:8px'>Tap an answer to continue 💙</p>";
+  const typeLabel=S.examType==="short"?"Quick · Q":"Version "+S.examVersion.replace("v","")+" · Q";
+  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goHome'>← Home</button><div><div style='font-size:14px;font-weight:bold;color:#fff'>"+typeLabel+" "+(S.examIdx+1)+"/"+S.examQs.length+"</div><div style='font-size:12px;color:rgba(255,255,255,0.7);margin-top:1px'>"+tn+"</div></div></div><div class='prog-wrap'><div class='prog-bar' style='width:"+pct+"%;background:linear-gradient(90deg,#c4a35a,#004C54)'></div></div><div class='card'><p style='font-size:16px;color:#333;font-weight:bold;line-height:1.6;margin:0 0 14px'>"+q.q+"</p>"+opts+explain+"</div>"+nb+"</div>";
+}
+function renderExamResult(){
+  const total=S.examQs.length,score=S.examAnswers.filter((a,i)=>a===S.examQs[i].ans).length,pct=Math.round((score/total)*100),pass=pct>=75;
+  const bd=TOPICS.map((name,ti)=>{const idxs=S.examQs.map((q,i)=>q.topicIdx===ti?i:-1).filter(i=>i>=0);const correct=idxs.filter(i=>S.examAnswers[i]===S.examQs[i].ans).length;const tot=idxs.length;const tp=tot>0?Math.round((correct/tot)*100):0;return{name,correct,tot,tp};});
+  const typeLabel=S.examType==="short"?"Quick Practice":"Version "+S.examVersion.replace("v","");
+  S.examHistory.unshift({version:S.examVersion,examType:S.examType,score,total,pct,date:new Date().toLocaleDateString(),topicBreakdown:bd});
+  if(S.examHistory.length>50)S.examHistory=S.examHistory.slice(0,50);saveHist();
+  const rows=S.examQs.map((q,i)=>"<div class='result-row' style='color:"+(S.examAnswers[i]===q.ans?"#2E7D32":"#C62828")+"'><span>"+(S.examAnswers[i]===q.ans?"✓":"✗")+"</span><span style='flex:1'>"+q.q+"</span></div>").join("");
+  const bdH=bd.filter(b=>b.tot>0).map(b=>{const c=b.tp>=75?"#2E7D32":b.tp>=50?"#F57F17":"#C62828";return"<div style='margin-bottom:9px'><div style='display:flex;justify-content:space-between;font-size:13px;color:#333;margin-bottom:2px'><span>"+b.name+"</span><span style='font-weight:bold;color:"+c+"'>"+b.tp+"% ("+b.correct+"/"+b.tot+")</span></div><div class='rbar-wrap'><div class='rbar' style='width:"+b.tp+"%;background:"+c+"'></div></div></div>";}).join("");
+  const retryAction=S.examType==="short"?"goSelectShortExam":"goSelectExam";
+  const egg71=eggCheck71(pct);
+  const egg75=eggBarely75(pct);
+  const egg100=eggPerfectScore(pct);
+  return"<div class='wrap'><div style='text-align:center;padding-top:12px;margin-bottom:14px'><div style='font-size:56px;margin-bottom:8px'>"+(pass?"🏆":"💪")+"</div><h1 style='font-size:22px;color:#fff;margin-bottom:5px'>"+(pass?"You Would Pass the Real Exam!":"Keep Going — You Are Getting There!")+"</h1><div style='font-size:13px;color:rgba(255,255,255,0.8)'>"+typeLabel+" · "+new Date().toLocaleDateString()+"</div></div><div class='card'><div style='text-align:center;margin-bottom:14px'><div style='font-size:44px;font-weight:bold;color:"+(pass?"#2E7D32":"#c4a35a")+"'>"+score+"/"+total+"</div><div style='font-size:17px;color:#666;margin-top:2px'>"+pct+"% correct · Passing is 75%</div><div style='margin-top:9px;padding:9px 13px;border-radius:11px;background:"+(pass?"#E8EAF6":"#FFF3E0")+";font-size:13px;color:#555;line-height:1.6'>"+(pass?"Wonderful! You scored above 75%. Consider trying another version to stay sharp. Let's Go Rangers! 🏒":"You scored "+pct+"%. Review the topics below with lower scores and try again. You have totally got this!")+"</div></div><div style='margin-bottom:12px'><div style='font-size:13px;font-weight:bold;color:#333;margin-bottom:9px'>Topic Breakdown:</div>"+bdH+"</div><details><summary style='font-size:13px;font-weight:bold;color:#555;cursor:pointer;padding:7px 0'>All Questions (tap to expand)</summary><div style='margin-top:9px'>"+rows+"</div></details></div>"+egg71+egg75+egg100+"<button class='big-btn' style='background:linear-gradient(135deg,#c4a35a,#004C54)' data-action='retryExam'>🔁 Retake This Version</button><button class='big-btn' style='background:linear-gradient(135deg,#004C54,#002f35)' data-action='"+retryAction+"'>📝 Try a Different Version</button><button class='big-btn' style='background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.4)' data-action='goHome'>🏠 Home</button></div>";
+}
+
+// ═══════════════════════════════════════════
+// REPORTS
+// ═══════════════════════════════════════════
+function renderReports(){
+  if(!S.examHistory.length)return"<div class='wrap' style='text-align:center;padding-top:50px'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goHome'>← Home</button><div style='color:#fff;font-size:15px;font-weight:bold'>My Progress Report</div></div><div style='font-size:56px;margin:36px 0 14px'>📊</div><p style='color:#fff;font-size:17px;line-height:1.7'>No exams taken yet!<br>Complete a practice exam to see your progress here. 💙</p><button class='big-btn' style='background:linear-gradient(135deg,#004C54,#002f35);margin-top:22px;max-width:300px' data-action='goSelectExam'>Take Your First Exam</button></div>";
+  const tot=S.examHistory.length,passed=S.examHistory.filter(e=>e.pct>=75).length,avg=Math.round(S.examHistory.reduce((s,e)=>s+e.pct,0)/tot),best=Math.max(...S.examHistory.map(e=>e.pct));
+  const eggBest71=eggReportBest71(best);
+  const eggEighth=eggEighthExam(tot);
+  const vs=["v1","v2","v3","v4","v5"].map(ver=>{const h=S.examHistory.filter(e=>e.version===ver);if(!h.length)return null;const bV=Math.max(...h.map(e=>e.pct));return{ver,num:ver.replace("v",""),count:h.length,best:bV,passed:h.filter(e=>e.pct>=75).length};}).filter(Boolean);
+  const ta=TOPICS.map((name,ti)=>{const all=S.examHistory.filter(e=>e.topicBreakdown).map(e=>e.topicBreakdown[ti]).filter(b=>b&&b.tot>0);if(!all.length)return null;return{name,avg:Math.round(all.reduce((s,b)=>s+b.tp,0)/all.length)};}).filter(Boolean);
+  const vc=vs.map(v=>{const c=v.best>=75?"#4CAF50":v.best>=60?"#FFB74D":"#EF9A9A";return"<div style='background:rgba(255,255,255,0.1);border-radius:13px;padding:12px 14px;margin-bottom:9px'><div style='display:flex;justify-content:space-between;align-items:center'><div style='color:#fff;font-weight:bold;font-size:14px'>Version "+v.num+"</div><div style='color:"+c+";font-weight:bold;font-size:15px'>"+v.best+"% best</div></div><div style='color:rgba(255,255,255,0.75);font-size:12px;margin-top:3px'>Taken "+v.count+" time"+(v.count!==1?"s":"")+" · "+v.passed+" passed</div><div class='rbar-wrap' style='margin-top:7px'><div class='rbar' style='width:"+v.best+"%;background:"+c+"'></div></div></div>";}).join("");
+  const tc2=ta.map(t=>{const c=t.avg>=75?"#4CAF50":t.avg>=50?"#FFB74D":"#EF9A9A";return"<div style='margin-bottom:9px'><div style='display:flex;justify-content:space-between;font-size:13px;color:rgba(255,255,255,0.9);margin-bottom:2px'><span>"+t.name+"</span><span style='font-weight:bold;color:"+c+"'>"+t.avg+"% avg</span></div><div class='rbar-wrap'><div class='rbar' style='width:"+t.avg+"%;background:"+c+"'></div></div></div>";}).join("");
+  const rr=S.examHistory.slice(0,10).map(e=>{const c=e.pct>=75?"#4CAF50":e.pct>=60?"#FFB74D":"#EF9A9A";const vn=e.version?e.version.replace("v",""):"?";const typeTag=e.examType==="short"?"⚡":"📝";return"<div style='display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.1)'><div><div style='color:#fff;font-size:14px;font-weight:bold'>"+typeTag+" Version "+vn+"</div><div style='color:rgba(255,255,255,0.6);font-size:12px'>"+e.date+"</div></div><div style='text-align:right'><div style='color:"+c+";font-size:17px;font-weight:bold'>"+e.pct+"%</div><div style='color:rgba(255,255,255,0.6);font-size:12px'>"+e.score+"/"+e.total+"</div></div></div>";}).join("");
+  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goHome'>← Home</button><div><div style='font-size:15px;font-weight:bold;color:#fff'>📊 My Progress Report</div><div style='font-size:12px;color:rgba(255,255,255,0.75);margin-top:1px'>"+tot+" exam"+(tot!==1?"s":"")+" taken</div></div></div>"+eggBest71+eggEighth+"<div class='stat-grid'><div class='stat-box'><div class='stat-num'>"+passed+"</div><div class='stat-lbl'>Exams Passed (75%+)</div></div><div class='stat-box'><div class='stat-num'>"+avg+"%</div><div class='stat-lbl'>Average Score</div></div><div class='stat-box'><div class='stat-num'>"+best+"%</div><div class='stat-lbl'>Best Score Ever</div></div><div class='stat-box'><div class='stat-num'>"+tot+"</div><div class='stat-lbl'>Total Exams Taken</div></div></div><div style='background:rgba(255,255,255,0.12);border-radius:15px;padding:14px;margin-bottom:13px'><div style='font-size:13px;font-weight:bold;color:#fff;margin-bottom:11px'>Results by Version</div>"+(vc||"<p style='color:rgba(255,255,255,0.6);font-size:13px'>No data yet.</p>")+"</div><div style='background:rgba(255,255,255,0.12);border-radius:15px;padding:14px;margin-bottom:13px'><div style='font-size:13px;font-weight:bold;color:#fff;margin-bottom:11px'>Average Score by Topic</div>"+(tc2||"<p style='color:rgba(255,255,255,0.6);font-size:13px'>No data yet.</p>")+"<div style='font-size:12px;color:rgba(255,255,255,0.6);margin-top:7px'>💡 Topics under 75% are worth extra review!</div></div><div style='background:rgba(255,255,255,0.12);border-radius:15px;padding:14px;margin-bottom:13px'><div style='font-size:13px;font-weight:bold;color:#fff;margin-bottom:3px'>Recent Exams</div>"+rr+"</div><button class='big-btn' style='background:linear-gradient(135deg,#004C54,#002f35)' data-action='goSelectExam'>📝 Take a Full Exam</button><button class='big-btn' style='background:linear-gradient(135deg,#c4a35a,#7a0010)' data-action='goSelectShortExam'>⚡ Take a Quick Practice</button>"+(S.examHistory.length?"<button class='big-btn' style='background:rgba(255,100,100,0.3);border:1px solid rgba(255,255,255,0.3)' data-action='clearHistory'>🗑️ Clear All History</button>":"")+"<div style='background:rgba(255,50,50,0.08);border:1px dashed rgba(255,100,100,0.4);border-radius:13px;padding:13px 15px;margin-top:4px'><div style='font-size:10px;color:rgba(255,150,150,0.7);font-family:Oswald,sans-serif;letter-spacing:0.1em;margin-bottom:8px;text-align:center'>⚠️ TEMP — REMOVE BEFORE GOING LIVE</div><button class='big-btn' style='background:rgba(180,0,0,0.6);border:1px solid rgba(255,80,80,0.5);margin-bottom:0;font-size:14px' data-action='resetAllProgress'>🔄 RESET ALL PROGRESS</button><div style='font-size:11px;color:rgba(255,180,180,0.6);text-align:center;margin-top:6px'>Wipes topics done + all exam history</div></div></div>";
+}
+
+// ═══════════════════════════════════════════
+// LINKS
+// ═══════════════════════════════════════════
+function renderLinks(){
+  const cards=pretestLinks.map(l=>"<div class='link-card'><a href='"+l.url+"' target='_blank' rel='noopener noreferrer'>"+l.name+"</a><p>"+l.desc+"</p></div>").join("");
+  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goHome'>← Home</button><div style='color:#fff;font-size:15px;font-weight:bold'>🔗 Official Pretest Resources</div></div><div style='background:rgba(255,255,255,0.15);border-radius:13px;padding:11px 15px;margin-bottom:14px;color:#fff;font-size:13px;line-height:1.7'>💡 These are real, free resources. Tap any link to open it in your browser!</div>"+cards+"<div style='background:rgba(255,255,255,0.12);border-radius:13px;padding:12px 15px;margin-top:5px;color:#fff;font-size:13px;line-height:1.7'>🏆 The real ServSafe exam is 90 questions. Passing score is <strong>75%</strong>. The online proctored version can be taken from home with a webcam. You have got this!</div></div>";
+}
+
+// ═══════════════════════════════════════════
+// FEEDBACK SCREEN
+// ═══════════════════════════════════════════
 function renderFeedback(){
   const fb=S.fb;
 
@@ -1390,7 +1351,7 @@ function renderPin(){
   const keys = ["1","2","3","4","5","6","7","8","9","","0","⌫"];
   const keyBtns = keys.map(k=>{
     if(k==="") return"<div></div>";
-    return"<button data-action='pinKey' data-val='"+k+"' style='background:rgba(196,163,90,0.15);border:1px solid rgba(196,163,90,0.4);border-radius:16px;padding:18px 10px;font-size:22px;font-weight:bold;color:#fff;font-family:Oswald,sans-serif;cursor:pointer;transition:all 0.1s;active:transform:scale(0.95)'>"+k+"</button>";
+    return"<button data-action='pinKey' data-val='"+k+"' style='background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:16px;padding:18px 10px;font-size:22px;font-weight:bold;color:#fff;font-family:Oswald,sans-serif;cursor:pointer;transition:all 0.1s;active:transform:scale(0.95)'>"+k+"</button>";
   }).join("");
 
   const wrongBadge = S.pin.wrongCount > 0
@@ -1414,7 +1375,7 @@ function renderPin(){
   +(S.pin.error ? "<div style='color:#FF6B6B;font-size:13px;margin-bottom:10px;animation:popIn 0.2s ease'>"+S.pin.error+"</div>" : "<div style='margin-bottom:16px'></div>")
   // Numpad
   +"<div style='display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:260px;margin:0 auto 20px'>"+keyBtns+"</div>"
-  +"<button class='big-btn' style='background:rgba(196,163,90,0.1);border:1px solid rgba(196,163,90,0.3);max-width:260px;margin:0 auto;font-size:13px' data-action='goHome'>← Cancel</button>"
+  +"<button class='big-btn' style='background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);max-width:260px;margin:0 auto;font-size:13px' data-action='goHome'>← Cancel</button>"
   +"</div>";
 }
 
@@ -1475,267 +1436,234 @@ function renderPinVictory(){
 // ═══════════════════════════════════════════
 // EASTER EGG LIST SCREEN
 // ═══════════════════════════════════════════
+function renderEggList(){
+  const eggs=[
+    {
+      num:1, trigger:"Every Tuesday",
+      icon:"🗓️",
+      title:"Wings Day Tuesday",
+      desc:"Every Tuesday the Rangers logo on the home screen is quietly replaced by the Red Wings logo and the tagline turns gold.",
+      why:"The Detroit Red Wings have won the Stanley Cup 11 times. The Rangers? 4. Every Tuesday is a reminder of that gap. 😇"
+    },
+    {
+      num:2, trigger:"1st day of every month",
+      icon:"📅",
+      title:"Monthly Fact Drop",
+      desc:"On the 1st of each month, the slogan under the tagline reads: 'Red Wings are better (it's the 1st — fact of the month!)'",
+      why:"Some facts just need to be repeated monthly to sink in."
+    },
+    {
+      num:3, trigger:"Tap the home logo 5 times fast",
+      icon:"👆",
+      title:"Konami Tap Code",
+      desc:"Tap the team logo on the home screen 5 times within 2 seconds. The entire app switches to Red Wings theme for 30 seconds, then snaps back.",
+      why:"Named after the classic Konami Code cheat code. Five taps, thirty seconds of truth. Try it! 🔴"
+    },
+    {
+      num:4, trigger:"Wrong answer — 1-in-12 chance",
+      icon:"❌",
+      title:"The Wrong Answer Taunt",
+      desc:"When you get a practice exam question wrong, there's a 1-in-12 chance a Red Wings fact appears inline below the answer explanation.",
+      why:"Rotating facts include Gordie Howe's 801 goals, Steve Yzerman's 20-year captaincy, and the Wings' 9 retired numbers. Precision matters!"
+    },
+    {
+      num:5, trigger:"Wrong answer — 1-in-10 chance",
+      icon:"🔴",
+      title:"The Corner Flash",
+      desc:"On a wrong answer, there's also a separate 1-in-10 chance a small Red Wings badge flashes in the bottom-right corner for 2.5 seconds.",
+      why:"Just a gentle, silent reminder. 'Red Wings still better 🔴'"
+    },
+    {
+      num:6, trigger:"Score exactly 71% on any exam",
+      icon:"7️⃣1️⃣",
+      title:"The Gordie Howe 71",
+      desc:"Score exactly 71% and a Red Wings card appears on your results screen with the full story.",
+      why:"In 1971, Gordie Howe — hockey's greatest player and the greatest Red Wing — came out of retirement at age 45 to play professional hockey alongside his two sons, Mark and Marty. He wore #9 his entire career. The Wings retired his number in 1972. 71 is his year. Try to beat it!"
+    },
+    {
+      num:7, trigger:"Score exactly 75% on any exam",
+      icon:"7️⃣5️⃣",
+      title:"The Barely There",
+      desc:"Score exactly 75% (the minimum passing score) and a Wings card appears with a very specific historical parallel.",
+      why:"The Detroit Red Wings finished the 1985-86 season at exactly .500 — and still made the playoffs. Sometimes the bare minimum is still enough to be a winner. Just like 75%."
+    },
+    {
+      num:8, trigger:"Score exactly 100% on any exam",
+      icon:"💯",
+      title:"Perfect Score Invasion",
+      desc:"Ace an exam with 100% and the Wings take over your results screen with a full tribute card.",
+      why:"The Red Wings scored 100+ points in a season 13 times between 1994 and 2016. A perfect score is Detroit energy. We can't help but celebrate it."
+    },
+    {
+      num:9, trigger:"Your all-time best score is 71%",
+      icon:"📊",
+      title:"Best Score Easter Egg",
+      desc:"If your personal best exam score ever is 71%, a Wings card appears at the top of your Progress Report.",
+      why:"#71 was worn by several Red Wings greats over the years. Also: the Wings franchise was founded in 1926, and by 1971 they already had 3 Stanley Cups. Details matter."
+    },
+    {
+      num:10, trigger:"You take your 8th exam",
+      icon:"8️⃣",
+      title:"Eight Legends",
+      desc:"On the exam you take after completing your 8th total exam, a Wings card appears on your Progress Report listing all 8 retired Wings jersey numbers.",
+      why:"The Red Wings have retired 8 numbers: #1 Terry Sawchuk, #6 Larry Aurie, #7 Ted Lindsay, #9 Gordie Howe, #10 Alex Delvecchio, #12 Sid Abel, #16 Vladimir Konstantinov, and #19 Steve Yzerman. Eight legends. Like your eight exams."
+    },
+    {
+      num:11, trigger:"Complete all 5 study topics",
+      icon:"✅",
+      title:"Five Legends, Five Topics",
+      desc:"Once all 5 topic lessons are marked complete, a Wings card appears on the home screen.",
+      why:"Five Red Wings players were named to the NHL's official Top 100 Players of All Time list: Gordie Howe, Ted Lindsay, Terry Sawchuk, Alex Delvecchio, and Steve Yzerman. Five legends. Five topics. You're in elite company."
+    },
+    {
+      num:12, trigger:"App syncs to cloud — 1-in-15 chance",
+      icon:"☁️",
+      title:"The Sneaky Sync Message",
+      desc:"Every time your progress saves to the cloud, there's a 1-in-15 chance the '☁️ Synced just now' message becomes something a little different.",
+      why:"Messages include: 'Synced (Red Wings still better btw)', 'Saved! 🔴 11 Cups > 4 Cups. Just syncing facts.', and 'Progress saved! Wings have been Cup contenders since 1926 🔴'. The sneakiest egg — you may never even notice it."
+    }
+  ];
 
-function renderSelectShortExam(){
-  const versions=[{ver:"v1",num:1,icon:"🌱",desc:"Core fundamentals from all 5 topics."},{ver:"v2",num:2,icon:"📘",desc:"Pathogens, temperature, and cleaning highlights."},{ver:"v3",num:3,icon:"🔥",desc:"Real-world scenarios and decision-making."},{ver:"v4",num:4,icon:"💙",desc:"Management and HACCP essentials."},{ver:"v5",num:5,icon:"🏆",desc:"Hardest questions from all topics."}];
-  const cards=versions.map(v=>{const hist=S.examHistory.filter(e=>e.version===v.ver&&e.examType==="short");const best=hist.length?Math.max(...hist.map(e=>e.pct)):null;const passed=best!==null&&best>=75;return"<button class='ver-btn"+(passed?" done":"")+"' data-action='startExam' data-ver='"+v.ver+"' data-type='short'><span style='font-size:32px'>"+v.icon+"</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Quick Version "+v.num+(passed?" ✅":"")+"</div><div style='font-size:13px;color:#666;margin-bottom:5px'>"+v.desc+"</div>"+(hist.length?"<div style='font-size:12px;color:#555'>Best: <strong style='color:"+(passed?"#2E7D32":"#E65100")+"'>"+best+"%</strong> · Taken "+hist.length+" time"+(hist.length!==1?"s":"")+"</div>":"<div style='font-size:12px;color:#aaa'>Not taken yet</div>")+"</div><span style='font-size:16px;color:#ccc'>›</span></button>";}).join("");
-  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goServSafe'>← Back</button><div><div style='font-size:15px;font-weight:bold;color:#fff'>⚡ Quick Practice · 20 Questions</div><div style='font-size:12px;color:rgba(255,255,255,0.75);margin-top:1px'>4 questions per topic · Randomly selected</div></div></div><div style='background:rgba(255,255,255,0.12);border-radius:13px;padding:11px 15px;margin-bottom:15px;color:#fff;font-size:13px;line-height:1.6'>⚡ Each Quick Exam picks 20 random questions — 4 from each topic. Great for a fast focused review anytime!</div>"+cards+"</div>";
+  const cards=eggs.map(e=>"<div style='background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-left:4px solid #004C54;border-radius:14px;padding:15px 15px;margin-bottom:12px;text-align:left'>"
+    +"<div style='display:flex;align-items:center;gap:10px;margin-bottom:8px'>"
+    +"<span style='font-size:24px'>"+e.icon+"</span>"
+    +"<div>"
+    +"<div style='font-size:14px;font-weight:bold;color:#fff;font-family:Oswald,sans-serif;letter-spacing:0.04em'>#"+e.num+" — "+e.title+"</div>"
+    +"<div style='font-size:11px;color:#c4a35a;font-family:Oswald,sans-serif;letter-spacing:0.06em;margin-top:2px'>TRIGGER: "+e.trigger+"</div>"
+    +"</div>"
+    +"</div>"
+    +"<p style='font-size:13px;color:rgba(255,255,255,0.85);line-height:1.7;margin:0 0 7px'>"+e.desc+"</p>"
+    +"<div style='background:rgba(196,163,90,0.2);border-radius:9px;padding:8px 11px'>"
+    +"<p style='font-size:12px;color:#c4a35a;line-height:1.6;margin:0'><strong>Why?</strong> "+e.why+"</p>"
+    +"</div>"
+    +"</div>"
+  ).join("");
+
+  return"<div class='wrap'>"
+  +"<div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.5)' data-action='goHome'>← Home</button>"
+  +"<div><div style='font-size:15px;font-weight:bold;color:#fff;font-family:Oswald,sans-serif;letter-spacing:0.04em'>🥚 EASTER EGG VAULT</div>"
+  +"<div style='font-size:12px;color:rgba(255,255,255,0.6);margin-top:1px'>All 12 hidden secrets</div></div></div>"
+  +"<div style='background:linear-gradient(135deg,#004C54,#002f35);border-radius:16px;padding:16px 18px;margin-bottom:16px;display:flex;align-items:center;gap:14px'>"
+  +"<img src='"+RW_LOGO+"' style='width:52px;height:52px;object-fit:contain;flex-shrink:0'>"
+  +"<div>"
+  +"<div style='font-size:16px;font-weight:bold;color:#fff;font-family:Oswald,sans-serif;letter-spacing:0.05em;margin-bottom:3px'>The Red Wings Are Better</div>"
+  +"<div style='font-size:12px;color:rgba(255,255,255,0.8);line-height:1.6'>12 Easter eggs hidden throughout this app — all pointing to one undeniable truth. 🏒</div>"
+  +"</div>"
+  +"</div>"
+  +cards
+  +"<button class='big-btn' style='background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.25)' data-action='goHome'>🏠 Back Home</button>"
+  +"</div>";
 }
 
 // ═══════════════════════════════════════════
-// PRACTICE EXAM
-function renderExam(){
-  if(!S.examQs.length)return renderSelectExam();
-  const q=S.examQs[S.examIdx];
-  const pct=(S.examIdx/S.examQs.length)*100;
-  const tn=TOPICS[q.topicIdx]||"General";
-  const opts=q.opts.map((o,i)=>{let cls="opt-btn";if(S.examSel!==null){if(i===q.ans)cls+=" opt-correct";else if(i===S.examSel&&i!==q.ans)cls+=" opt-wrong";}return"<button class='"+cls+"' data-action='selectExam' data-i='"+i+"'"+(S.examSel!==null?" style='cursor:default'":"")+">"+"ABCD"[i]+". "+o+"</button>";}).join("");
-  const explain=S.examSel!==null?"<div style='margin-top:11px;padding:12px 14px;border-radius:12px;background:"+(S.examSel===q.ans?"#E8F5E9":"#FFF3E0")+";font-size:14px;color:#444;line-height:1.6'>"+(S.examSel===q.ans?"Correct! ":"Not quite. ")+q.ex+"</div>":"";
-  const nb=S.examSel!==null?"<button class='big-btn' style='background:linear-gradient(135deg,#333,#004C54)' data-action='examNext'>"+(S.examIdx+1>=S.examQs.length?"See My Results":"Next Question")+"</button>":"<p style='text-align:center;color:rgba(255,255,255,0.7);font-size:13px;font-style:italic;margin-top:8px'>Tap an answer to continue \u{1F49B}</p>";
-  const vn=S.examVersion?S.examVersion.replace("v",""):"";
-  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goHome'>← Home</button><div><div style='font-size:14px;font-weight:bold;color:#fff'>"+(S.examType==="short"?"Quick · Q":"Version "+vn+" · Q")+" "+(S.examIdx+1)+"/"+S.examQs.length+"</div><div style='font-size:12px;color:rgba(255,255,255,0.7);margin-top:1px'>"+tn+"</div></div></div><div class='prog-wrap'><div class='prog-bar' style='width:"+pct+"%;background:linear-gradient(90deg,#90A4AE,#546E7A)'></div></div><div class='card'><p style='font-size:16px;color:#333;font-weight:bold;line-height:1.6;margin:0 0 14px'>"+q.q+"</p>"+opts+explain+"</div>"+nb+"</div>";
-}
-function renderExamResult(){
-  const total=S.examQs.length,score=S.examAnswers.filter((a,i)=>a===S.examQs[i].ans).length,pct=Math.round((score/total)*100),pass=pct>=75;
-  const bd=TOPICS.map((name,ti)=>{const idxs=S.examQs.map((q,i)=>q.topicIdx===ti?i:-1).filter(i=>i>=0);const correct=idxs.filter(i=>S.examAnswers[i]===S.examQs[i].ans).length;const tot=idxs.length;const tp=tot>0?Math.round((correct/tot)*100):0;return{name,correct,tot,tp};});
-  S.examHistory.unshift({version:S.examVersion,score,total,pct,date:new Date().toLocaleDateString(),topicBreakdown:bd});
-  if(S.examHistory.length>50)S.examHistory=S.examHistory.slice(0,50);saveHist();
-  const rows=S.examQs.map((q,i)=>"<div class='result-row' style='color:"+(S.examAnswers[i]===q.ans?"#2E7D32":"#C62828")+"'><span>"+(S.examAnswers[i]===q.ans?"✓":"✗")+"</span><span style='flex:1'>"+q.q+"</span></div>").join("");
-  const bdH=bd.map(b=>{const c=b.tp>=75?"#2E7D32":b.tp>=50?"#F57F17":"#C62828";return"<div style='margin-bottom:9px'><div style='display:flex;justify-content:space-between;font-size:13px;color:#333;margin-bottom:2px'><span>"+b.name+"</span><span style='font-weight:bold;color:"+c+"'>"+b.tp+"% ("+b.correct+"/"+b.tot+")</span></div><div class='rbar-wrap'><div class='rbar' style='width:"+b.tp+"%;background:"+c+"'></div></div></div>";}).join("");
-  const vn=S.examVersion?S.examVersion.replace("v",""):"";
-  return"<div class='wrap'><div style='text-align:center;padding-top:12px;margin-bottom:14px'><div style='font-size:56px;margin-bottom:8px'>"+(pass?"\u{1F3C6}":"\u{1F4AA}")+"</div><h1 style='font-size:22px;color:#fff;margin-bottom:5px'>"+(pass?"You Would Pass the Real Exam!":"Keep Going. You Are Getting There!")+"</h1><div style='font-size:13px;color:rgba(255,255,255,0.8)'>Version "+vn+" · "+new Date().toLocaleDateString()+"</div></div><div class='card'><div style='text-align:center;margin-bottom:14px'><div style='font-size:44px;font-weight:bold;color:"+(pass?"#2E7D32":"#E65100")+"'>"+score+"/90</div><div style='font-size:17px;color:#666;margin-top:2px'>"+pct+"% correct · Passing is 75%</div><div style='margin-top:9px;padding:9px 13px;border-radius:11px;background:"+(pass?"#E8F5E9":"#FFF3E0")+";font-size:13px;color:#555;line-height:1.6'>"+(pass?"Wonderful! You scored above 75% on Version "+vn+". Consider trying another version to stay sharp.":"You scored "+pct+"%. Review the topics with lower scores below and try again. You have totally got this!")+"</div></div><div style='margin-bottom:12px'><div style='font-size:13px;font-weight:bold;color:#333;margin-bottom:9px'>Topic Breakdown:</div>"+bdH+"</div><details><summary style='font-size:13px;font-weight:bold;color:#555;cursor:pointer;padding:7px 0'>All Questions (tap to expand)</summary><div style='margin-top:9px'>"+rows+"</div></details></div><button class='big-btn' style='background:linear-gradient(135deg,#333,#004C54)' data-action='retryExam'>\u{1F501} Retake This Version</button><button class='big-btn' style='background:linear-gradient(135deg,#004C54,#002f35)' data-action='goSelectExam'>\u{1F4DD} Try a Different Version</button><button class='big-btn' style='background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.4)' data-action='goHome'>\u{1F3E0} Home</button></div>";
-}
-function renderReports(){
-  if(!S.examHistory.length)return"<div class='wrap' style='text-align:center;padding-top:50px'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goHome'>← Home</button><div style='color:#fff;font-size:15px;font-weight:bold'>My Progress Report</div></div><div style='font-size:56px;margin:36px 0 14px'>\u{1F4CA}</div><p style='color:#fff;font-size:17px;line-height:1.7'>No exams taken yet!<br>Complete a practice exam to see your progress here. \u{1F49B}</p><button class='big-btn' style='background:linear-gradient(135deg,#004C54,#002f35);margin-top:22px;max-width:300px' data-action='goSelectExam'>Take Your First Exam</button></div>";
-  const tot=S.examHistory.length,passed=S.examHistory.filter(e=>e.pct>=75).length,avg=Math.round(S.examHistory.reduce((s,e)=>s+e.pct,0)/tot),best=Math.max(...S.examHistory.map(e=>e.pct));
-  const vs=["v1","v2","v3","v4","v5"].map(ver=>{const h=S.examHistory.filter(e=>e.version===ver);if(!h.length)return null;const bV=Math.max(...h.map(e=>e.pct));return{ver,num:ver.replace("v",""),count:h.length,best:bV,passed:h.filter(e=>e.pct>=75).length};}).filter(Boolean);
-  const ta=TOPICS.map((name,ti)=>{const all=S.examHistory.filter(e=>e.topicBreakdown).map(e=>e.topicBreakdown[ti]);if(!all.length)return null;return{name,avg:Math.round(all.reduce((s,b)=>s+b.tp,0)/all.length)};}).filter(Boolean);
-  const vc=vs.map(v=>{const c=v.best>=75?"#4CAF50":v.best>=60?"#FFB74D":"#EF9A9A";return"<div style='background:rgba(255,255,255,0.1);border-radius:13px;padding:12px 14px;margin-bottom:9px'><div style='display:flex;justify-content:space-between;align-items:center'><div style='color:#fff;font-weight:bold;font-size:14px'>Version "+v.num+"</div><div style='color:"+c+";font-weight:bold;font-size:15px'>"+v.best+"% best</div></div><div style='color:rgba(255,255,255,0.75);font-size:12px;margin-top:3px'>Taken "+v.count+" time"+(v.count!==1?"s":"")+" · "+v.passed+" passed</div><div class='rbar-wrap' style='margin-top:7px'><div class='rbar' style='width:"+v.best+"%;background:"+c+"'></div></div></div>";}).join("");
-  const tc2=ta.map(t=>{const c=t.avg>=75?"#4CAF50":t.avg>=50?"#FFB74D":"#EF9A9A";return"<div style='margin-bottom:9px'><div style='display:flex;justify-content:space-between;font-size:13px;color:rgba(255,255,255,0.9);margin-bottom:2px'><span>"+t.name+"</span><span style='font-weight:bold;color:"+c+"'>"+t.avg+"% avg</span></div><div class='rbar-wrap'><div class='rbar' style='width:"+t.avg+"%;background:"+c+"'></div></div></div>";}).join("");
-  const rr=S.examHistory.slice(0,10).map(e=>{const c=e.pct>=75?"#4CAF50":e.pct>=60?"#FFB74D":"#EF9A9A";const vn=e.version?e.version.replace("v",""):"?";return"<div style='display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.1)'><div><div style='color:#fff;font-size:14px;font-weight:bold'>Version "+vn+"</div><div style='color:rgba(255,255,255,0.6);font-size:12px'>"+e.date+"</div></div><div style='text-align:right'><div style='color:"+c+";font-size:17px;font-weight:bold'>"+e.pct+"%</div><div style='color:rgba(255,255,255,0.6);font-size:12px'>"+e.score+"/"+e.total+"</div></div></div>";}).join("");
-  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goHome'>← Home</button><div><div style='font-size:15px;font-weight:bold;color:#fff'>\u{1F4CA} My Progress Report</div><div style='font-size:12px;color:rgba(255,255,255,0.75);margin-top:1px'>"+tot+" exam"+(tot!==1?"s":"")+" taken</div></div></div><div class='stat-grid'><div class='stat-box'><div class='stat-num'>"+passed+"</div><div class='stat-lbl'>Exams Passed (75%+)</div></div><div class='stat-box'><div class='stat-num'>"+avg+"%</div><div class='stat-lbl'>Average Score</div></div><div class='stat-box'><div class='stat-num'>"+best+"%</div><div class='stat-lbl'>Best Score Ever</div></div><div class='stat-box'><div class='stat-num'>"+tot+"</div><div class='stat-lbl'>Total Exams Taken</div></div></div><div style='background:rgba(255,255,255,0.12);border-radius:15px;padding:14px;margin-bottom:13px'><div style='font-size:13px;font-weight:bold;color:#fff;margin-bottom:11px'>Results by Version</div>"+(vc||"<p style='color:rgba(255,255,255,0.6);font-size:13px'>No data yet.</p>")+"</div><div style='background:rgba(255,255,255,0.12);border-radius:15px;padding:14px;margin-bottom:13px'><div style='font-size:13px;font-weight:bold;color:#fff;margin-bottom:11px'>Average Score by Topic</div>"+(tc2||"<p style='color:rgba(255,255,255,0.6);font-size:13px'>No data yet.</p>")+"<div style='font-size:12px;color:rgba(255,255,255,0.6);margin-top:7px'>\u{1F4A1} Topics under 75% are worth extra review!</div></div><div style='background:rgba(255,255,255,0.12);border-radius:15px;padding:14px;margin-bottom:13px'><div style='font-size:13px;font-weight:bold;color:#fff;margin-bottom:3px'>Recent Exams</div>"+rr+"</div><button class='big-btn' style='background:linear-gradient(135deg,#004C54,#002f35)' data-action='goSelectExam'>\u{1F4DD} Take Another Exam</button>"+(S.examHistory.length?"<button class='big-btn' style='background:rgba(255,100,100,0.3);border:1px solid rgba(255,255,255,0.3)' data-action='clearHistory'>\u{1F5D1}️ Clear All History</button>":"")+"</div>";
-}
-function renderSSLesson(){
-  if(!S.topic)return renderHome();
-  const pg=S.topic.lesson[S.lessonPage],pct=(S.lessonPage/S.topic.lesson.length)*100,isLast=S.lessonPage+1>=S.topic.lesson.length;
-  const bullets=pg.bullets?"<ul style='margin:12px 0 0 4px;padding:0;list-style:none'>"+pg.bullets.map(b=>"<li style='font-size:14px;color:#444;line-height:1.75;padding:4px 0 4px 20px;position:relative;border-bottom:1px solid #f0f0f0'><span style='position:absolute;left:0;color:"+S.topic.accent+"'>▸</span>"+b+"</li>").join("")+"</ul>":"";
-  const exBox=pg.example?"<div style='background:#f9f9f9;border-radius:11px;padding:12px 14px;margin-top:12px;border-left:4px solid "+S.topic.accent+"'><div style='font-size:11px;font-weight:bold;color:"+S.topic.accent+";font-family:Oswald,sans-serif;letter-spacing:0.08em;margin-bottom:5px'>📖 REAL EXAMPLE</div><p style='font-size:13px;color:#444;line-height:1.75;margin:0;white-space:pre-line'>"+pg.example+"</p></div>":"";
-  const whyBox=pg.why?"<div style='background:"+S.topic.color+";border-radius:11px;padding:12px 14px;margin-top:13px;border-left:4px solid "+S.topic.accent+"'><div style='font-size:11px;font-weight:bold;color:"+S.topic.accent+";font-family:Oswald,sans-serif;letter-spacing:0.08em;margin-bottom:5px'>💡 WHY THIS MATTERS</div><p style='font-size:13px;color:#444;line-height:1.75;margin:0'>"+pg.why+"</p></div>":"";
-  const memBox=pg.memory?"<div style='background:#fff8e1;border-radius:11px;padding:10px 13px;margin-top:10px;border-left:4px solid #f9a825'><p style='font-size:13px;color:#555;line-height:1.7;margin:0'>"+pg.memory+"</p></div>":"";
-  const tipBox=pg.tip?"<div style='background:#FFF8E1;border-radius:11px;padding:10px 13px;margin-top:10px;border-left:4px solid #F57F17'><div style='font-size:11px;font-weight:bold;color:#E65100;font-family:Oswald,sans-serif;letter-spacing:0.08em;margin-bottom:4px'>📝 EXAM TIP</div><p style='font-size:13px;color:#555;line-height:1.7;margin:0'>"+pg.tip+"</p></div>":"";
-  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:"+S.topic.accent+"' data-action='goHome'>← Home</button><div><div style='font-size:14px;font-weight:bold;color:#333'>"+S.topic.icon+" "+S.topic.title+"</div><div style='font-size:12px;color:rgba(255,255,255,0.7);margin-top:1px'>Reading "+(S.lessonPage+1)+" of "+S.topic.lesson.length+"</div></div></div><div class='prog-wrap'><div class='prog-bar' style='width:"+pct+"%;background:linear-gradient(90deg,"+S.topic.light+","+S.topic.accent+")'></div></div><div class='card' style='border-left:5px solid "+S.topic.accent+"'><h2 style='font-size:17px;color:"+S.topic.accent+";margin:0 0 11px'>"+pg.h+"</h2><p style='font-size:15px;color:#333;line-height:1.85;margin:0'>"+pg.t+"</p>"+bullets+exBox+whyBox+memBox+tipBox+"</div><button class='big-btn' style='background:"+S.topic.accent+"' data-action='readLesson'>🔊 Read This Aloud</button><div style='display:flex;gap:9px'><button style='flex:1;padding:14px;border-radius:15px;background:"+(S.lessonPage===0?"#e0e0e0":"#f5f5f5")+";color:"+(S.lessonPage===0?"#bbb":"#555")+";font-size:14px;font-weight:bold;border:none;font-family:Georgia,serif;cursor:"+(S.lessonPage===0?"not-allowed":"pointer")+"' data-action='lessonBack'"+(S.lessonPage===0?" disabled":"")+">← Back</button><button style='flex:2;padding:14px;border-radius:15px;background:linear-gradient(135deg,"+S.topic.light+","+S.topic.accent+");color:#fff;font-size:16px;font-weight:bold;border:none;font-family:Georgia,serif;cursor:pointer' data-action='lessonNext'>"+(isLast?"Take the Quiz!":"Next →")+"</button></div></div>";
-}
-function renderQuiz(){
-  if(!S.topic)return renderHome();
-  const q=S.topic.questions[S.quizIdx],pct=(S.quizIdx/S.topic.questions.length)*100;
-  const opts=q.opts.map((o,i)=>{let cls="opt-btn";if(S.quizSel!==null){if(i===q.ans)cls+=" opt-correct";else if(i===S.quizSel&&i!==q.ans)cls+=" opt-wrong";}return"<button class='"+cls+"' data-action='selectQuiz' data-i='"+i+"'"+(S.quizSel!==null?" style='cursor:default'":"")+">"+"ABCD"[i]+". "+o+"</button>";}).join("");
-  const explain=S.quizSel!==null?"<div style='margin-top:11px;padding:12px 14px;border-radius:12px;background:"+(S.quizSel===q.ans?"#E8F5E9":"#FFF3E0")+";font-size:14px;color:#444;line-height:1.6'>"+(S.quizSel===q.ans?"Correct! ":"Not quite. ")+q.ex+"</div>":"";
-  const nb=S.quizSel!==null?"<button class='big-btn' style='background:linear-gradient(135deg,"+S.topic.light+","+S.topic.accent+")' data-action='quizNext'>"+(S.quizIdx+1>=S.topic.questions.length?"See Results":"Next Question")+"</button>":"<p style='text-align:center;color:#aaa;font-size:13px;font-style:italic;margin-top:8px'>Tap an answer to continue \u{1F49B}</p>";
-  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:"+S.topic.accent+"' data-action='goHome'>← Home</button><div><div style='font-size:14px;font-weight:bold;color:#333'>\u{1F4DD} "+S.topic.title+" Quiz</div><div style='font-size:12px;color:#999;margin-top:1px'>Question "+(S.quizIdx+1)+" of "+S.topic.questions.length+"</div></div></div><div class='prog-wrap'><div class='prog-bar' style='width:"+pct+"%;background:linear-gradient(90deg,"+S.topic.light+","+S.topic.accent+")'></div></div><div class='card'><p style='font-size:16px;color:#333;font-weight:bold;line-height:1.6;margin:0 0 14px'>"+q.q+"</p>"+opts+explain+"</div>"+nb+"</div>";
-}
-function renderQuizResult(){
-  const qs=S.topic.questions,score=S.quizAnswers.filter((a,i)=>a===qs[i].ans).length,pct=Math.round((score/qs.length)*100),pass=pct>=60;
-  return"<div class='wrap' style='text-align:center;padding-top:30px'><div style='font-size:60px;margin-bottom:9px'>"+(pass?"\u{1F3C6}":"\u{1F4AA}")+"</div><h1 style='font-size:24px;color:"+(pass?S.topic.accent:"#E65100")+";margin-bottom:12px'>"+(pass?"Great Job!":"Keep Practicing!")+"</h1><div class='card'><div style='font-size:40px;font-weight:bold;color:"+S.topic.accent+"'>"+score+"/"+qs.length+"</div><div style='font-size:15px;color:#666;margin-top:2px'>"+pct+"% correct</div><p style='color:#555;margin-top:9px;line-height:1.7;font-size:14px'>"+(pass?"You passed this topic! You are building real knowledge.":"You got "+score+" right. That is a great start! Review the lesson and try again.")+"</p></div><button class='big-btn' style='background:linear-gradient(135deg,"+S.topic.light+","+S.topic.accent+")' data-action='retryQuiz'>\u{1F501} Retake Quiz</button><button class='big-btn' style='background:white;color:"+S.topic.accent+";border:2px solid "+S.topic.accent+"' data-action='reviewLesson'>\u{1F4D6} Review the Lesson</button><button class='big-btn' style='background:rgba(0,0,0,0.1);border:2px solid rgba(0,0,0,0.2);color:#555' data-action='goHome'>\u{1F3E0} Back to Home</button></div>";
-}
-function renderTechLesson(){
-  if(!S.lesson)return renderHome();
-  if(S.techComplete)return"<div class='wrap' style='text-align:center;padding-top:44px'><div style='font-size:74px;margin-bottom:14px'>\u{1F3C6}</div><h1 style='font-size:26px;color:"+S.lesson.accent+";margin-bottom:9px'>You Did It!</h1><p style='font-size:16px;color:#555;line-height:1.7;margin-bottom:22px'>You completed every step of<br><strong>"+S.lesson.title+"</strong>.<br>That is something to be really proud of!</p><button class='big-btn' style='background:white;color:"+S.lesson.accent+";border:2px solid "+S.lesson.accent+";max-width:320px' data-action='techRepeat'>\u{1F501} Practice Again</button><button class='big-btn' style='background:linear-gradient(135deg,"+S.lesson.light+","+S.lesson.accent+");max-width:320px' data-action='goHome'>\u{1F3E0} Back to All Lessons</button></div>";
-  const s=S.lesson.steps[S.step],pct=(S.step/S.lesson.steps.length)*100;
-  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:"+S.lesson.accent+"' data-action='goHome'>← Home</button><div><div style='font-size:14px;font-weight:bold;color:#333'>"+S.lesson.icon+" "+S.lesson.title+"</div><div style='font-size:12px;color:#999;margin-top:1px'>Step "+(S.step+1)+" of "+S.lesson.steps.length+"</div></div></div><div class='prog-wrap'><div class='prog-bar' style='width:"+pct+"%;background:linear-gradient(90deg,"+S.lesson.light+","+S.lesson.accent+")'></div></div><div class='card' style='border-left:5px solid "+S.lesson.accent+"'><div style='font-size:44px;text-align:center;margin-bottom:11px'>"+s.img+"</div><h2 style='font-size:18px;color:"+S.lesson.accent+";margin:0 0 9px;text-align:center'>"+s.title+"</h2><p style='font-size:15px;color:#333;line-height:1.8;margin:0 0 13px;text-align:center'>"+s.text+"</p><div style='background:"+S.lesson.color+";border-radius:12px;padding:10px 13px;font-size:14px;color:#444;line-height:1.6;margin-bottom:11px'>"+s.tip+"</div><button class='big-btn' style='background:"+S.lesson.accent+";margin:0' data-action='readStep'>\u{1F50A} Read This Step Aloud</button></div><div style='display:flex;gap:9px'><button style='flex:1;padding:14px;border-radius:15px;background:"+(S.step===0?"#e0e0e0":"#f5f5f5")+";color:"+(S.step===0?"#bbb":"#555")+";font-size:14px;font-weight:bold;border:none;font-family:Georgia,serif;cursor:"+(S.step===0?"not-allowed":"pointer")+"' data-action='techBack'"+(S.step===0?" disabled":"")+">← Go Back</button><button style='flex:2;padding:14px;border-radius:15px;background:linear-gradient(135deg,"+S.lesson.light+","+S.lesson.accent+");color:#fff;font-size:16px;font-weight:bold;border:none;font-family:Georgia,serif;cursor:pointer' data-action='techNext'>"+(S.step+1>=S.lesson.steps.length?"I Did It!":"Got It! Next →")+"</button></div><p style='text-align:center;color:#aaa;font-size:12px;margin-top:12px;font-style:italic'>No rush! Read it as many times as you need. \u{1F49B}</p></div>";
-}
-function renderAskAI(){
-  const val=S.aiRequest||"";
-  const savedCards=S.savedGuides.length
-    ?"<div style='margin-top:4px'><div class='sec-label' style='margin-bottom:8px'>YOUR SAVED GUIDES</div>"
-      +S.savedGuides.map((g,i)=>
-        "<div style='background:rgba(255,255,255,0.97);border-radius:13px;padding:13px 15px;margin-bottom:9px;display:flex;align-items:center;gap:11px;box-shadow:0 3px 14px rgba(0,0,0,0.2);border-left:4px solid #004C54'>"
-        +"<span style='font-size:26px'>📖</span>"
-        +"<div style='flex:1;min-width:0'>"
-        +"<div style='font-size:14px;font-weight:bold;color:#222;font-family:Oswald,sans-serif;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>"+escHtml(g.title)+"</div>"
-        +"<div style='font-size:11px;color:#555'>"+escHtml(g.date)+" · "+g.lesson.steps.length+" steps</div>"
-        +"</div>"
-        +"<button style='background:#004C54;color:#fff;border:none;border-radius:9px;padding:7px 12px;font-size:12px;font-family:Oswald,sans-serif;cursor:pointer;white-space:nowrap;letter-spacing:0.04em' data-action='loadGuide' data-i='"+i+"'>GO ›</button>"
-        +"</div>"
-      ).join("")
-      +"</div>"
-    :"";
-  return"<div class='wrap'>"
-  +"<div class='top-bar'><button class='home-btn' data-action='goHome'>← Home</button><div><div style='font-size:15px;font-weight:bold;color:#fff;font-family:Oswald,sans-serif;letter-spacing:0.05em'>BUILD A HOW-TO GUIDE</div><div style='font-size:12px;color:rgba(255,255,255,0.7);margin-top:1px'>Tell me what you need help with!</div></div></div>"
-  +"<div class='ai-bubble'>🤖 Hi there! Type what you need help with and I will build you a step-by-step guide just like the ones in the app. I save every guide I make for you so you can come back to it anytime!</div>"
-  +"<div class='card'>"
-  +"<label style='font-size:13px;font-weight:bold;color:#555;font-family:Oswald,sans-serif;letter-spacing:0.05em;display:block;margin-bottom:8px'>WHAT DO YOU NEED HELP WITH?</label>"
-  +"<textarea id='aiInput' rows='4' placeholder='Example: How do I video call my grandkids on my iPhone?\nOr: How do I pay a bill online?\nOr: How do I use the self-checkout at the store?'>"+val+"</textarea>"
-  +"<div style='font-size:12px;color:#aaa;margin-top:6px;font-style:italic'>Type as much or as little as you like. No wrong answers!</div>"
-  +"</div>"
-  +"<button class='big-btn' style='background:linear-gradient(135deg,#004C54,#002f35)' data-action='submitAI'>Build My Guide! 💬</button>"
-  +savedCards
-  +"<button class='big-btn' style='background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2)' data-action='goHome'>← Back Home</button>"
-  +"</div>";
-}
-function renderAILesson(){
-  if(!S.aiLesson){
-    if(S.aiLoading){
-      return"<div class='wrap' style='text-align:center;padding-top:80px'>"
-      +"<div class='top-bar'><button class='home-btn' data-action='goHome'>← Home</button><div style='color:#fff;font-size:15px;font-weight:bold;font-family:Oswald,sans-serif'>Building Your Guide...</div></div>"
-      +"<div style='margin-top:40px'>"
-      +"<div style='font-size:52px;margin-bottom:20px'>🤖</div>"
-      +"<div class='ai-thinking'><div class='dot'></div><div class='dot'></div><div class='dot'></div></div>"
-      +"<p style='color:rgba(255,255,255,0.85);font-size:16px;margin-top:18px;line-height:1.8'>Building your personal guide<br><em style='color:#A5ACAF'>\""+escHtml(S.aiRequest)+"\"</em></p>"
-      +"<p style='color:rgba(255,255,255,0.6);font-size:13px;margin-top:12px'>This takes about 10-20 seconds...</p>"
-      +"</div></div>";
-    }
-    if(S.aiError){
-      return"<div class='wrap'>"
-      +"<div class='top-bar'><button class='home-btn' data-action='goHome'>← Home</button><div style='color:#fff;font-size:15px;font-weight:bold;font-family:Oswald,sans-serif'>Oops!</div></div>"
-      +"<div class='card'><div style='font-size:40px;text-align:center;margin-bottom:12px'>😬</div>"
-      +"<p style='color:#333;font-size:15px;line-height:1.7;text-align:center'>I had a little trouble building that guide. It might be a connection issue.<br><br>Let me try again!</p></div>"
-      +"<button class='big-btn' style='background:linear-gradient(135deg,#004C54,#002f35)' data-action='retryAI'>Try Again</button>"
-      +"<button class='big-btn' style='background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2)' data-action='goAskAI'>✏ Edit My Request</button>"
-      +"</div>";
-    }
-    return renderAskAI();
-  }
-
-  const lesson=S.aiLesson;
-  const step=S.aiStep;
-  const steps=lesson.steps||[];
-  if(S.aiComplete){
-    return"<div class='wrap' style='text-align:center;padding-top:44px'>"
-    +"<div style='font-size:72px;margin-bottom:12px'>🏆</div>"
-    +"<h1 style='font-size:26px;color:#fff;margin-bottom:8px;font-family:Oswald,sans-serif;letter-spacing:0.05em'>YOU DID IT!</h1>"
-    +"<p style='color:rgba(255,255,255,0.85);font-size:15px;line-height:1.7;margin-bottom:22px'>You completed every step of<br><strong>"+escHtml(lesson.title)+"</strong><br>That is something to be proud of!</p>"
-    +"<button class='big-btn' style='background:linear-gradient(135deg,#004C54,#002f35)' data-action='aiRepeat'>🔁 Go Through It Again</button>"
-    +"<button class='big-btn' style='background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25)' data-action='goAskAI'>Ask for Another Guide</button>"
-    +"<button class='big-btn' style='background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15)' data-action='goHome'>🏠 Back Home</button>"
-    +"</div>";
-  }
-
-  const s=steps[step]||{title:"",text:"",tip:""};
-  const pct=steps.length?(step/steps.length)*100:0;
-  return"<div class='wrap'>"
-  +"<div class='top-bar'><button class='home-btn' data-action='goHome'>← Home</button>"
-  +"<div><div style='font-size:14px;font-weight:bold;color:#fff;font-family:Oswald,sans-serif;letter-spacing:0.04em'>"+escHtml(lesson.title).substring(0,36)+"</div>"
-  +"<div style='font-size:12px;color:rgba(255,255,255,0.7);margin-top:1px'>Step "+(step+1)+" of "+steps.length+"</div></div></div>"
-  +"<div class='prog-wrap'><div class='prog-bar' style='width:"+pct+"%'></div></div>"
-  +"<div class='step-card'>"
-  +"<div style='font-size:42px;text-align:center;margin-bottom:10px'>"+escHtml(s.icon||"\u{1F4CC}")+"</div>"
-  +"<h2 style='font-size:18px;color:#004C54;margin:0 0 10px;text-align:center;font-family:Oswald,sans-serif;letter-spacing:0.03em'>"+escHtml(s.title)+"</h2>"
-  +"<p style='font-size:15px;color:#333;line-height:1.8;margin:0 0 13px;text-align:center'>"+escHtml(s.text)+"</p>"
-  +(s.tip?"<div style='background:#e6f4f5;border-radius:11px;padding:10px 13px;font-size:13px;color:#444;line-height:1.6;margin-bottom:11px;border-left:3px solid #004C54'>"+escHtml(s.tip)+"</div>":"")
-  +"<button class='big-btn' style='background:linear-gradient(135deg,#004C54,#002f35);margin:0' data-action='readAIStep'>🔊 Read This Step Aloud</button>"
-  +"</div>"
-  +"<div style='display:flex;gap:9px'>"
-  +"<button style='flex:1;padding:13px;border-radius:13px;background:"+(step===0?"#e0e0e0":"rgba(255,255,255,0.15)")+";color:"+(step===0?"#bbb":"#fff")+";font-size:14px;font-weight:bold;border:none;font-family:Oswald,sans-serif;cursor:"+(step===0?"not-allowed":"pointer")+";letter-spacing:0.05em' data-action='aiBack'"+(step===0?" disabled":"")+">← BACK</button>"
-  +"<button style='flex:2;padding:13px;border-radius:13px;background:linear-gradient(135deg,#A5ACAF,#004C54);color:#fff;font-size:15px;font-weight:bold;border:none;font-family:Oswald,sans-serif;cursor:pointer;letter-spacing:0.05em' data-action='aiNext'>"+(step+1>=steps.length?"I DID IT! 🏆":"GOT IT! NEXT →")+"</button>"
-  +"</div>"
-  +"<p style='text-align:center;color:rgba(255,255,255,0.55);font-size:12px;margin-top:12px;font-style:italic'>No rush. Read as many times as you need. 💛</p>"
-  +"</div>";
-}
-
-function escHtml(s){
-  if(!s)return"";
-  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-}
-
-async function fetchAILesson(request){
-  S.aiLoading=true;S.aiError=false;S.aiLesson=null;S.screen="aiLesson";r();
-  try{
-    const sys="You are building a friendly, simple step-by-step how-to guide for a non-technical adult woman who gets nervous with technology and new tasks. She is a Philadelphia Eagles fan and loves warm encouragement. Return ONLY valid JSON, no markdown, no explanation. The JSON must be: {\"title\":\"Short friendly title\",\"steps\":[{\"icon\":\"single emoji\",\"title\":\"Step title\",\"text\":\"Clear simple instruction in plain English. One idea per step. Warm and reassuring tone.\",\"tip\":\"A short encouraging tip starting with a lightbulb emoji\"}]}. Include 5 to 8 steps. Make every step feel safe and doable. Use simple words. If a step involves technology, explain exactly what to look for on screen. Always be warm and never make her feel dumb.";
-    const resp=await fetch("https://api.anthropic.com/v1/messages",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:"Please build a step-by-step guide for: "+request}],system:sys})
-    });
-    const data=await resp.json();
-    let text="";
-    if(data.content&&data.content.length>0){
-      text=data.content.filter(b=>b.type==="text").map(b=>b.text).join("");
-    }
-    // Strip any markdown code fences
-    text=text.replace(/```json\s*/gi,"").replace(/```\s*/g,"").trim();
-    const lesson=JSON.parse(text);
-    if(!lesson.steps||!lesson.steps.length)throw new Error("No steps");
-    S.aiLesson=lesson;
-    // Save to savedGuides list if not already there
-    const exists=S.savedGuides.some(g=>g.title===lesson.title&&g.request===request);
-    if(!exists){S.savedGuides.unshift({title:lesson.title,request:request,lesson:lesson,date:new Date().toLocaleDateString()});if(S.savedGuides.length>20)S.savedGuides=S.savedGuides.slice(0,20);saveGuides();}
-    S.aiStep=0;S.aiComplete=false;S.aiLoading=false;
-  }catch(e){
-    S.aiLoading=false;S.aiError=true;
-  }
-  r();
-}
-
-function renderLinks(){
-  const cards=pretestLinks.map(l=>"<div class='link-card'><a href='"+l.url+"' target='_blank' rel='noopener noreferrer'>"+l.name+"</a><p>"+l.desc+"</p></div>").join("");
-  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goHome'>← Home</button><div style='color:#fff;font-size:15px;font-weight:bold'>\u{1F517} Official Pretest Resources</div></div><div style='background:rgba(255,255,255,0.15);border-radius:13px;padding:11px 15px;margin-bottom:14px;color:#fff;font-size:13px;line-height:1.7'>\u{1F4A1} These are real, free resources. Tap any link to open it in your browser!</div>"+cards+"<div style='background:rgba(255,255,255,0.12);border-radius:13px;padding:12px 15px;margin-top:5px;color:#fff;font-size:13px;line-height:1.7'>\u{1F3C6} The real ServSafe exam is 90 questions. Passing score is <strong>75%</strong>. The online proctored version can be taken from home with a webcam. You have got this!</div></div>";
-}
-
-
-function bindFeedbackHandlers(){
-  var fbMsg=document.getElementById("fbMessage");
-  var fbCount=document.getElementById("fbCharCount");
-  if(fbMsg&&fbCount){
-    fbMsg.addEventListener("input",function(){S.fb.message=fbMsg.value;fbCount.textContent=fbMsg.value.length+" characters";});
-  }
-}
+// EVENT BINDING
+// ═══════════════════════════════════════════
 function bindEvents(){
-  const els=document.querySelectorAll("[data-action]");
-  const dbg=document.getElementById("dbg");if(dbg)dbg.textContent="bindEvents:"+els.length+"els";
-  els.forEach(el=>{
+  document.querySelectorAll("[data-action]").forEach(el=>{
     el.addEventListener("click",()=>{
       const a=el.dataset.action;
-      document.getElementById("dbg").textContent="CLICKED:"+a;
       if(a==="goHome"){S.screen="home";stopSpeech();r();}
       else if(a==="goServSafe"){S.screen="servsafe";r();}
       else if(a==="goSelectExam"){S.screen="selectExam";r();}
+      else if(a==="goSelectShortExam"){S.screen="selectShortExam";r();}
       else if(a==="goReports"){S.screen="reports";r();}
       else if(a==="openLinks"){S.screen="links";r();}
       else if(a==="clearHistory"){if(confirm("Clear all exam history? This cannot be undone.")){S.examHistory=[];saveHist();r();}}
-      else if(a==="openTech"){const l=techLessons.find(x=>x.id===el.dataset.id);S.lesson=l;S.step=0;S.techComplete=false;S.screen="techLesson";stopSpeech();r();}
-      else if(a==="techNext"){if(S.step+1>=S.lesson.steps.length){S.techDone[S.lesson.id]=true;S.techComplete=true;stopSpeech();try{localStorage.setItem("pp_techDone",JSON.stringify(S.techDone));}catch(e){} scheduleSave();r();}else{const msg=cheers[Math.floor(Math.random()*cheers.length)];S.showCheer=true;S.cheerMsg=msg;speak(msg);r(false);setTimeout(()=>{S.showCheer=false;S.step++;r(false);},2000);}}
-      else if(a==="techBack"){if(S.step>0){stopSpeech();S.step--;r();}}
-      else if(a==="techRepeat"){S.step=0;S.techComplete=false;r();}
-      else if(a==="readStep"){const s=S.lesson.steps[S.step];speak("Step "+(S.step+1)+". "+s.title+". "+s.text+". Tip: "+s.tip.replace(/\u{1F4A1}/gu,""));}
+      else if(a==="resetAllProgress"){if(confirm("Reset ALL progress? This will wipe exam history AND all completed topics. Cannot be undone.")){S.examHistory=[];S.topicDone={};saveHist();r();}}
       else if(a==="openTopic"){const t=ssTopics.find(x=>x.id===el.dataset.id);S.topic=t;S.lessonPage=0;S.quizIdx=0;S.quizSel=null;S.quizAnswers=[];S.screen="servsafeLesson";stopSpeech();r();}
       else if(a==="lessonNext"){if(S.lessonPage+1>=S.topic.lesson.length){S.screen="quiz";S.quizIdx=0;S.quizSel=null;S.quizAnswers=[];stopSpeech();r();}else{stopSpeech();S.lessonPage++;r();}}
       else if(a==="lessonBack"){if(S.lessonPage>0){stopSpeech();S.lessonPage--;r();}}
       else if(a==="readLesson"){speak(S.topic.lesson[S.lessonPage].t);}
       else if(a==="selectQuiz"){if(S.quizSel===null){S.quizSel=parseInt(el.dataset.i);r(false);}}
-      else if(a==="quizNext"){const newA=[...S.quizAnswers,S.quizSel];if(S.quizIdx+1>=S.topic.questions.length){S.quizAnswers=newA;const sc=newA.filter((a,i)=>a===S.topic.questions[i].ans).length;if(sc/S.topic.questions.length>=0.6){S.topicDone[S.topic.id]=true;try{localStorage.setItem("pp_topicDone",JSON.stringify(S.topicDone));}catch(e){} scheduleSave();}S.screen="quizResult";r();}else{S.quizAnswers=newA;S.quizIdx++;S.quizSel=null;r();}}
+      else if(a==="quizNext"){const newA=[...S.quizAnswers,S.quizSel];if(S.quizIdx+1>=S.topic.questions.length){S.quizAnswers=newA;const sc=newA.filter((a,i)=>a===S.topic.questions[i].ans).length;if(sc/S.topic.questions.length>=0.6){S.topicDone[S.topic.id]=true;}scheduleSave();S.screen="quizResult";r();}else{S.quizAnswers=newA;S.quizIdx++;S.quizSel=null;r();}}
       else if(a==="retryQuiz"){S.quizIdx=0;S.quizSel=null;S.quizAnswers=[];S.screen="quiz";r();}
       else if(a==="reviewLesson"){S.lessonPage=0;S.screen="servsafeLesson";r();}
-      else if(a==="startExam"){S.examVersion=el.dataset.ver;S.examQs=buildExam(S.examVersion);S.examIdx=0;S.examSel=null;S.examAnswers=[];S.screen="practiceExam";stopSpeech();r();}
-      else if(a==="selectExam"){if(S.examSel===null){S.examSel=parseInt(el.dataset.i);r(false);}}
-      else if(a==="examNext"){const newA=[...S.examAnswers,S.examSel];if(S.examIdx+1>=S.examQs.length){S.examAnswers=newA;S.screen="examResult";r();}else{S.examAnswers=newA;S.examIdx++;S.examSel=null;r();}}
-      else if(a==="retryExam"){S.examQs=buildExam(S.examVersion);S.examIdx=0;S.examSel=null;S.examAnswers=[];S.screen="practiceExam";r();}
-      else if(a==="goAskAI"){S.screen="askAI";stopSpeech();r();}
-      else if(a==="submitAI"){const inp=document.getElementById("aiInput");const val=inp?inp.value.trim():"";if(!val){alert("Please type what you need help with first!");return;}S.aiRequest=val;fetchAILesson(val);}
-      else if(a==="retryAI"){fetchAILesson(S.aiRequest);}
-      else if(a==="aiNext"){if(S.aiLesson&&S.aiStep+1>=S.aiLesson.steps.length){S.aiComplete=true;stopSpeech();r();}else{const msg=cheers[Math.floor(Math.random()*cheers.length)];S.showCheer=true;S.cheerMsg=msg;speak(msg);r(false);setTimeout(()=>{S.showCheer=false;S.aiStep++;r(false);},2000);}}
-      else if(a==="aiBack"){if(S.aiStep>0){stopSpeech();S.aiStep--;r();}}
-      else if(a==="aiRepeat"){S.aiStep=0;S.aiComplete=false;r();}
-      else if(a==="readAIStep"){if(S.aiLesson&&S.aiLesson.steps){const s=S.aiLesson.steps[S.aiStep];speak("Step "+(S.aiStep+1)+". "+s.title+". "+s.text+(s.tip?". Tip: "+s.tip.replace(/💡/g,""):""));}}
-      else if(a==="loadGuide"){const i=parseInt(el.dataset.i);const g=S.savedGuides[i];if(g){S.aiRequest=g.request;S.aiLesson=g.lesson;S.aiStep=0;S.aiComplete=false;S.aiLoading=false;S.aiError=false;S.screen="aiLesson";r();}
-      else if(a==="goSelectShortExam"){const d=document.getElementById("dbg");if(d)d.textContent="1-setSSE";S.screen="selectShortExam";if(d)d.textContent="2-callingR";r();if(d)d.textContent="3-rDone";}
-      else if(a==="goFeedback"){const d=document.getElementById("dbg");if(d)d.textContent="1-settingFB";S.fb={type:"",mood:0,tags:[],message:"",sending:false,sent:false,error:""};if(d)d.textContent="2-setScreen";S.screen="feedback";if(d)d.textContent="3-callingR";r();if(d)d.textContent="4-rDone";}
-      else if(a==="goPin"){if(S.pin.statInterval)clearInterval(S.pin.statInterval);if(S.pin.lockCountdown)clearInterval(S.pin.lockCountdown);S.pin={entry:"",error:"",wrongCount:S.pin.wrongCount||0,locked:false,lockSecondsLeft:0,statIdx:0,statInterval:null,lockCountdown:null,lockStats:[]};S.screen="pin";r();}
+      else if(a==="startExam"){
+        S.examVersion=el.dataset.ver;
+        S.examType=el.dataset.type||"full";
+        S.examQs=buildExam(S.examVersion,S.examType);
+        S.examIdx=0;S.examSel=null;S.examAnswers=[];
+        S.screen="practiceExam";stopSpeech();r();
+      }
+      else if(a==="selectExam"){if(S.examSel===null){S.examSel=parseInt(el.dataset.i);const q=S.examQs[S.examIdx];const isWrong=S.examSel!==q.ans;S.eggTaunt=isWrong?eggWrongAnswerTaunt():null;if(isWrong)eggMaybeFlashWingsLogo();r(false);}}
+      else if(a==="tapLogo"){eggHandleLogoTap();}
+      else if(a==="examNext"){const newA=[...S.examAnswers,S.examSel];S.eggTaunt=null;if(S.examIdx+1>=S.examQs.length){S.examAnswers=newA;S.screen="examResult";saveHist();r();}else{S.examAnswers=newA;S.examIdx++;S.examSel=null;r();}}
+      else if(a==="retryExam"){
+        S.examQs=buildExam(S.examVersion,S.examType);
+        S.examIdx=0;S.examSel=null;S.examAnswers=[];
+        S.screen="practiceExam";r();
+      }
+      else if(a==="goFeedback"){S.fb={type:"",mood:0,tags:[],message:"",sending:false,sent:false,error:""};S.screen="feedback";r();}
+      else if(a==="goPin"){
+        // Clear any running timers from previous visit
+        if(S.pin.statInterval) clearInterval(S.pin.statInterval);
+        if(S.pin.lockCountdown) clearInterval(S.pin.lockCountdown);
+        S.pin={entry:"",error:"",wrongCount:S.pin.wrongCount||0,locked:false,lockTimer:null,lockSecondsLeft:0,statIdx:0,statInterval:null,lockCountdown:null,lockStats:[]};
+        S.screen="pin";r();
+      }
       else if(a==="goEggList"){S.screen="eggList";r();}
-      else if(a==="pinKey"){if(S.pin.locked)return;const v=el.dataset.val;if(v==="⌫"){S.pin.entry=S.pin.entry.slice(0,-1);S.pin.error="";}else if(S.pin.entry.length<4){S.pin.entry+=v;}if(S.pin.entry.length===4){if(S.pin.entry===S.cloudPin){if(S.pin.statInterval)clearInterval(S.pin.statInterval);if(S.pin.lockCountdown)clearInterval(S.pin.lockCountdown);S.pin.wrongCount=0;S.screen="pinVictory";r();}else{S.pin.wrongCount++;S.pin.entry="";if(S.pin.wrongCount%5===0){S.pin.error="";pinStartLockout();}else{const nextLockAt=Math.ceil(S.pin.wrongCount/5)*5;const untilLock=nextLockAt-S.pin.wrongCount;S.pin.error="Wrong PIN. "+untilLock+" attempt"+(untilLock!==1?"s":"")+" before lockout.";}}}r(false);}
+      else if(a==="pinKey"){
+        if(S.pin.locked) return;
+        const v=el.dataset.val;
+        if(v==="⌫"){S.pin.entry=S.pin.entry.slice(0,-1);S.pin.error="";}
+        else if(S.pin.entry.length<4){S.pin.entry+=v;}
+        // Auto-submit when 4 digits entered
+        if(S.pin.entry.length===4){
+          if(S.pin.entry===S.cloudPin){
+            // 🎉 CORRECT!
+            if(S.pin.statInterval) clearInterval(S.pin.statInterval);
+            if(S.pin.lockCountdown) clearInterval(S.pin.lockCountdown);
+            S.pin.wrongCount=0;
+            S.screen="pinVictory";r();
+          } else {
+            // ❌ Wrong
+            S.pin.wrongCount++;
+            S.pin.entry="";
+            const nextLockAt = Math.ceil(S.pin.wrongCount/5)*5;
+            const untilLock = nextLockAt - S.pin.wrongCount;
+            if(S.pin.wrongCount % 5 === 0){
+              // Trigger lockout
+              S.pin.error="";
+              pinStartLockout();
+            } else {
+              S.pin.error="Wrong PIN. "+untilLock+" attempt"+(untilLock!==1?"s":"")+" before lockout. 🔒";
+            }
+          }
+        }
+        r(false);
+      }
       else if(a==="fbMood"){S.fb.mood=parseInt(el.dataset.i);r(false);}
       else if(a==="fbType"){S.fb.type=el.dataset.val;r(false);}
       else if(a==="fbTag"){const v=el.dataset.val;const idx=S.fb.tags.indexOf(v);if(idx>-1)S.fb.tags.splice(idx,1);else S.fb.tags.push(v);r(false);}
       else if(a==="fbSend"){submitFeedback();}
-      else if(a==="tapLogo"){eggHandleLogoTap();}
-      else if(a==="startExam"){S.examVersion=el.dataset.ver;S.examType=el.dataset.type||"full";S.examQs=buildExam(S.examVersion,S.examType);S.examIdx=0;S.examSel=null;S.examAnswers=[];S.screen="practiceExam";stopSpeech();r();}
-      else if(a==="retryExam"){S.examQs=buildExam(S.examVersion,S.examType);S.examIdx=0;S.examSel=null;S.examAnswers=[];S.screen="practiceExam";r();}
-      else if(a==="resetAllProgress"){if(confirm("Reset ALL progress? Wipes exam history AND completed topics.")){S.examHistory=[];S.topicDone={};saveHist();r();}}}
     });
   });
+
+  // Live char count for feedback textarea
+  const fbMsg=document.getElementById("fbMessage");
+  const fbCount=document.getElementById("fbCharCount");
+  if(fbMsg&&fbCount){
+    fbMsg.addEventListener("input",()=>{
+      S.fb.message=fbMsg.value;
+      fbCount.textContent=fbMsg.value.length+" characters";
+      // update send button state live
+      const btn=document.querySelector("[data-action='fbSend']");
+      if(btn){
+        const ok=fbMsg.value.trim().length>=3;
+        btn.style.background=ok?"linear-gradient(135deg,#c4a35a,#004C54)":"#ccc";
+        btn.style.cursor=ok?"pointer":"not-allowed";
+        btn.disabled=!ok;
+      }
+    });
+  }
+
 }
+
+// ═══════════════════════════════════════════
+// INIT
 window.addEventListener("load", async function() {
   // Seed the initial history entry for the home screen
-  history.replaceState({screen:"home"},"Puddin POP","#home");
+  try{history.replaceState({screen:"home"},"Puddin POP","#home");}catch(e){}
   r(false); // render immediately with local data (no extra push)
   await loadFromCloud(); // then pull latest from cloud
   r(false); // re-render with cloud data (same screen, no push)
