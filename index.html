@@ -77,6 +77,7 @@ textarea:focus{border-color:var(--green)}
 </style>
 </head>
 <body>
+<div id="dbg" style="position:fixed;top:0;left:0;right:0;background:red;color:white;z-index:9999;font-size:18px;padding:8px;text-align:center;font-family:monospace">Loading...</div>
 <div id="app"></div>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
@@ -756,7 +757,15 @@ window.addEventListener("popstate",function(e){
 function stopSpeech(){try{if(window.speechSynthesis)window.speechSynthesis.cancel();}catch(e){}}
 function speak(txt){stopSpeech();if(!window.speechSynthesis)return;try{const u=new SpeechSynthesisUtterance(txt);u.rate=0.88;u.pitch=1.05;u.volume=1;const voices=window.speechSynthesis.getVoices();const v=voices.find(v=>v.name.includes("Samantha")||v.name.includes("Karen")||(v.lang&&v.lang.startsWith("en")&&v.localService));if(v)u.voice=v;window.speechSynthesis.speak(u);}catch(e){}}
 function r(pushState){
-  document.getElementById("app").innerHTML=render();
+  try {
+    const html = render();
+    document.getElementById("app").innerHTML = html;
+    const dbg=document.getElementById("dbg");if(dbg)dbg.textContent="r():screen="+S.screen+":"+html.length+"chars";
+  } catch(e) {
+    const dbg=document.getElementById("dbg");if(dbg)dbg.textContent="CRASH:"+e.message;
+    document.getElementById("app").innerHTML="<div style='color:red;padding:20px;font-size:16px'>ERROR: "+e.message+"</div>";
+    return;
+  }
   bindEvents();
   if(typeof bindFeedbackHandlers==="function")bindFeedbackHandlers();
   if(pushState!==false){
@@ -1671,9 +1680,12 @@ function bindFeedbackHandlers(){
   }
 }
 function bindEvents(){
-  document.querySelectorAll("[data-action]").forEach(el=>{
+  const els=document.querySelectorAll("[data-action]");
+  const dbg=document.getElementById("dbg");if(dbg)dbg.textContent="bindEvents:"+els.length+"els";
+  els.forEach(el=>{
     el.addEventListener("click",()=>{
       const a=el.dataset.action;
+      document.getElementById("dbg").textContent="CLICKED:"+a;
       if(a==="goHome"){S.screen="home";stopSpeech();r();}
       else if(a==="goServSafe"){S.screen="servsafe";r();}
       else if(a==="goSelectExam"){S.screen="selectExam";r();}
@@ -1705,8 +1717,8 @@ function bindEvents(){
       else if(a==="aiRepeat"){S.aiStep=0;S.aiComplete=false;r();}
       else if(a==="readAIStep"){if(S.aiLesson&&S.aiLesson.steps){const s=S.aiLesson.steps[S.aiStep];speak("Step "+(S.aiStep+1)+". "+s.title+". "+s.text+(s.tip?". Tip: "+s.tip.replace(/💡/g,""):""));}}
       else if(a==="loadGuide"){const i=parseInt(el.dataset.i);const g=S.savedGuides[i];if(g){S.aiRequest=g.request;S.aiLesson=g.lesson;S.aiStep=0;S.aiComplete=false;S.aiLoading=false;S.aiError=false;S.screen="aiLesson";r();}
-      else if(a==="goSelectShortExam"){S.screen="selectShortExam";r();}
-      else if(a==="goFeedback"){S.fb={type:"",mood:0,tags:[],message:"",sending:false,sent:false,error:""};S.screen="feedback";r();}
+      else if(a==="goSelectShortExam"){const d=document.getElementById("dbg");if(d)d.textContent="1-setSSE";S.screen="selectShortExam";if(d)d.textContent="2-callingR";r();if(d)d.textContent="3-rDone";}
+      else if(a==="goFeedback"){const d=document.getElementById("dbg");if(d)d.textContent="1-settingFB";S.fb={type:"",mood:0,tags:[],message:"",sending:false,sent:false,error:""};if(d)d.textContent="2-setScreen";S.screen="feedback";if(d)d.textContent="3-callingR";r();if(d)d.textContent="4-rDone";}
       else if(a==="goPin"){if(S.pin.statInterval)clearInterval(S.pin.statInterval);if(S.pin.lockCountdown)clearInterval(S.pin.lockCountdown);S.pin={entry:"",error:"",wrongCount:S.pin.wrongCount||0,locked:false,lockSecondsLeft:0,statIdx:0,statInterval:null,lockCountdown:null,lockStats:[]};S.screen="pin";r();}
       else if(a==="goEggList"){S.screen="eggList";r();}
       else if(a==="pinKey"){if(S.pin.locked)return;const v=el.dataset.val;if(v==="⌫"){S.pin.entry=S.pin.entry.slice(0,-1);S.pin.error="";}else if(S.pin.entry.length<4){S.pin.entry+=v;}if(S.pin.entry.length===4){if(S.pin.entry===S.cloudPin){if(S.pin.statInterval)clearInterval(S.pin.statInterval);if(S.pin.lockCountdown)clearInterval(S.pin.lockCountdown);S.pin.wrongCount=0;S.screen="pinVictory";r();}else{S.pin.wrongCount++;S.pin.entry="";if(S.pin.wrongCount%5===0){S.pin.error="";pinStartLockout();}else{const nextLockAt=Math.ceil(S.pin.wrongCount/5)*5;const untilLock=nextLockAt-S.pin.wrongCount;S.pin.error="Wrong PIN. "+untilLock+" attempt"+(untilLock!==1?"s":"")+" before lockout.";}}}r(false);}
