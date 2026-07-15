@@ -86,6 +86,7 @@ const EMAILJS_TEMPLATE="template_gdfz5op";
 
 const TOPICS=["Food Safety & Contamination","Time & Temperature","Personal Hygiene","Cleaning & Sanitizing","Pest Control & Facilities","Receiving & Storage","HACCP & Active Managerial Control","Facilities & Equipment"];
 const TOPIC_SIZES=[12,12,11,11,11,11,11,11];
+const TOPIC_SHORT_SIZES=[3,3,3,3,2,2,2,2];
 const TOPIC_BOUNDS=TOPIC_SIZES.reduce((a,s)=>{a.push((a[a.length-1]||0)+s);return a;},[]);
 function topicIdxForIndex(i){return TOPIC_BOUNDS.findIndex(b=>i<b);}
 function q(question,opts,ans,ex){return{q:question,opts:opts,ans:ans,ex:ex};}
@@ -734,10 +735,10 @@ function buildExam(ver, type){
   const pool = BANK[ver].map((q,i)=>({...q, topicIdx:topicIdxForIndex(i)}));
   if(type === "short") {
     const selected = [];
-    for(let t=0;t<5;t++){
+    for(let t=0;t<TOPIC_SHORT_SIZES.length;t++){
       const group = pool.filter(q=>q.topicIdx===t);
       const shuffled = group.slice().sort(()=>Math.random()-0.5);
-      selected.push(...shuffled.slice(0,4));
+      selected.push(...shuffled.slice(0,TOPIC_SHORT_SIZES[t]));
     }
     return selected.sort(()=>Math.random()-0.5);
   }
@@ -1063,9 +1064,9 @@ function renderSelectExam(){
   return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goServSafe'>← Back</button><div><div style='font-size:15px;font-weight:bold;color:#fff'>📝 Full Practice Exam</div><div style='font-size:12px;color:rgba(255,255,255,0.75);margin-top:1px'>90 questions · All 8 ServSafe topics</div></div></div><div style='background:rgba(255,255,255,0.12);border-radius:13px;padding:11px 15px;margin-bottom:15px;color:#fff;font-size:13px;line-height:1.6'>💡 Each version has 90 unique questions. The real ServSafe exam requires <strong>75% to pass</strong>. Take all 5 for the best preparation!</div>"+cards+"</div>";
 }
 function renderSelectShortExam(){
-  const versions=[{ver:"v1",num:1,icon:"🌱",desc:"Core fundamentals from all 5 topics."},{ver:"v2",num:2,icon:"📘",desc:"Pathogens, temperature, and cleaning highlights."},{ver:"v3",num:3,icon:"🔥",desc:"Real-world scenarios and decision-making."},{ver:"v4",num:4,icon:"💙",desc:"Management and HACCP essentials."},{ver:"v5",num:5,icon:"🏆",desc:"Hardest questions from all topics."}];
+  const versions=[{ver:"v1",num:1,icon:"🌱",desc:"Core fundamentals from all 8 topics."},{ver:"v2",num:2,icon:"📘",desc:"Pathogens, temperature, and cleaning highlights."},{ver:"v3",num:3,icon:"🔥",desc:"Real-world scenarios and decision-making."},{ver:"v4",num:4,icon:"💙",desc:"Management and HACCP essentials."},{ver:"v5",num:5,icon:"🏆",desc:"Hardest questions from all topics."}];
   const cards=versions.map(v=>{const hist=S.examHistory.filter(e=>e.version===v.ver&&e.examType==="short");const best=hist.length?Math.max(...hist.map(e=>e.pct)):null;const passed=best!==null&&best>=75;return"<button class='ver-btn"+(passed?" done":"")+"' data-action='startExam' data-ver='"+v.ver+"' data-type='short'><span style='font-size:32px'>"+v.icon+"</span><div style='flex:1'><div style='font-size:15px;font-weight:bold;color:#222;margin-bottom:2px'>Quick Version "+v.num+(passed?" ✅":"")+"</div><div style='font-size:13px;color:#666;margin-bottom:5px'>"+v.desc+"</div>"+(hist.length?"<div style='font-size:12px;color:#555'>Best: <strong style='color:"+(passed?"#2E7D32":"#E65100")+"'>"+best+"%</strong> · Taken "+hist.length+" time"+(hist.length!==1?"s":"")+"</div>":"<div style='font-size:12px;color:#aaa'>Not taken yet</div>")+"</div><span style='font-size:16px;color:#ccc'>›</span></button>";}).join("");
-  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goServSafe'>← Back</button><div><div style='font-size:15px;font-weight:bold;color:#fff'>⚡ Quick Practice · 20 Questions</div><div style='font-size:12px;color:rgba(255,255,255,0.75);margin-top:1px'>4 questions per topic · Randomly selected</div></div></div><div style='background:rgba(255,255,255,0.12);border-radius:13px;padding:11px 15px;margin-bottom:15px;color:#fff;font-size:13px;line-height:1.6'>⚡ Each Quick Exam picks 20 random questions — 4 from each topic. Great for a fast focused review anytime!</div>"+cards+"</div>";
+  return"<div class='wrap'><div class='top-bar'><button class='home-btn' style='background:rgba(0,0,0,0.4)' data-action='goServSafe'>← Back</button><div><div style='font-size:15px;font-weight:bold;color:#fff'>⚡ Quick Practice · 20 Questions</div><div style='font-size:12px;color:rgba(255,255,255,0.75);margin-top:1px'>20 questions across all 8 topics · Randomly selected</div></div></div><div style='background:rgba(255,255,255,0.12);border-radius:13px;padding:11px 15px;margin-bottom:15px;color:#fff;font-size:13px;line-height:1.6'>⚡ Each Quick Exam picks 20 random questions across all 8 topics. Great for a fast focused review anytime!</div>"+cards+"</div>";
 }
 
 // ═══════════════════════════════════════════

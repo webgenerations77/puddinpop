@@ -36,14 +36,15 @@ across the 8 topics instead of 18/18/18/18/18 across 5. That meant:
   file (a duplicate `v4:[`/`v5:[` empty-array key immediately overwritten
   by the real array) while rewriting that section.
 
-**Intentionally still NOT touched:** the "Quick Practice · 20 Questions"
-mode (`renderSelectShortExam`/`buildExam` with `type==="short"`) still
-hardcodes `for(let t=0;t<5;t++)` and only samples from the original 5
-topics, 4 questions each. It wasn't part of this request, and its "Core
-fundamentals from all 5 topics" copy is left accurate as-is. If you want
-Quick Practice to also draw from all 8 topics, that's a small follow-up
-(change `t<5` to `t<8` and adjust the per-topic sample count math) — say
-the word and I'll do it.
+**Update: Quick Practice now covers all 8 topics too.** `buildExam`'s
+`type==="short"` branch now loops over a `TOPIC_SHORT_SIZES` array
+(`[3,3,3,3,2,2,2,2]`) instead of a hardcoded `t<5`/`slice(0,4)`, so the
+20-question count is preserved exactly (4 topics get 3 questions, 4 get 2)
+while sampling from all 8 topics instead of 5. Updated the matching copy
+on the Quick Practice screen ("4 questions per topic" → "20 questions
+across all 8 topics") and the v1 blurb ("all 5 topics" → "all 8 topics").
+Verified via simulation that all 5 Quick Practice versions still produce
+exactly 20 questions each, split 3/3/3/3/2/2/2/2 across the 8 topics.
 
 **Revision note:** the first draft of this report folded the 3 missing
 domains into the existing 5 topics to avoid touching progress stats. Per your
