@@ -13,14 +13,37 @@ already used elsewhere in this app (the Red Wings have 8 retired jersey
 numbers — see `index.html`'s "8th exam" egg), and 15 new quiz questions (5
 per new topic) were authored and wired in directly on each `ssTopics` entry.
 
-**Intentionally NOT touched:** the "Full 90-Question Exam" and "Quick
-Practice" question banks (`BANK.v1`–`v5`, `TOPICS` array) still only cover
-the original 5 domains. Expanding those to include Receiving & Storage,
-HACCP, and Facilities & Equipment would mean authoring ~270 additional
-fact-checked questions across 5 exam versions — a separate, much larger
-task. The 3 new topics currently only have their own 5-question "Lesson +
-Pop Quiz," same as the other 5 topics, but are absent from the big
-practice-exam simulations. Flagging this as a follow-up, not a bug.
+**Update: Full 90-Question Exam now covers all 8 topics.** Per your
+follow-up request, `BANK.v1`–`v5` were restructured rather than expanded:
+each version stays at exactly 90 questions (preserving the "just like the
+real ServSafe exam" framing), but is now split 12/12/11/11/11/11/11/11
+across the 8 topics instead of 18/18/18/18/18 across 5. That meant:
+- Trimming `contamination` and `temperature` from 18 to 12 questions per
+  version, and `hygiene`/`cleaning`/`pests` from 18 to 11 (keeping each
+  topic's first N questions per version, dropping the rest) — 33 removed
+  per version, 165 total.
+- Authoring 165 new fact-checked questions (11 each for `receiving`,
+  `haccp`, `facilities` × 5 versions), styled to match each version's
+  existing personality (v1 foundational, v2 deeper-dive, v3 scenario-based,
+  v4 management-focused, v5 hardest/trickiest).
+- Replacing the old fixed `Math.floor(i/18)` topic-index math with a
+  variable-size lookup (`TOPIC_SIZES`/`TOPIC_BOUNDS`), since blocks are no
+  longer uniform.
+- Extending the `TOPICS` array (used for the exam results breakdown) from
+  5 to 8 names, and fixing the "All 5 ServSafe topics" subtitle on the Full
+  Exam screen to "All 8."
+- Along the way, fixed a pre-existing harmless artifact in the original
+  file (a duplicate `v4:[`/`v5:[` empty-array key immediately overwritten
+  by the real array) while rewriting that section.
+
+**Intentionally still NOT touched:** the "Quick Practice · 20 Questions"
+mode (`renderSelectShortExam`/`buildExam` with `type==="short"`) still
+hardcodes `for(let t=0;t<5;t++)` and only samples from the original 5
+topics, 4 questions each. It wasn't part of this request, and its "Core
+fundamentals from all 5 topics" copy is left accurate as-is. If you want
+Quick Practice to also draw from all 8 topics, that's a small follow-up
+(change `t<5` to `t<8` and adjust the per-topic sample count math) — say
+the word and I'll do it.
 
 **Revision note:** the first draft of this report folded the 3 missing
 domains into the existing 5 topics to avoid touching progress stats. Per your
