@@ -697,7 +697,34 @@ const ssTopics=[
    questions:BANK.v1.slice(54,59)},
   {id:"pests",title:"Pest Control and Facilities",icon:"\u{1F41B}",accent:"#6A1B9A",light:"#CE93D8",color:"#F3E5F5",
    lesson:[{h:"Why Pest Control Matters",t:"Pests carry diseases and contaminate food. A single sighting is a serious problem in any food service establishment."},{h:"Signs of a Pest Problem",t:"Watch for droppings, gnaw marks, nesting materials, grease marks along walls, and live or dead insects or rodents."},{h:"Preventing Pests",t:"Seal cracks, keep doors closed, store food in sealed containers at least 6 inches off the floor, take out garbage regularly, and keep everything clean."},{h:"Working with a PCO",t:"Only a licensed Pest Control Operator should apply pesticides. Keep records of all visits and treatments."},{h:"Facility Maintenance",t:"Fix leaky pipes because pests love moisture. Maintain proper lighting and keep walls, floors, and ceilings in good repair."}],
-   questions:BANK.v1.slice(72,77)}
+   questions:BANK.v1.slice(72,77)},
+  {id:"receiving",title:"Receiving & Storage",icon:"\u{1F4E6}",accent:"#1565C0",light:"#64B5F6",color:"#E3F2FD",
+   lesson:[{h:"Approved Suppliers",t:"Buy only from approved, licensed suppliers who can provide invoices and temperature logs. Never accept food from unmarked vehicles or personal sources."},{h:"Receiving Temperatures",t:"Cold TCS food must be 41F or below. Hot TCS food must be 135F or above. Frozen food must be solid with no signs of thawing and refreezing."},{h:"Rejecting a Delivery",t:"Reject food with damaged packaging, swollen cans, pest evidence, off odors or colors, or a failed temperature check."},{h:"Dry and Cold Storage",t:"Dry storage should be 50-70F. Cold storage must stay at 41F or below. Store everything at least 6 inches off the floor."},{h:"Date Marking and FIFO",t:"Ready-to-eat TCS food held more than 24 hours needs a date label. Maximum 7 days at 41F, counting the prep day as Day 1. Always use FIFO."}],
+   questions:[
+    q("What is the maximum air temperature for receiving live shellstock (oysters, clams, mussels)?",["41°F","45°F","50°F","32°F"],1,"Shellstock is accepted at 45°F air temp, then must reach 41°F within 4 hours."),
+    q("You receive a case of canned green beans with a swollen, bulging lid. What should you do?",["Use it first before the others","Reject it immediately","Cook it extra long to be safe","Accept it if the temperature is correct"],1,"A swollen can can indicate gas-producing bacteria — a botulism red flag. Reject it regardless of temperature."),
+    q("Ready-to-eat food in a cooler should be stored:",["On the bottom shelf","On the top shelf","Next to raw poultry","Anywhere with a lid"],1,"Ready-to-eat food goes on top so it can never receive drips from raw food below."),
+    q("Ideal dry storage relative humidity is:",["10-20%","30-40%","50-60%","70-80%"],2,"50-60% relative humidity keeps dry goods from clumping or going damp."),
+    q("A pasta salad (RTE TCS food) is made and stored at 41°F on Monday. When must it be discarded?",["The following Monday","The following Sunday","The following Saturday","Two weeks later"],1,"Monday counts as Day 1; 7 days later is the following Sunday, not Monday.")
+   ]},
+  {id:"haccp",title:"HACCP & Active Managerial Control",icon:"\u{1F4CB}",accent:"#2E7D32",light:"#81C784",color:"#E8F5E9",
+   lesson:[{h:"What Is HACCP?",t:"HACCP stands for Hazard Analysis Critical Control Point. It's a system for building food safety into the process instead of just inspecting the final product."},{h:"The 7 Principles",t:"Analyze hazards, determine critical control points, set critical limits, monitor, correct problems, verify the system works, and keep records."},{h:"Critical Control Points",t:"A CCP is the last point where a hazard can be prevented or eliminated. Cooking and holding temperatures are classic CCPs."},{h:"Active Managerial Control",t:"AMC means proactively controlling the 5 CDC risk factors: unsafe sources, inadequate cooking, improper holding, contaminated equipment, and poor hygiene."},{h:"Handling Emergencies",t:"For a suspected illness complaint: preserve the food, document it, notify the health authority, and cooperate. For an imminent hazard like a fire or sewage backup: stop, protect, notify, and wait for approval to reopen."}],
+   questions:[
+    q("What is the correct order of the first three HACCP principles?",["Monitor, Analyze, Correct","Analyze hazards, Determine CCPs, Establish critical limits","Establish limits, Analyze hazards, Monitor","Record-keeping, Verify, Analyze"],1,"HACCP starts with a hazard analysis, then CCPs are determined, then critical limits are set for each."),
+    q("Which of these is a Critical Control Point (CCP)?",["Receiving a delivery at 41°F","Storing food in the walk-in","Cooking chicken to 165°F","Wiping down a prep table"],2,"Cooking is the last point where the hazard can be eliminated — nothing downstream fixes undercooked chicken."),
+    q("A written cleaning and sanitizing schedule for food-contact surfaces addresses which CDC risk factor?",["Inadequate cooking","Contaminated equipment/surfaces","Unsafe food sources","Poor personal hygiene"],1,"Contaminated equipment/surfaces is one of the 5 CDC risk factors, controlled through written cleaning schedules."),
+    q("A health inspector finds sewage backing up into a prep sink. What happens?",["The restaurant gets a correction window and stays open","The affected operation must stop immediately and cannot reopen without regulatory approval","Only that one prep table is closed for the shift","Nothing, as long as it's fixed by end of shift"],1,"Sewage backup is an imminent health hazard: stop, protect, notify, and wait for approval before reopening."),
+    q("Smoking salmon as the sole method of preservation (not just for flavor) requires:",["No special approval","A variance and a written HACCP plan","Just a consumer advisory","A different thermometer"],1,"Preservation smoking is a variance trigger — it needs regulatory approval and a written HACCP plan before starting.")
+   ]},
+  {id:"facilities",title:"Facilities & Equipment",icon:"\u{1F527}",accent:"#37474F",light:"#90A4AE",color:"#ECEFF1",
+   lesson:[{h:"Equipment Materials",t:"Food-contact surfaces must be smooth, nonabsorbent, durable, and easy to clean. Look for the NSF/ANSI mark. No raw wood, no galvanized metal with acidic food."},{h:"Equipment Installation",t:"Floor-mounted equipment needs 6 inches of leg clearance or a full seal to the floor. Tabletop equipment needs 4 inches. This keeps everything reachable for cleaning."},{h:"Handwashing Sinks",t:"Handwashing sinks are for handwashing only — never food prep or dumping water. They must be stocked with soap, warm water, towels, and a trash can."},{h:"Backflow Prevention",t:"An air gap must be at least twice the diameter of the water supply outlet. Never leave a hose end submerged in a sink or bucket."},{h:"Lighting and Ventilation",t:"50 foot-candles where knives and slicers are used, 20 near handwashing and self-service, 10 in storage and dining. Exhaust hoods must vent grease and smoke outside."}],
+   questions:[
+    q("An air gap must be at least how many times the diameter of the water supply outlet?",["1 times","2 times","3 times","5 times"],1,"An air gap must be at least 2x the diameter of the outlet, and never less than 1 inch."),
+    q("What is the minimum lighting requirement for an area where a meat slicer is used?",["10 foot-candles","20 foot-candles","50 foot-candles","5 foot-candles"],2,"Areas with knives, slicers, grinders, or saws need at least 50 foot-candles — the highest tier, tied to blade safety."),
+    q("Floor-mounted equipment that isn't easily movable must have at least how much leg clearance?",["2 inches","4 inches","6 inches","12 inches"],2,"Floor-mounted equipment needs 6 inches of clearance (or a full seal to the floor) so the area underneath can be cleaned."),
+    q("Why is raw, unsealed wood not allowed as a food-contact surface?",["It's too expensive","It's porous and can't be reliably sanitized","It's not heavy enough","It's against fire code"],1,"Raw wood's microscopic pores trap moisture and bacteria that no amount of scrubbing removes."),
+    q("What does coving at a floor-wall joint prevent?",["Pest entry through the wall","A hard-to-clean 90-degree corner where debris collects","Excess noise","Water damage to the ceiling"],1,"Coving replaces the sharp right angle with a rounded, sealed transition that wipes clean instead of trapping grime.")
+   ]}
 ];
 
 let S={screen:"home",lesson:null,step:0,techDone:{},techComplete:false,topic:null,lessonPage:0,quizIdx:0,quizSel:null,quizAnswers:[],topicDone:{},examVersion:null,examQs:[],examIdx:0,examSel:null,examAnswers:[],examHistory:[],examType:"full",eggTaunt:null,cloudPin:"1997",pin:{entry:"",error:"",wrongCount:0,locked:false,lockSecondsLeft:0,statIdx:0,statInterval:null,lockCountdown:null,lockStats:[]},fb:{type:"",mood:0,tags:[],message:"",sending:false,sent:false,error:""},showCheer:false,cheerMsg:"",aiRequest:"",aiLesson:null,aiStep:0,aiComplete:false,aiLoading:false,aiError:false,savedGuides:[]};
@@ -908,13 +935,13 @@ function eggEighthExam(total){
   return"";
 }
 
-// EGG 9 — All 5 topics completed
+// EGG 9 — All 8 topics completed
 function eggAllTopicsDone(topicsDone){
-  if(topicsDone===5){
+  if(topicsDone===8){
     return"<div style='background:linear-gradient(135deg,#004C54,#002f35);border-radius:13px;padding:12px 15px;margin-bottom:10px;display:flex;gap:12px;align-items:center'>"
     +"<img src='"+RW_LOGO+"' style='width:40px;height:40px;object-fit:contain;flex-shrink:0'>"
     +"<div style='font-size:12px;color:#fff;line-height:1.7'>"
-    +"🥚 <strong>Easter Egg!</strong> All 5 topics mastered! The Detroit Red Wings have 5 retired numbers from players who were also named to the NHL's Top 100 Players of All Time list — Gordie Howe, Ted Lindsay, Terry Sawchuk, Alex Delvecchio, and Steve Yzerman. Five legends. Five topics. You're in good company. 🔴🏆"
+    +"🥚 <strong>Easter Egg!</strong> All 8 topics mastered! The Detroit Red Wings have retired 8 jersey numbers: #1 Terry Sawchuk, #6 Larry Aurie, #7 Ted Lindsay, #9 Gordie Howe, #10 Alex Delvecchio, #12 Sid Abel, #16 Vladimir Konstantinov, and #19 Steve Yzerman. Eight legends. Eight topics. You're in elite company. 🔴🏆"
     +"</div></div>";
   }
   return"";
@@ -1482,11 +1509,11 @@ function renderEggList(){
       why:"The Red Wings have retired 8 numbers: #1 Terry Sawchuk, #6 Larry Aurie, #7 Ted Lindsay, #9 Gordie Howe, #10 Alex Delvecchio, #12 Sid Abel, #16 Vladimir Konstantinov, and #19 Steve Yzerman. Eight legends. Like your eight exams."
     },
     {
-      num:11, trigger:"Complete all 5 study topics",
+      num:11, trigger:"Complete all 8 study topics",
       icon:"✅",
-      title:"Five Legends, Five Topics",
-      desc:"Once all 5 topic lessons are marked complete, a Wings card appears on the home screen.",
-      why:"Five Red Wings players were named to the NHL's official Top 100 Players of All Time list: Gordie Howe, Ted Lindsay, Terry Sawchuk, Alex Delvecchio, and Steve Yzerman. Five legends. Five topics. You're in elite company."
+      title:"Eight Legends, Eight Topics",
+      desc:"Once all 8 topic lessons are marked complete, a Wings card appears on the home screen.",
+      why:"The Red Wings have retired 8 jersey numbers: #1 Terry Sawchuk, #6 Larry Aurie, #7 Ted Lindsay, #9 Gordie Howe, #10 Alex Delvecchio, #12 Sid Abel, #16 Vladimir Konstantinov, and #19 Steve Yzerman. Eight legends. Eight topics. You're in elite company."
     },
     {
       num:12, trigger:"App syncs to cloud — 1-in-15 chance",

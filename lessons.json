@@ -72,7 +72,7 @@
             "Meats: beef, pork, lamb, poultry, game \u2014 all TCS regardless of preparation state",
             "Fish and shellfish: all TCS",
             "Dairy: milk, soft cheese, cream \u2014 TCS",
-            "Eggs: TCS when cracked or in liquid form",
+            "Eggs: TCS in the shell AND once cracked or liquid — the shell is not a protective barrier the way a melon's rind is; exception: eggs specifically treated or pasteurized to eliminate Salmonella",
             "Cooked starches: rice, beans, pasta, potatoes \u2014 TCS once cooked",
             "Cut produce: melons, tomatoes, leafy greens \u2014 TCS once cut",
             "Garlic-in-oil: TCS (creates anaerobic environment perfect for Clostridium botulinum)"
@@ -86,7 +86,7 @@
           "t": "The FDA identifies six pathogens so dangerous that any food handler diagnosed with them must be completely excluded from the food operation \u2014 removed entirely, not just restricted. Understanding WHY each is on this list helps you remember the rules.",
           "example": "NOROVIRUS: Causes roughly 19 to 21 million US illness cases per year \u2014 more than all other foodborne causes combined. Only 18 viral particles are needed to infect someone. It survives on surfaces for weeks. It is resistant to many hand sanitizers. The ONLY effective prevention is proper handwashing with soap and water. One infected food handler can contaminate a buffet that sickens 200 people.\n\nHEPATITIS A: Attacks the liver, causing illness for months. Infected people shed the virus in feces for WEEKS before symptoms appear \u2014 a food handler can contaminate food for weeks without knowing they are sick. This is why health authority approval is required to return, not just symptom resolution.\n\nSHIGA TOXIN E. COLI (STEC/O157:H7): Can cause hemolytic uremic syndrome \u2014 kidney failure \u2014 particularly in children under 5. Infectious dose is fewer than 100 cells. Has caused multiple mass outbreaks from ground beef, spinach, and apple cider.",
           "bullets": [
-            "Norovirus \u2014 Exclusion required; return only after 48 hours completely symptom-free",
+            "Norovirus \u2014 Exclusion required; return only after 24 hours completely symptom-free",
             "Hepatitis A \u2014 Exclusion required; health authority approval needed to return",
             "Salmonella Typhi \u2014 Exclusion required; health authority approval needed",
             "Shiga toxin-producing E. coli (STEC) \u2014 Exclusion required; health authority approval needed",
@@ -94,7 +94,7 @@
             "Nontyphoidal Salmonella \u2014 Exclusion required; health authority approval needed"
           ],
           "why": "These six are EXCLUDED (not just restricted) because they spread at very low infectious doses, they spread through the fecal-oral route meaning hand contact can transfer them to food, and they cause serious illness or death especially in vulnerable populations including the elderly, very young, pregnant women, and immunocompromised individuals.",
-          "memory": "\ud83e\udde0 THE BIG 6: 'No Hepatitis Should Ever Stop Service' \u2014 Norovirus, Hepatitis A, Salmonella Typhi, E. coli (STEC), Shigella, Salmonella nontyphoidal. ALL require EXCLUSION. Norovirus: 48 hours after ALL symptoms end. The other 5: health authority approval to return.",
+          "memory": "\ud83e\udde0 THE BIG 6: 'No Hepatitis Should Ever Stop Service' \u2014 Norovirus, Hepatitis A, Salmonella Typhi, E. coli (STEC), Shigella, Salmonella nontyphoidal. ALL require EXCLUSION. Norovirus: 24 hours after ALL symptoms end. The other 5: health authority approval to return.",
           "tip": "Know the difference between Salmonella Typhi (typhoid fever) and Nontyphoidal Salmonella. BOTH are in the Big 6 and BOTH require exclusion with health authority approval. Many students think only Typhi is included. Also: ALL Big 6 require exclusion, not restriction."
         },
         {
@@ -197,7 +197,7 @@
           ],
           "why": "FIFO prevents the most common cold storage failure: new deliveries placed in front, old stock pushed to the back and forgotten. In a busy kitchen without disciplined FIFO, food rotation becomes chaotic and dates get missed. FIFO converts good intentions into a reliable system.",
           "memory": "\ud83e\udde0 7-DAY RULE: RTE TCS food at 41\u00b0F = maximum 7 days. Discard after that regardless of appearance. FIFO = new stock goes BEHIND old stock. Always pull from front.",
-          "tip": "Date labeling questions are common. Food prepped on Monday at 41\u00b0F has a use-by date the following Monday (7 days). The exam will describe food that looks fine but is past the date \u2014 the answer is always discard. Appearance is irrelevant when the date says discard."
+          "tip": "Date labeling questions are common. Food prepped on Monday at 41\u00b0F counts that Monday as Day 1 \u2014 the use-by date is the following Sunday (Day 7), not the following Monday (that would be Day 8). Miscounting this by one day is a common exam trap. The exam will also describe food that looks fine but is past the date \u2014 the answer is always discard. Appearance is irrelevant when the date says discard."
         },
         {
           "h": "Cooling Food Safely: The Two-Stage Process",
@@ -245,7 +245,7 @@
             "Clean and sanitize thermometers between each use"
           ],
           "why": "Infrared thermometers cannot verify cooking temperature because infrared light bounces off the surface \u2014 it cannot penetrate the food. A chicken breast surface can be 165\u00b0F while the thickest interior point is still 140\u00b0F. Relying on infrared alone creates a false sense of safety.",
-          "memory": "\ud83e\udde0 MASTER TEMPERATURE LIST:\n\u2022 Danger Zone: 41\u00b0F\u2013135\u00b0F\n\u2022 Max danger zone time: 4 cumulative hours\n\u2022 Poultry/Stuffed/Reheat: 165\u00b0F\n\u2022 Ground meats: 155\u00b0F\n\u2022 Whole cuts/Seafood: 145\u00b0F (+3-min rest for roasts)\n\u2022 Veggies/Grains hot holding: 135\u00b0F\n\u2022 Hot holding minimum: 135\u00b0F\n\u2022 Cold holding maximum: 41\u00b0F\n\u2022 Cooling Stage 1: 135\u219270\u00b0F in 2 hrs\n\u2022 Cooling Stage 2: 70\u219241\u00b0F in 4 hrs\n\u2022 High-temp dishwasher: 180\u00b0F at dish surface\n\u2022 Chemical dishwasher water: 120\u00b0F\n\u2022 Thermometer calibration: 32\u00b0F in ice water",
+          "memory": "\ud83e\udde0 MASTER TEMPERATURE LIST:\n\u2022 Danger Zone: 41\u00b0F\u2013135\u00b0F\n\u2022 Max danger zone time: 4 cumulative hours\n\u2022 Poultry/Stuffed/Reheat: 165\u00b0F\n\u2022 Ground meats: 155\u00b0F\n\u2022 Whole cuts/Seafood: 145\u00b0F (+3-min rest for roasts)\n\u2022 Veggies/Grains hot holding: 135\u00b0F\n\u2022 Hot holding minimum: 135\u00b0F\n\u2022 Cold holding maximum: 41\u00b0F\n\u2022 Cooling Stage 1: 135\u219270\u00b0F in 2 hrs\n\u2022 Cooling Stage 2: 70\u219241\u00b0F in 4 hrs\n\u2022 High-temp dishwasher: 180\u00b0F final-rinse water at the manifold (dish surface reaches ~160\u00b0F)\n\u2022 Chemical dishwasher water: 120\u00b0F\n\u2022 Thermometer calibration: 32\u00b0F in ice water",
           "tip": "Temperature questions make up at least 20% of the ServSafe exam. Knowing this master list cold is worth 18+ correct answers before you even read the questions. Write it from memory every day until exam day."
         },
         {
@@ -343,16 +343,16 @@
           "t": "Working while sick is one of the most direct causes of foodborne illness outbreaks. The challenge is that food handlers often feel pressure to come in despite illness \u2014 financial necessity, understaffing, or fear of consequences. Understanding the specific rules and why they exist makes the right call easier.",
           "example": "EXCLUSION vs. RESTRICTION:\n\nEXCLUSION means the food handler cannot be at work at all \u2014 not in food prep, not in non-food areas, not even managing. They go home entirely.\n\nRESTRICTION means the food handler can still work but ONLY in roles with no food contact and no contact with food-contact surfaces.\n\nEXCLUSION triggers: Any Big 6 diagnosis, active vomiting, active diarrhea, jaundice (yellow skin or eyes).\n\nRESTRICTION triggers (general public operations): Sore throat with fever, infected wound that cannot be effectively covered.\n\nIMPORTANT: In operations serving highly susceptible populations \u2014 hospitals, nursing homes, assisted living, schools \u2014 sore throat with fever triggers EXCLUSION, not restriction.",
           "bullets": [
-            "Norovirus: exclusion until 48 HOURS after ALL symptoms (vomiting AND diarrhea) have completely resolved",
+            "Norovirus: exclusion until 24 HOURS after ALL symptoms (vomiting AND diarrhea) have completely resolved",
             "Hepatitis A: exclusion until health authority grants written permission to return",
             "Salmonella Typhi, STEC, Shigella, Nontyphoidal Salmonella: exclusion until health authority approval",
             "Food handlers MUST report to their manager: vomiting, diarrhea, jaundice, sore throat with fever, Big 6 diagnosis",
             "Managers MUST act immediately on all illness reports \u2014 it is illegal to punish workers for reporting",
             "When a Big 6 diagnosis is confirmed, the manager must notify the local health authority"
           ],
-          "why": "The 48-hour rule for Norovirus is based on science: infected people continue shedding the virus for 48 to 72 hours after symptoms resolve. Feeling better is not the same as no longer contagious. Documented cases exist of workers returning after symptoms cleared and still causing outbreaks.",
+          "why": "The 24-hour rule is the FDA Food Code's baseline for returning to work symptom-free. It is deliberately conservative: infected people can keep shedding the virus for 48 to 72 hours after symptoms resolve, so feeling better is not the same as no longer contagious. That gap is exactly why the exclusion window exists at all, even though it does not fully cover the shedding period.",
           "memory": "\ud83e\udde0 EXCLUSION: Vomiting, Diarrhea, Jaundice, Big 6 = GO HOME ENTIRELY. RESTRICTION: Sore throat with fever in a general operation = work with no food contact. Serving highly susceptible populations = exclusion for sore throat with fever too.",
-          "tip": "Practice the exclusion/restriction decision: Vomiting = Exclude. Diarrhea = Exclude. Jaundice = Exclude. Sore throat with fever serving general public = Restrict. Sore throat with fever serving nursing home = Exclude. Diagnosed with Norovirus = Exclude until 48 hours completely symptom-free."
+          "tip": "Practice the exclusion/restriction decision: Vomiting = Exclude. Diarrhea = Exclude. Jaundice = Exclude. Sore throat with fever serving general public = Restrict. Sore throat with fever serving nursing home = Exclude. Diagnosed with Norovirus = Exclude until 24 hours completely symptom-free."
         },
         {
           "h": "Personal Cleanliness: Hair, Nails, Jewelry, and Uniforms",
@@ -393,7 +393,7 @@
           "bullets": [
             "The Person in Charge (PIC) must be present during ALL hours of operation",
             "The PIC is legally responsible for ensuring food handler hygiene compliance during their shift",
-            "The PIC must demonstrate food safety knowledge \u2014 ServSafe certification satisfies this in most jurisdictions",
+            "The PIC must demonstrate food safety knowledge \u2014 an accredited food protection manager certification satisfies this in most jurisdictions",
             "Create a no-blame illness reporting system \u2014 punishing sick workers causes outbreaks",
             "Conduct ongoing training \u2014 not just at hiring, but regular reinforcement",
             "Document all training \u2014 health inspectors will ask for training records"
@@ -457,18 +457,18 @@
         {
           "h": "Commercial Dishwashers: High-Temperature vs. Chemical Sanitizing",
           "t": "Commercial dishwashers use one of two sanitizing methods: heat or chemical. Both work when the machine is operating correctly. The key is knowing the required parameters for each type and knowing when a malfunctioning machine must be taken out of service.",
-          "example": "HIGH-TEMPERATURE DISHWASHERS: These sanitize using the final hot water rinse. The SURFACE of the dish must reach 180\u00b0F. This is harder than it sounds \u2014 dishes arrive at the final rinse cooler than the water, so the water must be hot enough to bring the dish surface up to 180\u00b0F despite this temperature differential. These machines typically run water at 190\u00b0F to 194\u00b0F to compensate.\n\nCHEMICAL SANITIZING DISHWASHERS: These inject chemical sanitizer at lower temperatures. The water must be at least 120\u00b0F to clean effectively, and the machine automatically injects sanitizer at correct concentration. Test the concentration with a test strip at the start of service.\n\nWHEN EITHER FAILS: If the high-temp machine cannot reach 180\u00b0F at the dish surface, or the chemical machine runs out of sanitizer or cannot maintain 120\u00b0F water temp \u2014 TAKE IT OUT OF SERVICE IMMEDIATELY. Use the 3-compartment sink instead.",
+          "example": "HIGH-TEMPERATURE DISHWASHERS: These sanitize using the final hot water rinse. The final-rinse WATER measured at the manifold must reach at least 180\u00b0F. Because the dish absorbs heat more slowly than the water rushing past it, the dish/utensil SURFACE only needs to reach at least 160\u00b0F, verified with a max-registering thermometer or a heat-sensitive label. These machines typically run manifold water at 180\u00b0F to 194\u00b0F to guarantee that surface minimum is reached.\n\nCHEMICAL SANITIZING DISHWASHERS: These inject chemical sanitizer at lower temperatures. The water must be at least 120\u00b0F to clean effectively, and the machine automatically injects sanitizer at correct concentration. Test the concentration with a test strip at the start of service.\n\nWHEN EITHER FAILS: If the high-temp machine cannot reach 180\u00b0F final-rinse water at the manifold (confirming at least 160\u00b0F at the dish surface), or the chemical machine runs out of sanitizer or cannot maintain 120\u00b0F water temp \u2014 TAKE IT OUT OF SERVICE IMMEDIATELY. Use the 3-compartment sink instead.",
           "bullets": [
-            "High-temp dishwasher: final rinse must reach 180\u00b0F at the DISH SURFACE (not just water temperature)",
+            "High-temp dishwasher: final-rinse WATER at the manifold must reach 180\u00b0F; the dish/utensil SURFACE only needs to reach 160\u00b0F (verify with a max-registering thermometer or heat-sensitive label)",
             "Chemical dishwasher: water must be 120\u00b0F minimum plus correct sanitizer concentration",
             "Test at start of every service period and after any power interruption or malfunction",
             "Machine failure = take out of service immediately; use 3-compartment sink",
             "After drying cycle: air dry only; do not towel dry dishes",
             "Do not overload racks \u2014 items must be separated for proper water and chemical contact"
           ],
-          "why": "The 180\u00b0F dish surface standard exists because dishes act as heat sinks \u2014 they absorb thermal energy and their surface temperature is always lower than the water temperature. The machine must produce water hot enough to raise the dish surface to 180\u00b0F despite this thermodynamic reality. This is why high-temp dishwashers run water much hotter than 180\u00b0F.",
-          "memory": "\ud83e\udde0 DISHWASHER TEMPS:\nHigh-temp: 180\u00b0F at DISH SURFACE\nChemical: 120\u00b0F water + correct sanitizer\nBoth: test at start of service. If either fails = take out of service immediately.",
-          "tip": "Do not mix these up: 180\u00b0F is for HIGH-TEMP machines (the heat IS the sanitizer). 120\u00b0F is for CHEMICAL machines (the chemical is the sanitizer; 120\u00b0F is only the minimum water temp for effective cleaning). This distinction trips up many students on the exam."
+          "why": "The 180\u00b0F/160\u00b0F split exists because dishes act as heat sinks \u2014 they absorb thermal energy and their surface temperature stays lower than the water rushing past them. The machine must deliver final-rinse water of at least 180\u00b0F at the manifold so that, even after heat loss to the dish, the surface still reaches the required 160\u00b0F sanitizing minimum.",
+          "memory": "\ud83e\udde0 DISHWASHER TEMPS:\nHigh-temp: 180\u00b0F final-rinse WATER at the manifold (DISH SURFACE reaches 160\u00b0F minimum)\nChemical: 120\u00b0F water + correct sanitizer\nBoth: test at start of service. If either fails = take out of service immediately.",
+          "tip": "Do not mix these up: 180\u00b0F is the final-rinse WATER temp at the manifold for HIGH-TEMP machines (the heat IS the sanitizer), where the dish SURFACE only needs to reach 160\u00b0F. 120\u00b0F is for CHEMICAL machines (the chemical is the sanitizer; 120\u00b0F is only the minimum water temp for effective cleaning). This distinction trips up many students on the exam."
         },
         {
           "h": "Cleaning Schedules: What Must Be Cleaned, When, and How",
@@ -660,6 +660,381 @@
           "why": "Documentation serves two purposes: it demonstrates compliance during health inspections, and it creates a trend record that helps you catch worsening infestations before they become unmanageable. An operation that can show a consistent PCO schedule, clean sighting logs, and documented corrective actions is demonstrating due diligence \u2014 even if pest activity has occurred.",
           "memory": "\ud83e\udde0 PEST DOCUMENTATION: PCO Service Log + Internal Pest Activity Log + Corrective Action Log. All three required. All three reviewed by inspectors. Keep for minimum 2 years.",
           "tip": "The exam asks what pest control documentation must include. Know the key elements of a PCO service log: date, pest findings, products used with EPA registration number, areas treated, concentration applied, and PCO license number. Missing elements in documentation equal regulatory violations."
+        }
+      ]
+    },
+    {
+      "id": "receiving",
+      "lesson": [
+        {
+          "h": "Approved Suppliers: Safety Starts Before the Truck Arrives",
+          "t": "Food safety starts with who you buy from, before any delivery hits the dock. An approved supplier sources from inspected facilities, follows safe transport practices, and can produce paperwork proving it. Buying from an unapproved source puts a hazard in your kitchen that no amount of careful cooking downstream can fully undo.",
+          "example": "A manager is offered a case of \"discount\" chicken from someone selling out of a cooler in their trunk — no invoice, no temp log, half the usual price. It might be fine. There's no way to know, and that's the problem: no paperwork means no chain of custody. She declines and orders from the approved distributor instead. Nobody sees that decision, but it's the biggest food-safety call of the day.",
+          "bullets": [
+            "Approved suppliers source from facilities regulated by USDA/FDA/local authority",
+            "Reputable suppliers can show invoices, temperature logs, and safety certifications on request",
+            "Never accept food from unmarked vehicles, unlicensed vendors, or personal/home sources",
+            "Shellfish and other specialty items need supplier certification numbers specific to that product",
+            "Supplier approval is ongoing, not a one-time check — reputable suppliers welcome scrutiny"
+          ],
+          "why": "Every safety control that follows receiving assumes the food started out wholesome. Skip the approved-supplier check and every downstream safeguard is left compensating for a hazard that may already be baked in and invisible.",
+          "memory": "🧠 SOURCING RULE: No paperwork, no deal — no matter the price.",
+          "tip": "The exam frames this as a \"who do you buy from\" scenario. Any answer describing an unlicensed, unmarked, or undocumented source is always wrong, even when the food \"looks fine.\""
+        },
+        {
+          "h": "The Receiving Inspection Routine",
+          "t": "Receiving is a checkpoint, not a formality. Inspect every delivery immediately on arrival — don't leave it on the dock, sign for it sight-unseen, or wheel it straight into storage.",
+          "example": "A kitchen has deliveries dropped at a side door whenever the driver shows up, mid-lunch-rush. Boxes sit unopened for 40 minutes because no one has time to check them. TCS food sits at ambient temperature the entire time, and by the time someone gets to it, no one can tell how long it was out. Compare that to a prep cook who schedules deliveries for a slower stretch, checks the invoice against the pallet, temps the dairy, and only then signs and moves everything into storage — cold items first.",
+          "bullets": [
+            "Schedule deliveries for slower periods and assign a specific person to receive them",
+            "Check temperatures FIRST for any TCS item, before checking anything else",
+            "Compare the invoice/purchase order against what actually arrived",
+            "Inspect packaging integrity; move cold/frozen items into storage before dry goods",
+            "Document and reject on the spot — don't accept now and sort it out later"
+          ],
+          "why": "Once the driver leaves, your leverage to reject or replace unsafe product is gone. A delayed inspection also means TCS food may have already spent unmonitored time in the danger zone before anyone opens the box.",
+          "memory": "🧠 RECEIVING ORDER: Temp check first, then packaging, then invoice match. Cold/frozen into storage before dry goods sit around.",
+          "tip": "If a scenario says food \"sat on the dock\" or was \"signed for without inspection,\" that's the flaw the question wants you to identify."
+        },
+        {
+          "h": "Receiving Temperatures: The Numbers You Must Know Cold",
+          "t": "Every food category has a specific temperature it must be at when it arrives. These numbers are heavily tested because a receiving-temperature failure means every later safeguard is built on food that was already in trouble.",
+          "example": "Cold TCS food (dairy, cut produce, deli meat): 41°F or below. Hot TCS food (rotisserie chicken): 135°F or above. Live shellstock, shell eggs, and milk get a narrow allowance of 45°F at the door — but shellstock and milk must still reach 41°F within 4 hours of receiving. That 45°F window isn't a looser rule; it's a brief, time-limited exception that still ends at the same 41°F standard as everything else.",
+          "bullets": [
+            "Cold TCS food: 41°F or below at receipt — no exceptions",
+            "Hot TCS food: 135°F or above at receipt",
+            "Frozen food: solid, no signs of thawing and refreezing",
+            "Live shellstock: 45°F air temp at receipt, cooled to 41°F within 4 hours, tags kept 90 days",
+            "Shell eggs: 45°F air temp or below at receipt",
+            "Milk: 45°F or below at receipt, cooled to 41°F within 4 hours"
+          ],
+          "why": "The 45°F allowance exists because shellstock, eggs, and milk have industry-recognized handling standards that account for brief transit variance — as long as the kitchen finishes the job by cooling to 41°F quickly.",
+          "memory": "🧠 RECEIVING TEMPS: Cold TCS ≤41°F. Hot TCS ≥135°F. Frozen = solid. Shellstock/Eggs/Milk ≤45°F at the door only. Shellstock tags = keep 90 days.",
+          "tip": "The exam loves the 41°F vs. 45°F distinction as a trap. General cold TCS food = 41°F. Shellstock/eggs/milk specifically at the moment of delivery = 45°F acceptable — never as a storage temperature."
+        },
+        {
+          "h": "Rejecting a Delivery: Red Flags You Must Never Accept",
+          "t": "Knowing when to reject is just as important as knowing the correct temperatures. Some problems are about the thermometer; others are about what your eyes, nose, and hands can detect.",
+          "example": "A case of frozen shrimp arrives with large ice crystals inside the bag and solid ice fused to the bottom — signs it thawed and got refrozen. It reads frozen right now. Reject it anyway. A case of canned tomatoes has a few cans with bulging ends — a possible sign of gas-producing bacteria inside, a botulism red flag you can't taste or smell. The dent alone is the whole answer.",
+          "bullets": [
+            "Reject frozen food with large ice crystals, solid ice buildup, or liquid staining",
+            "Reject cans that are swollen, dented on a seam, leaking, or rusted through",
+            "Reject any delivery showing pest evidence: droppings, gnaw marks, chewed packaging",
+            "Reject food with off odors, off colors, slimy/tacky texture, or damaged packaging",
+            "Reject TCS food that fails its receiving temperature check — don't accept and \"fix it later\""
+          ],
+          "why": "A can that looks intact but is swollen can harbor Clostridium botulinum toxin — one of the most dangerous foodborne hazards there is, and cooking may not destroy it. Some hazards never show up on a thermometer at all.",
+          "memory": "🧠 AUTO-REJECT LIST: Thaw-refreeze signs, damaged/swollen cans, pest evidence, off odor/color/texture, failed TCS temp. Any ONE = reject.",
+          "tip": "Watch for scenarios where the temperature is correct but there's another red flag. Correct temperature doesn't automatically mean accept — it's one of several independent pass/fail checks."
+        },
+        {
+          "h": "Dry Storage: Temperature, Humidity, and Airflow",
+          "t": "\"Shelf-stable\" doesn't mean \"ignore the environment.\" Poor dry storage conditions shorten shelf life, invite pests, and can cause moisture-related spoilage even in food that never needed refrigeration.",
+          "example": "A dry storage room sits at 85°F next to a hot water heater, boxes stacked directly on the floor. Humidity is high enough that flour has clumped and cardboard has gone soft at the bottom. A jug of degreaser sits on the shelf above a case of canned beans. Every one of these is a separate, correctable failure.",
+          "bullets": [
+            "Ideal dry storage temperature: 50°F to 70°F",
+            "Ideal relative humidity: 50% to 60%",
+            "Store all food at least 6 inches off the floor, on shelving, away from walls",
+            "Keep dry storage clean, dry, and pest-free with good air circulation",
+            "Store chemicals separately from food, always below/away from it, never above"
+          ],
+          "why": "The 6-inch rule lets air circulate underneath stored food, keeps mopping from splashing product, and denies pests hidden, undisturbed space against a wall or floor.",
+          "memory": "🧠 DRY STORAGE: 50–70°F, 50–60% humidity, 6 inches off the floor, FIFO always.",
+          "tip": "\"6 inches off the floor\" is a near-guaranteed exam question, often paired with boxes stacked directly on tile. It applies in dry storage, walk-ins, and freezers alike."
+        },
+        {
+          "h": "Cold and Frozen Storage: Protecting the Cold Chain",
+          "t": "Once TCS food passes receiving, the job shifts to keeping it cold without interruption — the \"cold chain.\" Every break, even a short one from a propped-open door or a blocked fan, gives bacteria an opening.",
+          "example": "A walk-in cooler is packed so tight that boxes block the fan. Cold air can't circulate, so shelves near the door run in the upper 40s while the log — checked only at the back wall — says 38°F. Nobody knows the front shelves are out of spec, because the one reading taken looked fine.",
+          "bullets": [
+            "Cold storage: 41°F or below at all times",
+            "Frozen storage: cold enough to keep food solid, generally at or near 0°F",
+            "Never overload shelves or block fans/vents — blocked airflow creates warm pockets",
+            "Cover and label all stored food to prevent contamination and moisture loss",
+            "Check and log cooler/freezer temperatures regularly with a calibrated thermometer"
+          ],
+          "why": "A single thermometer reading only tells you the temperature at that one spot. Blocked airflow can leave other shelves several degrees warmer without anyone knowing.",
+          "memory": "🧠 COLD CHAIN: 41°F or below, no interruptions. Check the warmest spot, not just the easiest spot.",
+          "tip": "Watch for an overstuffed walk-in or a thermometer reading fine while food near the door feels warm. The fix is reorganizing for airflow and checking multiple locations, not trusting one reading."
+        },
+        {
+          "h": "Storage Order in the Cooler: Top to Bottom by Cook Temperature",
+          "t": "Where you place food in a cooler is a deliberate defense against drip cross-contamination. The rule: stack from the LOWEST required cook temperature on top to the HIGHEST on the bottom.",
+          "example": "Ready-to-eat food on top never gets cooked again, so it must never risk drips from anything below. Poultry — the highest-risk item at 165°F — goes on the very bottom, so any drip from it only ever falls onto the floor of the cooler, never onto food that won't get hot enough to neutralize what just landed on it.",
+          "bullets": [
+            "Top shelf: ready-to-eat food (never cooked again)",
+            "Next: seafood (145°F minimum)",
+            "Next: whole cuts of beef and pork (145°F minimum)",
+            "Next: ground meats (155°F minimum)",
+            "Bottom shelf: whole and ground poultry (165°F minimum — highest risk)"
+          ],
+          "why": "This ordering assumes the worst case — a container leaks. A food's own minimum cook temperature tells you how much heat it would take to neutralize whatever lands on it, so the shelf order tracks that number exactly.",
+          "memory": "🧠 SHELF ORDER (top→bottom): RTE → Seafood → Whole Beef/Pork → Ground Meats → Poultry. Cook temp climbs as you go down: none, 145, 145, 155, 165.",
+          "tip": "One of the most frequently tested visual/scenario questions on the exam. Poultry on the bottom and ready-to-eat on top are the two anchors — everything else falls in between by cook temperature."
+        },
+        {
+          "h": "Date Marking and FIFO: Tracking Food Through Storage",
+          "t": "Date marking tracks the age of ready-to-eat TCS food held more than 24 hours, so nobody has to guess whether something in the walk-in is still safe. FIFO rotation makes sure the oldest labeled food actually gets used first.",
+          "example": "A cook makes pasta salad on Monday and stores it at 41°F. Monday counts as Day 1. Counting forward (Tue 2, Wed 3... Sun 7), it must be used or discarded by the end of the following Sunday — not the following Monday, which would be Day 8. A new batch made Thursday goes BEHIND Monday's batch on the shelf, so staff reach the older batch first.",
+          "bullets": [
+            "Date marking applies to ready-to-eat TCS food held longer than 24 hours",
+            "Maximum storage: 7 days at 41°F or below, counting the prep/open day as Day 1",
+            "Labels must show the food name and the discard (use-by) date, not just the prep date",
+            "Food past its discard date must be thrown out regardless of how it looks or smells",
+            "FIFO: newer stock goes behind or under older stock"
+          ],
+          "why": "Listeria monocytogenes grows slowly but steadily even at proper refrigeration temperatures, with no visible warning sign. The 7-day limit isn't about visible spoilage — it's a hard ceiling on how long refrigeration alone can be trusted to control that slow, silent growth.",
+          "memory": "🧠 DATE MARKING: RTE TCS food held over 24 hrs → date mark it. Prep/open day = Day 1. Max 7 days at 41°F. FIFO always puts new stock behind old stock.",
+          "tip": "The exam gives a prep date and asks for the discard date. Remember the prep day IS Day 1 — a Monday prep date discards at the end of the following Sunday, not Monday."
+        }
+      ]
+    },
+    {
+      "id": "haccp",
+      "lesson": [
+        {
+          "h": "HACCP: A Proactive System — and When You Need a Variance",
+          "t": "HACCP (Hazard Analysis Critical Control Point) builds safety into the process itself instead of inspecting the finished product after the fact — developed in the 1960s for the space program, where a sick astronaut in orbit was never an option. Certain high-risk processes go a step further: the operator must get a variance from the regulatory authority AND submit a written HACCP plan before starting them.",
+          "example": "Smoking wings for flavor, then finishing on the grill, needs no variance. Smoking salmon AS the method of preservation — shelf-stable smoked jerky, not a flavor step — does. That's the trap: read whether smoking is a flavor step or the entire preservation method. Serving raw oysters or a rare burger is a separate rule entirely — it needs a written consumer advisory, not a variance, and is never allowed for highly susceptible populations.",
+          "bullets": [
+            "Triggers: smoking-to-preserve, curing, additive/vinegar preservation that removes TCS status, reduced oxygen packaging (vacuum, sous vide, cook-chill) outside narrow exemptions, shellfish display tanks, on-site sprouting, custom-processing an owner's own animal food",
+            "The regulatory authority must review and approve the plan before the process may begin",
+            "Running one of these without an approved variance is a violation on its own, even with no illness",
+            "Raw/undercooked animal food service needs a consumer advisory, not a variance"
+          ],
+          "why": "Each triggered process removes one of food's natural safety barriers — oxygen, refrigeration, or a kill step — and replaces it with a process-specific control. A vacuum-sealed bag removes the oxygen that slows spoilage bacteria but does nothing to stop Clostridium botulinum, which thrives without oxygen.",
+          "memory": "🧠 VARIANCE NEEDED FOR: Smoking-to-preserve, Curing, ROP/Sous Vide, Shellfish Tanks, Sprouting, Custom-Processing an owner's animal food.",
+          "tip": "The exam loves the smoking trap — flavor step vs. entire preservation method."
+        },
+        {
+          "h": "The 7 HACCP Principles, In Order",
+          "t": "HACCP is a 7-step sequence, and the order isn't arbitrary — you can't set a critical limit before you know your control points, and you can't monitor a limit that hasn't been established yet.",
+          "example": "Ground beef chili, walked through all seven: (1) hazard analysis — raw beef may carry E. coli and Salmonella; (2) CCP — cooking eliminates it; (3) critical limit — 155°F for 15 seconds; (4) monitoring — the cook checks internal temp every batch; (5) corrective action — a batch reading 145°F keeps cooking until it hits 155°F/15 sec; (6) verification — the manager reviews logs weekly; (7) record-keeping — the temperature log stays on file for the inspector.",
+          "bullets": [
+            "1. Conduct a hazard analysis",
+            "2. Determine critical control points (CCPs)",
+            "3. Establish critical limits",
+            "4. Establish monitoring procedures",
+            "5. Establish corrective actions",
+            "6. Establish verification procedures",
+            "7. Establish record-keeping"
+          ],
+          "why": "Skipping a step or doing them out of order leaves gaps — a plan that jumps straight to monitoring without identifying CCPs ends up watching the wrong thing.",
+          "memory": "🧠 7 PRINCIPLES: Analyze → Assign (CCPs) → Limit → Watch → Fix → Confirm → Document.",
+          "tip": "If a question describes what to DO when a limit is missed, that's Principle 5 (corrective action) — not Principle 4 (monitoring is only the checking)."
+        },
+        {
+          "h": "Critical Control Points vs. Control Points",
+          "t": "A control point influences a hazard, but a later step can still fix it if control slips. A critical control point (CCP) is the LAST point where a hazard can be prevented, eliminated, or reduced to safe — lose control there and nothing downstream saves the food.",
+          "example": "Receiving chicken at 41°F is a control point — slightly warm can still be corrected by cooking later. Storage at 41°F is a control point — it slows growth but isn't the final barrier. Cooking to 165°F is a CCP — the kill step; miss it and nothing later fixes it. Hot holding at 135°F is also a CCP — drop below it and surviving bacteria multiply again with no kill step left before service.",
+          "bullets": [
+            "CCP = the last point where a hazard can be prevented, eliminated, or reduced to safe",
+            "Control point = influences a hazard but isn't the final safety barrier",
+            "Cooking, hot holding, and cold holding are the classic CCPs",
+            "Receiving is typically a control point, not a CCP",
+            "A critical limit is always measurable — never a vague standard"
+          ],
+          "why": "Regulators and operators focus monitoring resources on CCPs because that's where a mistake actually reaches the customer.",
+          "memory": "🧠 CCP TEST: \"If this step fails, can ANY later step fix it?\" No → it's a CCP.",
+          "tip": "Look for the step tied to a specific number — a temperature or a time. \"Check the delivery\" is usually a control point, not the CCP being tested."
+        },
+        {
+          "h": "Monitoring and Corrective Actions",
+          "t": "A critical limit means nothing if nobody checks whether it's being met. Monitoring must answer four questions: what, how, when/how often, and who. Corrective action is what happens the instant a limit is missed.",
+          "example": "A cook-chill soup line's plan specifies: WHAT — soup temp; HOW — calibrated thermocouple in the geometric center; WHEN — end of cooking and every 2 hours during hot holding; WHO — the shift lead. At the 2-hour check, the soup reads 125°F. Corrective action: determine how long it's been below 135°F; if under 4 cumulative hours, reheat to 165°F and return to holding; if the time can't be determined or exceeds 4 hours, discard. Then record the deviation and check why the steam table wasn't holding.",
+          "bullets": [
+            "Monitoring must specify WHAT, HOW, WHEN/how often, and WHO",
+            "Monitoring should be frequent enough to catch a deviation before food reaches the customer",
+            "Corrective action fixes the immediate problem — reheat or discard the affected food",
+            "Corrective action also addresses the root cause so it doesn't repeat",
+            "Every corrective action must be documented"
+          ],
+          "why": "Monitoring without a corrective-action plan tells you food is unsafe without telling anyone what to do about it. The two work as a pair.",
+          "memory": "🧠 MONITORING = WHAT, HOW, WHEN, WHO. CORRECTIVE ACTION = FIX THE FOOD + FIX THE CAUSE + RECORD IT.",
+          "tip": "If a scenario asks for the correct corrective action, look for the option that addresses the CURRENT food immediately, not just future prevention."
+        },
+        {
+          "h": "Active Managerial Control: The Five CDC Risk Factors",
+          "t": "Active Managerial Control (AMC) means building ongoing systems that prevent illness before it happens. The CDC and FDA trace the overwhelming majority of foodborne illness outbreaks back to five risk factors.",
+          "example": "A restaurant practicing AMC doesn't wait for a complaint to discover the ice machine hasn't been cleaned in months — a written cleaning schedule already caught it.",
+          "bullets": [
+            "The 5 risk factors: unsafe sources, inadequate cooking, improper holding temps, contaminated equipment/surfaces, poor personal hygiene",
+            "AMC control for each: approved-supplier checks, standardized recipes with temp checks, scheduled holding checks, written cleaning schedules, handwashing + illness-exclusion enforcement",
+            "AMC is proactive — built into daily procedures, not triggered by an inspection or illness",
+            "The PIC is responsible for demonstrating and maintaining AMC every shift"
+          ],
+          "why": "Outbreak root causes trace back to the same five risk factors again and again. Focusing management attention there converts food safety from luck into process.",
+          "memory": "🧠 5 RISK FACTORS: Unsafe Source, Inadequate Cooking, Improper Holding, Contaminated Equipment, Poor Hygiene.",
+          "tip": "A manager following a schedule = AMC. A manager scrambling to fix something only after a complaint = reactive, not AMC."
+        },
+        {
+          "h": "Responding to a Suspected Foodborne Illness Complaint",
+          "t": "When a customer or employee reports symptoms consistent with foodborne illness, the PIC's response in the first hours matters. The core response is always: preserve, document, notify, cooperate.",
+          "example": "A customer calls the morning after dining, reporting vomiting and diarrhea that started 14 hours after the meal, with two companions reporting the same. The instinct is to clean everything up immediately — don't. Preserve any suspect food still in the building, log the complaint in writing, notify the regulatory authority, and cooperate fully with any request for samples or interviews.",
+          "bullets": [
+            "Preserve suspect food — do not discard, cook, or serve it",
+            "Log every complaint: names, foods eaten, onset time, symptoms",
+            "Notify the regulatory authority promptly",
+            "Cooperate fully with the health department's investigation",
+            "Review staff health status for any Big 5 illness requiring exclusion",
+            "Big 5 pathogens requiring mandatory reporting: Norovirus, Salmonella Typhi, Shigella, STEC, Hepatitis A"
+          ],
+          "why": "Discarding suspect food out of a desire to \"clean up\" destroys the exact evidence that could clear the kitchen — or confirm the real cause.",
+          "memory": "🧠 OUTBREAK RESPONSE: Preserve the food, Log the complaint, Notify the health authority, Cooperate with the investigation.",
+          "tip": "Any answer involving discarding suspect food or staying quiet about a complaint is always wrong."
+        },
+        {
+          "h": "Imminent Health Hazards: Fire, Flood, Sewage, Power Loss, Equipment Failure",
+          "t": "An imminent health hazard is a significant, immediate threat that requires the operation to stop right away. The sequence is always the same: stop, protect, notify, wait for approval.",
+          "example": "The power blinks off for 20 minutes. It feels minor, but the process is identical regardless of size — assess affected food/water/utilities, keep fridge/freezer doors closed, discard TCS food once it's been above 41°F for 4+ cumulative hours, and notify the regulatory authority. You don't get to privately decide it wasn't a big deal and skip that step.",
+          "bullets": [
+            "Recognized triggers: fire, flood/sewage backup, extended power outage, water service interruption, refrigeration failure",
+            "Step 1: STOP the affected operation immediately",
+            "Step 2: PROTECT — discard compromised food, safeguard what's still safe",
+            "Step 3: NOTIFY the regulatory authority",
+            "Step 4: WAIT for approval before reopening the affected operation"
+          ],
+          "why": "These events can compromise food safety even when the food looks and smells normal — sewage-contaminated food shows no visible sign, and a failed refrigerator can sit unsafe for hours before anyone notices.",
+          "memory": "🧠 IMMINENT HAZARD = STOP, PROTECT, NOTIFY, WAIT FOR APPROVAL. Never reopen on your own judgment alone.",
+          "tip": "The correct process is the same no matter how minor the crisis seems — the exam tests whether you skip notification because it \"wasn't a big deal.\""
+        },
+        {
+          "h": "Regulatory Inspections and Food Safety Training Requirements",
+          "t": "Health inspections verify that day-to-day practices match Food Code requirements. Violations get classified by actual risk, which determines how fast they must be corrected.",
+          "example": "An inspector finds a sanitizer bucket testing at 0 ppm (a PRIORITY item, corrected on the spot), a cracked cutting board (a PRIORITY FOUNDATION item, replaced within the correction window), and a missing handwashing sign (a CORE item, corrected within a longer timeframe). None rise to an imminent health hazard, so the restaurant keeps operating. If sewage were backing up into the prep sink instead, the regulatory authority could suspend the permit and close the establishment immediately.",
+          "bullets": [
+            "The regulatory authority has the right of entry to inspect at reasonable times, without notice",
+            "The PIC should accompany the inspector and provide access to requested records",
+            "Priority items require the fastest correction; priority foundation and core items get longer windows",
+            "An imminent health hazard found during inspection can mean immediate closure",
+            "Every food employee needs basic food safety knowledge; most jurisdictions require at least one certified food protection manager on staff"
+          ],
+          "why": "Classifying violations by actual risk lets both inspector and operator focus urgency where it belongs, instead of treating a missing sign the same as a critical-limit failure.",
+          "memory": "🧠 INSPECTION: Regulatory authority has right of entry. PIC cooperates. Priority items fix fastest. Imminent hazard = close now, reopen only with approval.",
+          "tip": "Don't confuse a routine violation (correction window, stays open) with an imminent hazard (immediate closure, needs approval to reopen)."
+        }
+      ]
+    },
+    {
+      "id": "facilities",
+      "lesson": [
+        {
+          "h": "Equipment Materials & Standards",
+          "t": "Not every surface can safely touch food. Food-contact surfaces must be smooth, nonabsorbent, durable, and easily cleanable — an NSF/ANSI mark means the equipment was tested against commercial sanitation design standards.",
+          "example": "A manager brings a beautiful raw wood cutting board from home to sit next to the kitchen's scarred-but-intact NSF-certified poly board. The wood looks nicer, but its microscopic pores soak up moisture and juices that no amount of scrubbing removes. Separately, a cook stores acidic tomato sauce overnight in a galvanized steel pan — the acid reacts with the zinc coating and leaches metal into the sauce, a chemical contamination hazard.",
+          "bullets": [
+            "Food-contact surfaces: smooth, nonabsorbent, durable, corrosion-resistant, easily cleanable",
+            "An NSF/ANSI mark means the equipment was tested against commercial sanitation design standards",
+            "Raw/unsealed wood is never acceptable as a food-contact surface",
+            "Galvanized (zinc-coated) metal must never touch acidic food",
+            "Scratched, pitted, or cracked surfaces must be resurfaced or replaced"
+          ],
+          "why": "A surface that looks clean isn't the same as a surface that CAN be cleaned. Pores, scratches, and seams trap food residue below where a sponge can reach.",
+          "memory": "🧠 MATERIALS: Smooth, nonabsorbent, durable, cleanable. Look for NSF/ANSI. No raw wood, no galvanized metal with acid.",
+          "tip": "Think about porosity (does it absorb moisture/bacteria?) and reactivity (does it react with acid?) before answering a materials question."
+        },
+        {
+          "h": "Equipment Installation: Legs, Seals, and Space to Clean",
+          "t": "Equipment needs the right material AND the right installation, so every surface — including the floor and wall behind and beneath it — can actually be cleaned.",
+          "example": "A bakery's floor mixer sits flush on the tile with no legs and no seal. Flour dust and moisture collect in the gap where the base meets the floor — nobody can sweep under it. Six months later, an inspection finds a mouse nest back there. The fix: install the mixer on 6-inch legs, so a mop head fits underneath and the area stays visible during daily cleaning.",
+          "bullets": [
+            "Floor-mounted equipment: sealed to the floor OR 6+ inches of leg clearance",
+            "Tabletop equipment: sealed to the table OR 4+ inches of clearance",
+            "The goal either way: eliminate a hidden gap that can't be cleaned or inspected",
+            "Equipment should allow access to all sides, above, below, and behind for cleaning",
+            "Easily movable equipment is exempt as long as it's actually moved regularly for cleaning"
+          ],
+          "why": "An inaccessible gap is invisible during daily cleaning and often during inspection too. Pests seek out exactly these undisturbed, debris-rich spaces.",
+          "memory": "🧠 INSTALLATION: Floor-mounted = 6 inches. Tabletop = 4 inches. No usable gap = no cleaning = pest magnet.",
+          "tip": "The exam may swap the numbers or offer a close-but-wrong option like 2 or 8 inches — know which number goes with which equipment type."
+        },
+        {
+          "h": "Handwashing Sinks: Dedicated, Stocked, and Always Accessible",
+          "t": "A handwashing sink has exactly one job. The moment it gets used for anything else, it stops being a hygiene tool and becomes a contamination source.",
+          "example": "A short-staffed kitchen has only one sink within reach of the line — the handwashing sink. One cook rinses lettuce in it, another dumps ice into it, a third fills a mop bucket from it. By dinner rush, anyone who \"washes their hands\" there is getting recontaminated by the sink itself.",
+          "bullets": [
+            "Handwashing sinks: ONLY for handwashing — never food prep, thawing, or dumping anything",
+            "Must be conveniently located in prep, service, warewashing, and restroom areas — never blocked",
+            "Required at every sink: soap, warm running water, a drying method, a waste container",
+            "A posted sign reminding employees to wash their hands is required",
+            "An out-of-service handwashing sink is an immediate fix, not a \"later\" problem"
+          ],
+          "why": "Every barrier between a food handler and the handwashing sink — occupied, missing soap, three rooms away — pushes them toward a shortcut.",
+          "memory": "🧠 HANDWASH SINK = Handwashing ONLY. Stocked with soap + warm water + towels/dryer + trash can + sign. Never blocked, never multi-purpose.",
+          "tip": "Any scenario where a handwashing sink gets used for rinsing vegetables or filling a pot is always a violation, regardless of how clean the rinsed item was."
+        },
+        {
+          "h": "Plumbing, Cross-Connections, and Backflow Prevention",
+          "t": "A cross-connection is any physical link between the safe drinking water supply and a contamination source. A drop in water pressure can reverse normal flow — backflow — pulling whatever sits at the outlet backward into the pipes that supply the whole building.",
+          "example": "A porter leaves a hose end submerged in a bucket of sanitizer solution while he steps away. A nearby pressure drop briefly reverses flow, pulling diluted sanitizer back into the pipes that feed the handwashing sinks and ice machine down the line.",
+          "bullets": [
+            "A cross-connection links the potable water supply to a contamination source",
+            "An air gap must be at least 2× the diameter of the water supply outlet, never less than 1 inch",
+            "A vacuum breaker serves the same purpose where a physical air gap isn't practical",
+            "Never leave a hose end submerged in a sink, bucket, or mop water",
+            "Grease traps catch fats/oils/grease before they reach the sewer system"
+          ],
+          "why": "Backflow is dangerous specifically because it's invisible and brief — the contamination event can last seconds during a pressure drop, then the system looks completely normal again.",
+          "memory": "🧠 AIR GAP = 2× the outlet diameter, never less than 1 inch. No air gap possible? Vacuum breaker. Never submerge a hose end.",
+          "tip": "Memorize \"2 times the diameter.\" Watch for scenarios describing a hose left in a bucket — a cross-connection violation even if nothing bad has happened yet."
+        },
+        {
+          "h": "The Water Supply: Potable, Pressurized, and Reliable",
+          "t": "Every drop of water used — cooking, ice, handwashing, warewashing, cleaning — has to start from a source that's safe to drink. Beyond the source, the plumbing has to deliver hot and cold running water under enough pressure to actually be usable.",
+          "example": "A roadside diner draws water from a private well the previous owner installed decades ago. Never tested. It looks and tastes fine — but \"fine\" isn't a food-safety standard, since human senses can't detect most water contamination.",
+          "bullets": [
+            "Water must come from an approved public system or a properly tested private well",
+            "Hot and cold running water must be available under adequate pressure at every required fixture",
+            "A boil-water advisory means tap water can't be assumed safe until it's lifted",
+            "Private well water should be tested periodically, not just once at installation",
+            "Weak or absent hot water at a required fixture must be corrected, not worked around"
+          ],
+          "why": "Potability can't be judged by taste or smell — that's why the standard is about the source, not how the water presents.",
+          "memory": "🧠 WATER SUPPLY = Approved source + Hot AND cold + Running + Under pressure. Boil-water advisory = stop assuming tap water is safe.",
+          "tip": "If a scenario mentions a private well, check whether it's been tested — an untested well is the giveaway, even if the water \"looks fine.\""
+        },
+        {
+          "h": "Lighting Intensity",
+          "t": "Light works as a food-safety control, not just comfort. Minimum light intensity, measured in foot-candles, is set by the risk level of the tasks performed in each area.",
+          "example": "A walk-in cooler lit by one weak bulb (about 5-6 foot-candles, well under the 10 fc minimum) means a prep cook can't read a date label clearly enough to catch that the tomatoes are two days expired. A prep table with a meat slicer lit at 30 fc, under the 50 fc minimum for bladed equipment, threatens both food safety and the employee's fingers.",
+          "bullets": [
+            "50 foot-candles minimum: knives, slicers, grinders, saws",
+            "20 foot-candles minimum: handwashing/warewashing areas, self-service areas",
+            "10 foot-candles minimum: walk-ins, dry storage, dining areas",
+            "Light fixtures over food areas must be shielded or shatter-resistant"
+          ],
+          "why": "The tiers track task risk: cutting with a blade needs the sharpest vision, reading labels needs solid visibility, navigating a storage room needs the least.",
+          "memory": "🧠 LIGHTING: 50 fc = Knives/Slicers/Prep. 20 fc = Handwash/Warewash/Self-Service. 10 fc = Walk-in/Dry Storage/Dining.",
+          "tip": "Memorize the pattern 50-20-10 tied to task risk. Identify the area type first, then apply the number."
+        },
+        {
+          "h": "Ventilation and Hood Systems",
+          "t": "Cooking produces heat, steam, smoke, and grease-laden vapor that need somewhere to go besides settling back onto food and surfaces. Exhaust hoods capture and remove it before it becomes a contamination or fire problem.",
+          "example": "A restaurant's exhaust hood filters haven't been cleaned in months. Grease builds up thick enough that vapor drifts sideways across the cook line instead of venting up, leaving a film on nearby prep surfaces — and creating a serious fire hazard inside the hood itself.",
+          "bullets": [
+            "Exhaust hoods remove grease-laden vapor, heat, steam, and smoke",
+            "Grease filters must be cleaned on a regular schedule — buildup is both a contamination and a fire hazard",
+            "Exhaust air should vent outside, never recirculate back into prep or dining areas",
+            "Condensation from any overhead source must never drip onto food or food-contact surfaces"
+          ],
+          "why": "Grease-laden vapor that isn't captured doesn't disappear — it settles as a sticky film on every nearby surface and, over time, accumulates into a serious fire risk inside the hood system.",
+          "memory": "🧠 VENTILATION = Remove grease/heat/steam/smoke, vent OUTSIDE. Dirty hood filters = fire hazard, not just a cleaning issue.",
+          "tip": "Grease film on surfaces or condensation dripping onto food both point to ventilation system failure — the fix is hood/exhaust maintenance, not just wiping down the surface."
+        },
+        {
+          "h": "Floors, Walls, Garbage, Restrooms & Pest-Proof Design",
+          "t": "The building itself is food-safety equipment. Floors and walls in food areas need to be smooth, durable, and cleanable — and how you contain garbage and design transitions shapes whether a kitchen stays pest-free.",
+          "example": "An older kitchen has a sharp 90-degree corner where the floor meets the wall. Grease and moisture collect there because a mop can't reach into a tight right angle. A renovated kitchen has coving — a rounded, sealed transition — and the same corner wipes clean in one pass. Separately, outdoor garbage containers missing lids sit against the back door, overflowing after a busy weekend — attracting pests with a short trip straight into the building.",
+          "bullets": [
+            "Floors, walls, and ceilings in food areas: smooth, durable, easily cleanable",
+            "Coving at floor-wall joints eliminates the hard-to-clean 90-degree corner",
+            "Garbage containers: durable, leak-proof, covered, emptied often enough to prevent overflow",
+            "Restrooms: conveniently located, self-closing door, handwashing sink",
+            "Every unsealed gap around pipes, walls, and doors is a potential pest entry point"
+          ],
+          "why": "Pests and bacteria exploit the same weakness — places hard to see, hard to reach, and hard to clean. Designing the gap out beats cleaning around it forever.",
+          "memory": "🧠 FACILITY DESIGN = Smooth/durable/cleanable surfaces + Coving + Covered leak-proof garbage + Restrooms with self-closing doors + No unsealed gaps.",
+          "tip": "Coving questions test whether you understand WHY it matters — eliminating a hard-to-clean corner where debris accumulates, not just that it exists."
         }
       ]
     }

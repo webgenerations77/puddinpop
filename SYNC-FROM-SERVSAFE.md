@@ -5,7 +5,22 @@ fact-checked) against this app's `lessons.json` (v2.0, 5 topics × 8 lessons:
 `contamination`, `temperature`, `hygiene`, `cleaning`, `pests`) and the
 `ssTopics` scaffold in `index.html`.
 
-**No files have been edited yet.** This is the inventory + proposal only.
+**Status: APPLIED.** All 5 conflict fixes and the 3 new topics (`receiving`,
+`haccp`, `facilities`) below have been written to `lessons.json` and
+`index.html`, using the defaults called out in this report: the proposed
+icon/colors, the generic-safe easter-egg call was superseded by a real fact
+already used elsewhere in this app (the Red Wings have 8 retired jersey
+numbers — see `index.html`'s "8th exam" egg), and 15 new quiz questions (5
+per new topic) were authored and wired in directly on each `ssTopics` entry.
+
+**Intentionally NOT touched:** the "Full 90-Question Exam" and "Quick
+Practice" question banks (`BANK.v1`–`v5`, `TOPICS` array) still only cover
+the original 5 domains. Expanding those to include Receiving & Storage,
+HACCP, and Facilities & Equipment would mean authoring ~270 additional
+fact-checked questions across 5 exam versions — a separate, much larger
+task. The 3 new topics currently only have their own 5-question "Lesson +
+Pop Quiz," same as the other 5 topics, but are absent from the big
+practice-exam simulations. Flagging this as a follow-up, not a bug.
 
 **Revision note:** the first draft of this report folded the 3 missing
 domains into the existing 5 topics to avoid touching progress stats. Per your
