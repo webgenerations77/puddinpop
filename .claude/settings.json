@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"C:/Users/thesa_2fivicm/OneDrive/Desktop/Spinach Creations/Puddin Pop App/.trellis/report.mjs\""
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"C:/Users/thesa_2fivicm/OneDrive/Desktop/Spinach Creations/Puddin Pop App/.trellis/report.mjs\" --flush"
+          }
+        ]
+      }
+    ]
+  }
+}
