@@ -9,6 +9,15 @@
             "command": "node \"C:/Users/thesa_2fivicm/OneDrive/Desktop/Spinach Creations/Puddin Pop App/.trellis/report.mjs\""
           }
         ]
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"C:/Users/thesa_2fivicm/OneDrive/Desktop/Spinach Creations/Puddin Pop App/.trellis/lock.mjs\" --refresh"
+          }
+        ]
       }
     ],
     "SessionEnd": [
@@ -18,6 +27,26 @@
           {
             "type": "command",
             "command": "node \"C:/Users/thesa_2fivicm/OneDrive/Desktop/Spinach Creations/Puddin Pop App/.trellis/report.mjs\" --flush"
+          }
+        ]
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"C:/Users/thesa_2fivicm/OneDrive/Desktop/Spinach Creations/Puddin Pop App/.trellis/lock.mjs\" --release"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"C:/Users/thesa_2fivicm/OneDrive/Desktop/Spinach Creations/Puddin Pop App/.trellis/lock.mjs\" --start"
           }
         ]
       }
