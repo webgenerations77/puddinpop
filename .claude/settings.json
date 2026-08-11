@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"C:/Users/thesa_2fivicm/OneDrive/Desktop/Spinach Creations/Puddin Pop App/.trellis/report.mjs\""
+            "command": "node \"$CLAUDE_PROJECT_DIR/.trellis/report.mjs\""
           }
         ]
       },
@@ -15,7 +15,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"C:/Users/thesa_2fivicm/OneDrive/Desktop/Spinach Creations/Puddin Pop App/.trellis/lock.mjs\" --refresh"
+            "command": "node \"$CLAUDE_PROJECT_DIR/.trellis/lock.mjs\" --refresh"
           }
         ]
       }
@@ -26,7 +26,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"C:/Users/thesa_2fivicm/OneDrive/Desktop/Spinach Creations/Puddin Pop App/.trellis/report.mjs\" --flush"
+            "command": "node \"$CLAUDE_PROJECT_DIR/.trellis/report.mjs\" --flush"
           }
         ]
       },
@@ -35,7 +35,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"C:/Users/thesa_2fivicm/OneDrive/Desktop/Spinach Creations/Puddin Pop App/.trellis/lock.mjs\" --release"
+            "command": "node \"$CLAUDE_PROJECT_DIR/.trellis/lock.mjs\" --release"
           }
         ]
       }
@@ -46,7 +46,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"C:/Users/thesa_2fivicm/OneDrive/Desktop/Spinach Creations/Puddin Pop App/.trellis/lock.mjs\" --start"
+            "command": "node \"$CLAUDE_PROJECT_DIR/.trellis/lock.mjs\" --start"
           }
         ]
       }
