@@ -3,3 +3,5 @@
 .trellis/.last-sent.json
 .trellis/.state.json
 .trellis/config.json
+# Trellis (transient)
+.trellis/.lock-session
