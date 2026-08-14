@@ -68,10 +68,49 @@ function buildPayload(report, cfg, sessionId, trigger) {
     summary: clampStr(report.summary, 2000),
     at: null, // filled as timestampValue below
     expireAt: null,
+    // Which serializer produced this report (docs/86 §4.2). Bumped whenever the
+    // shape on the wire changes. Reports from before 2026-08-14 omit it, and the
+    // rule keeps it optional forever so those keep working — but without it
+    // nothing can answer "which projects are still running the copy that
+    // destroys an owner item", and the self-heal path has a blind spot (a repo
+    // that is dirty, parked on a dispatch branch, or checked out never catches
+    // up on its own).
+    reporter: 2,
   }
   if (sessionId) f.sessionId = clampStr(sessionId, 64)
   if (Array.isArray(report.worked)) f.worked = clampArr(report.worked, 15).map((x) => clampStr(x, 300))
-  if (Array.isArray(report.next)) f.next = clampArr(report.next, 10).map((x) => clampStr(x, 300))
+  // ⚠ `next[]` IS A UNION OF PLAIN STRINGS AND `{key, owner, text}` MAPS, AND
+  // `clampStr` DESTROYS THE SECOND KIND. `String({...})` is the literal
+  // "[object Object]", which is what shipped from 2026-08-12 to 08-14: measured
+  // live at 19% of every `next` item across two projects, and it is the reason
+  // items a session marked for the owner never reached their Focus page. The
+  // owner saw the garbage in the activity feed and the item nowhere else.
+  //
+  // ⚠ OWNER-MARKED OBJECTS TAKE THE 10-ITEM BUDGET FIRST. `clampArr` truncates
+  // positionally, so an owner item at position 11 would never reach the wire at
+  // all — and the reader cannot refuse what never arrived, so it is silent loss
+  // of exactly the item class this feature exists for. The reader is
+  // order-insensitive (`parseNextSteps` builds a Map by key) and the plain
+  // strings only feed the activity feed, so reordering costs nothing.
+  //
+  // ⚠ `Array.isArray` GUARD, NOT `typeof x === 'object'` ALONE. `typeof []` is
+  // `'object'`, so an array would take the map branch and arrive as
+  // `{key:'', owner:false, text:''}` — refused downstream as `not-owner`, which
+  // is a wrong reason for a real mistake. Arrays stay on the string path,
+  // exactly as today.
+  //
+  // Validation deliberately stays on the READING side (`parseNextSteps`), not
+  // here: this file is installed into every project and updated by a rollout, so
+  // a second copy of the key rules living here would drift out of step with the
+  // first and there would be no way to tell which copy a given project ran.
+  if (Array.isArray(report.next)) {
+    const isItem = (x) => x && typeof x === 'object' && !Array.isArray(x)
+    const items = report.next
+      .filter(isItem)
+      .map((x) => ({ key: clampStr(x.key, 80), owner: x.owner === true, text: clampStr(x.text, 300) }))
+    const plain = report.next.filter((x) => !isItem(x)).map((x) => clampStr(x, 300))
+    f.next = [...clampArr(items, 10), ...plain].slice(0, 10)
+  }
   if (Array.isArray(report.blockers)) f.blockers = clampArr(report.blockers, 10).map((x) => clampStr(x, 300))
   if (report.version && typeof report.version === 'object') {
     const v = {}
