@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 // Trellis session reporter (canonical copy — installed to .trellis/report.mjs).
 // Dependency-free, Node >= 18. Invoked three ways:
-//   - Stop hook       (default): send if a new report exists; else nudge once
-//   - SessionEnd hook (--flush): send only, never nudge, never block
+//   - Stop hook       (default): refresh the folder lock, then send if a new
+//                      report exists, else nudge once
+//   - SessionEnd hook (--flush): release the folder lock, then send only —
+//                      never nudge, never block
 //   - /trellis-report (--send) : send the current report.json now
 // EVERY failure path exits 0 silently — reporting must never break a session.
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
@@ -10,6 +12,7 @@ import { createHash } from 'node:crypto'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import https from 'node:https'
+import { spawn } from 'node:child_process'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const REPORT = join(HERE, 'report.json')
@@ -185,12 +188,48 @@ function post(cfg, body) {
   })
 }
 
-function readStdin() {
+function readStdinRaw() {
   try {
-    return JSON.parse(readFileSync(0, 'utf8'))
+    return readFileSync(0, 'utf8')
   } catch {
-    return {}
+    return ''
   }
+}
+
+// Runs `.trellis/lock.mjs` as a CHILD PROCESS AND AWAITS ITS EXIT, instead of
+// leaving the folder-lock refresh/release as a second command in the same
+// Stop/SessionEnd hook event.
+//
+// Measured 2026-08-13/14: with lock.mjs and report.mjs wired as two commands
+// on one event, the report hook demonstrably ran every time while the lock's
+// refresh never landed once in a 45-minute session — running the same lock
+// command by hand worked instantly, so the script was fine and the SECOND
+// hook command was not. The two-group-vs-one-group hook shape was tested and
+// ruled out; reordering the two commands (lock first) was the next untested
+// theory and is still unproven live. Rather than depend on an unverified,
+// undocumented guarantee about how the harness runs multiple commands per
+// hook event, this makes the lock op part of THIS hook's own single command:
+// spawn it, feed it the same stdin the harness gave this process (lock.mjs
+// falls back to it only if `.trellis/.lock-session` is unreadable), and wait
+// for it to exit before doing anything else. One process, one command, order
+// guaranteed by this file rather than by the harness.
+//
+// Never rejects — a lock op that fails or times out (lock.mjs caps its own
+// Firestore call at 10s) must not block this hook from sending the report.
+function runLock(mode, stdinRaw) {
+  return new Promise((resolve) => {
+    try {
+      const child = spawn(process.execPath, [join(HERE, 'lock.mjs'), `--${mode}`], {
+        stdio: ['pipe', 'ignore', 'ignore'],
+      })
+      child.on('error', () => resolve())
+      child.on('exit', () => resolve())
+      child.stdin.on('error', () => {}) // lock.mjs may exit before reading stdin
+      child.stdin.end(stdinRaw)
+    } catch {
+      resolve()
+    }
+  })
 }
 
 // Best-effort: did this session modify files? (nudge only if so)
@@ -205,10 +244,22 @@ function sessionModifiedFiles(transcriptPath) {
 }
 
 async function main() {
+  const stdinRaw = MODE === 'send' ? '' : readStdinRaw()
+  // Before anything else — see runLock()'s note on why this lives here rather
+  // than as a second hook command.
+  if (MODE === 'stop') await runLock('refresh', stdinRaw)
+  if (MODE === 'flush') await runLock('release', stdinRaw)
+
   const cfg = readJson(CONFIG, null)
   if (!cfg || !cfg.project || !cfg.token || !cfg.fbProject || !cfg.apiKey) process.exit(0)
 
-  const stdin = MODE === 'send' ? {} : readStdin()
+  const stdin = (() => {
+    try {
+      return JSON.parse(stdinRaw)
+    } catch {
+      return {}
+    }
+  })()
   const sessionId = stdin.session_id || ''
   const state = readJson(STATE, {})
   const report = readJson(REPORT, null)
