@@ -6,10 +6,6 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/.trellis/lock.mjs\" --refresh"
-          },
-          {
-            "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/.trellis/report.mjs\""
           }
         ]
@@ -19,10 +15,6 @@
       {
         "matcher": "",
         "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/.trellis/lock.mjs\" --release"
-          },
           {
             "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/.trellis/report.mjs\" --flush"

@@ -13,6 +13,12 @@ Trellis. You (Claude) write `report.json`; do not edit `report.mjs` or `config.j
     { "key": "rotate-stripe-key", "owner": true,
       "text": "Rotate the Stripe key — only you can do this one" }
   ],
+  "roadmap": [
+    { "key": "stripe-webhooks", "title": "Handle Stripe webhooks",
+      "detail": "Refunds and disputes currently go unrecorded." },
+    { "key": "receipt-emails", "title": "Send receipt emails" },
+    { "key": "annual-plans", "title": "Add annual plans" }
+  ],
   "blockers": ["Waiting on Firebase console access"],
   "version": { "current": "v42", "deployed": "v41", "notes": "Rounding fix" },
   "bugs": [
@@ -62,3 +68,38 @@ any of them is refused rather than guessed at.
 ⚠ **Never derive a key from the text.** Measured 2026-08-12: one session filed the same
 intent 26 minutes apart in two different wordings. A key computed from the words files
 that twice; a key you chose files it once.
+
+### `roadmap` — what is coming, in the order you would do it
+
+`next` is about **this** session: what you did and the one or two things immediately
+after it. `roadmap` is the whole plan you can see from here — the upcoming sessions and
+phases, as many as you genuinely know about, up to **12**.
+
+```json
+"roadmap": [
+  { "key": "stripe-webhooks", "title": "Handle Stripe webhooks",
+    "detail": "Refunds and disputes currently go unrecorded." },
+  { "key": "receipt-emails", "title": "Send receipt emails" }
+]
+```
+
+- **`key` and `title` are required**; `detail` is optional and is one sentence of why.
+  Same key rules as everywhere else: lowercase, digits and hyphens, and **chosen, never
+  computed from the title.**
+- **`title` is read by a non-developer**, on a page beside every other project. "Handle
+  Stripe webhooks" works; "wire up webhook handler per §4" does not.
+- **Order is yours and Trellis never changes it.** Put them in the order you would
+  actually do them; the first one is what the owner is shown as this project's next move.
+
+⚠ **Each report REPLACES the whole roadmap — it is never merged with the last one.** So:
+
+- **Send the full remaining plan every session**, not just what changed. Sending one step
+  does not add a step, it deletes the other eleven.
+- **A finished step is removed by simply not listing it again.** There is nothing to close.
+- **Omitting `roadmap` entirely leaves the stored one untouched** — which is what every
+  older reporter does. Sending `"roadmap": []` is the different, deliberate statement
+  that there is nothing planned any more.
+
+That rule is the reason this field can hold many steps at all. A list that accumulated
+across sessions was measured at 146 items in two days, 39% of them duplicates, and it
+made the owner's page unusable. A list that is restated in full each time cannot grow one.
